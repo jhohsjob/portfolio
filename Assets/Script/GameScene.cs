@@ -12,14 +12,18 @@ public class GameScene : MonoBehaviour
     private PlayerCamera _playerCamera;
 
     [SerializeField]
-    public Transform enemyContainer;
+    public UIMain uiMain;
+
     [SerializeField]
-    public Transform projectileContainer;
+    public Transform actorContainer;
+
+    public Player player => _player;
 
     private float GAME_START_TIME = 3f;
 
     private void Awake()
     {
+        
     }
 
     void Start()
@@ -29,9 +33,11 @@ public class GameScene : MonoBehaviour
     
     private void Init()
     {
+        GameTable.Load();
+
         GameManager.instance.Init(this);
-        SpawnManager.instance.Init();
-        EnemyManager.instance.Init(this);
+        _player.Init(Resources.Load<PlayerData>("Data/Role/Actor/Player/Mercenary01"));
+        _player.Enter();
 
         _map.Init();
 
@@ -42,6 +48,11 @@ public class GameScene : MonoBehaviour
     {
         yield return new WaitForSeconds(GAME_START_TIME);
 
-        EventHelper.Send(EventName.GameStatus, this, Enums.GameStatus.Run);
+        EventHelper.Send(EventName.GameStatus, this, GameStatus.Run);
+    }
+
+    public Vector3 GetRandomPos()
+    {
+        return _map.GetRandomPos();
     }
 }

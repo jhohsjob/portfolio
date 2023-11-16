@@ -15,6 +15,9 @@ public class UIMain : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _txtKill;
 
+    [SerializeField]
+    private HPBarController _hpBarContainer;
+
     private void Awake()
     {
         EventHelper.AddEventListener(EventName.GameStatus, OnGameStatus);
@@ -25,26 +28,7 @@ public class UIMain : MonoBehaviour
 
     private void Update()
     {
-        _txtKill.text = EnemyManager.instance.dieCount.ToString();
-    }
-
-    private void OnGameStatus(object sender, object data)
-    {
-        if (data == null || (data is Enums.GameStatus) == false)
-        {
-            return;
-        }
-
-        switch ((Enums.GameStatus)data)
-        {
-            case Enums.GameStatus.Run:
-                StartCoroutine(StartDirection());
-                break;
-
-            case Enums.GameStatus.GameOver:
-                GameOverDirection();
-                break;
-        }
+        _txtKill.text = GameManager.instance.enemyManager.dieCount.ToString();
     }
 
     private IEnumerator StartDirection()
@@ -63,5 +47,24 @@ public class UIMain : MonoBehaviour
 
         _panelStartDirection.SetActive(true);
         _panelGameMain.SetActive(false);
+    }
+
+    private void OnGameStatus(object sender, object data)
+    {
+        if (data == null || (data is GameStatus) == false)
+        {
+            return;
+        }
+
+        switch ((GameStatus)data)
+        {
+            case GameStatus.Run:
+                StartCoroutine(StartDirection());
+                break;
+
+            case GameStatus.GameOver:
+                GameOverDirection();
+                break;
+        }
     }
 }

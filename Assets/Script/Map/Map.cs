@@ -11,7 +11,7 @@ public class Map : MonoBehaviour
     
     private void Awake()
     {
-        EventHelper.AddEventListener(EventName.GameLevelUp, OnGameLevelUp);
+        EventHelper.AddEventListener(EventName.MapLevelUp, OnGameLevelUp);
     }
 
     public void Init()
@@ -35,15 +35,23 @@ public class Map : MonoBehaviour
         SetMapSize();
     }
 
+    public Vector3 GetRandomPos()
+    {
+        var x = Random.Range(-_mapSize.x, _mapSize.x);
+        var z = Random.Range(-_mapSize.z, _mapSize.z);
+
+        return new Vector3(x, 0, z);
+    }
+
     private void OnGameLevelUp(object sender, object data)
     {
-        if (data == null || (data is GameLevelData) == false)
+        if (data == null || (data is MapLevel) == false)
         {
             return;
         }
 
-        var gameLevelData = data as GameLevelData;
+        var mapLevel = data as MapLevel;
 
-        SizeChange(gameLevelData.growMapSize);
+        SizeChange(mapLevel.growMapSize);
     }
 }

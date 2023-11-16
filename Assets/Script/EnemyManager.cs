@@ -1,28 +1,32 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 
-public class EnemyManager : MonoSingleton<EnemyManager>
+public class EnemyManager : MonoBehaviour
 {
-    private GameScene _gameScene;
+    private GameManager _gameManager = null;
 
     private List<Enemy> _enemyList = new List<Enemy>();
 
     private int _dieCount = 0;
     public int dieCount => _dieCount;
 
-    protected override void OnAwake()
+    public void Init(GameManager gameManager)
     {
-        
+        _gameManager = gameManager;
     }
 
-    public void Init(GameScene gameScene)
+    public void Spawn(int id)
     {
-        _gameScene = gameScene;
-    }
+        var data = GameTable.GetEnemyData(id);
+        var parent = _gameManager.gameScene.actorContainer;
+        var position = _gameManager.gameScene.GetRandomPos();
+        var enemy = _gameManager.roleManager.GetRole(data, parent, position) as Enemy;
+        enemy.Enter();
 
-    public void Spawn(Enemy enemy)
-    {
         _enemyList.Add(enemy);
+
+        EventHelper.Send(EventName.EnemySpawnEnd, this, enemy);
     }
 
     public void Die(Enemy enemy)
@@ -34,8 +38,10 @@ public class EnemyManager : MonoSingleton<EnemyManager>
 
         _enemyList.Remove(enemy);
 
-        enemy.Die();
+        _gameManager.roleManager.Retrieve(enemy);
 
         _dieCount++;
+
+        EventHelper.Send(EventName.EnemyDieEnd, this, enemy);
     }
 }

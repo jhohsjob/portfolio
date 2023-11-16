@@ -16,7 +16,7 @@ public class PlayerCamera : MonoBehaviour
 
     private void Awake()
     {
-        EventHelper.AddEventListener(EventName.GameLevelUp, OnGameLevelUp);
+        EventHelper.AddEventListener(EventName.MapLevelUp, OnGameLevelUp);
     }
 
     private void LateUpdate()
@@ -56,12 +56,12 @@ public class PlayerCamera : MonoBehaviour
 
     private void OnGameLevelUp(object sender, object data)
     {
-        if (data == null || (data is GameLevelData) == false)
+        if (data == null || (data is MapLevel) == false)
         {
             return;
         }
 
-        var gameLevelData = data as GameLevelData;
+        var gameLevelData = data as MapLevel;
 
         ZoomOut(gameLevelData.growCameraSize);
     }
