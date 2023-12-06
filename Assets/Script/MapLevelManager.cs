@@ -35,14 +35,14 @@ public class MapLevelManager : MonoBehaviour
         }
     }
 
-    public void Init(GameManager gameManager)
+    public void Init(GameManager gameManager, MapInfoData mapInfoData)
     {
         _gameManager = gameManager;
 
-        var datas = Resources.LoadAll<MapLevelData>("Data/MapLevel"); // , typeof(MapLevelData));
-        for (int i = 0; i < datas.Length; i++)
+        var datas = mapInfoData.levelDatas;
+        for (int i = 0; i < datas.Count; i++)
         {
-            var nextData = i < datas.Length - 1 ? datas[i + 1] : null;
+            var nextData = i < datas.Count - 1 ? datas[i + 1] : null;
             mapLevels.Add(datas[i].level, new MapLevel(datas[i], nextData));
         }
 

@@ -1,17 +1,18 @@
 using System;
 using UnityEngine;
 
+public class GameManagerInitData
+{
+    public MapInfoData mapInfoData;
+}
 
 public class GameManager : MonoSingleton<GameManager>
 {
     [NonSerialized]
     public GameScene gameScene;
 
-    [SerializeField]
     public MapLevelManager mapLevelManager;
-    [SerializeField]
     public RoleManager roleManager;
-    [SerializeField]
     public EnemyManager enemyManager;
 
     public GameStatus gameStatus { get; set; } = GameStatus.None;
@@ -22,15 +23,28 @@ public class GameManager : MonoSingleton<GameManager>
     {
         EventHelper.AddEventListener(EventName.GameStatus, OnGameStatus);
         EventHelper.AddEventListener(EventName.ChangeMapSize, OnChangeMapSize);
+
+        mapLevelManager = new GameObject("MapLevelManager").AddComponent<MapLevelManager>();
+        roleManager = new GameObject("RoleManager").AddComponent<RoleManager>();
+        enemyManager = new GameObject("EnemyManager").AddComponent<EnemyManager>();
+
+        mapLevelManager.transform.SetParent(transform);
+        roleManager.transform.SetParent(transform);
+        enemyManager.transform.SetParent(transform);
+
+        transform.position = new Vector3(-1000f, -1000f, -1000f);
     }
 
-    public void Init(GameScene gameScene)
+    public void Init(GameManagerInitData data)
     {
-        this.gameScene = gameScene;
-
-        mapLevelManager.Init(this);
+        mapLevelManager.Init(this, data.mapInfoData);
         roleManager.Init(this);
         enemyManager.Init(this);
+    }
+
+    public void SetGameScene(GameScene gameScene)
+    {
+        this.gameScene = gameScene;
     }
 
     private void OnGameStatus(object sender, object data)

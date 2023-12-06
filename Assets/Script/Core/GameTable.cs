@@ -4,12 +4,20 @@ using UnityEngine;
 
 public static class GameTable
 {
+    private static Dictionary<int, MapInfoData> _mapInfoDatas = new Dictionary<int, MapInfoData>();
     private static Dictionary<int, EnemyData> _enemyDatas = new Dictionary<int, EnemyData>();
     private static Dictionary<int, ProjectileData> _projectileData = new Dictionary<int, ProjectileData>();
     private static Dictionary<int, SkillData> _skillData = new Dictionary<int, SkillData>();
 
     public static void Load()
     {
+        Debug.Log("GameTable.Load");
+
+        {
+            var table = Resources.Load<MapInfoTable>("DataTable/MapInfoTable");
+            _mapInfoDatas = table.table;
+        }
+
         {
             var table = Resources.Load<EnemyTable>("DataTable/EnemyTable");
             _enemyDatas = table.table;
@@ -24,6 +32,18 @@ public static class GameTable
             var table = Resources.Load<SkillTable>("DataTable/SkillTable");
             _skillData = table.table;
         }
+    }
+
+    public static List<MapInfoData> GetAllMapInfoData()
+    {
+        var result = new List<MapInfoData>();
+
+        foreach (var data in _mapInfoDatas.Values)
+        {
+            result.Add(data);
+        }
+
+        return result;
     }
 
     public static EnemyData GetEnemyData(int id)

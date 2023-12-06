@@ -23,19 +23,19 @@ public class GameScene : MonoBehaviour
 
     private void Awake()
     {
-        
+        Debug.Log("GameScene.Awake");
     }
 
     void Start()
     {
+        Debug.Log("GameScene.Start");
+
         Init();
     }
     
     private void Init()
     {
-        GameTable.Load();
-
-        GameManager.instance.Init(this);
+        GameManager.instance.SetGameScene(this);
         _player.Init(Resources.Load<PlayerData>("Data/Role/Actor/Player/Mercenary01"));
         _player.Enter();
 
