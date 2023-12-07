@@ -20,7 +20,7 @@ public class Enemy : Actor
 
     private void Update()
     {
-        bool isControl = (_moveDirection != Vector3.zero && GameManager.instance.gameStatus == GameStatus.Run);
+        bool isControl = (_moveDirection != Vector3.zero && BattleManager.instance.battleStatus == BattleStatus.Run);
         if (isControl == true)
         {
             Move();
@@ -44,14 +44,14 @@ public class Enemy : Actor
     {
         _moveDirection = Vector3.zero;
 
-        GameManager.instance.enemyManager.Die(this);
+        BattleManager.instance.enemyManager.Die(this);
 
         base.Die();
     }
 
     private Quaternion GetRotation(ref Vector3 direction)
     {
-        var playerPos = GameManager.instance.gameScene.player.transform.position;
+        var playerPos = BattleManager.instance.battleScene.player.transform.position;
         var dir = transform.position - playerPos;
         dir.y = 0f;
         direction = dir.normalized;

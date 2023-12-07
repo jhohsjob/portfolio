@@ -39,7 +39,7 @@ public class IDGenerator
 
 public class RoleManager : MonoBehaviour
 {
-    private GameManager _gameManager = null;
+    private BattleManager _gameManager = null;
 
     /// <summary> key : role id </summary>
     private Dictionary<int, Queue<Role>> _pool = new Dictionary<int, Queue<Role>>();
@@ -57,7 +57,7 @@ public class RoleManager : MonoBehaviour
         _projectilePrefab = Resources.Load<Projectile>("Prefabs/Projectile");
     }
 
-    public void Init(GameManager gameManager)
+    public void Init(BattleManager gameManager)
     {
         _gameManager = gameManager;
     }

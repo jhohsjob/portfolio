@@ -30,7 +30,7 @@ public abstract class Role : MonoBehaviour
 
     public virtual void Enter()
     {
-        SetID(GameManager.instance.roleManager.GetNextID(roleId));
+        SetID(BattleManager.instance.roleManager.GetNextID(roleId));
 
         _moveSpeed = _roleData.moveSpeed;
     }

@@ -11,7 +11,12 @@ public class Map : MonoBehaviour
     
     private void Awake()
     {
-        EventHelper.AddEventListener(EventName.MapLevelUp, OnGameLevelUp);
+        EventHelper.AddEventListener(EventName.MapLevelUp, OnMapLevelUp);
+    }
+
+    private void OnDestroy()
+    {
+        EventHelper.RemoveEventListener(EventName.MapLevelUp, OnMapLevelUp);
     }
 
     public void Init()
@@ -43,7 +48,7 @@ public class Map : MonoBehaviour
         return new Vector3(x, 0, z);
     }
 
-    private void OnGameLevelUp(object sender, object data)
+    private void OnMapLevelUp(object sender, object data)
     {
         if (data == null || (data is MapLevel) == false)
         {

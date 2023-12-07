@@ -25,7 +25,7 @@ public class Player : Actor
 
     void Update()
     {
-        bool isControl = (_moveDirection != Vector3.zero && GameManager.instance.gameStatus == GameStatus.Run);
+        bool isControl = (_moveDirection != Vector3.zero && BattleManager.instance.battleStatus == BattleStatus.Run);
         if (isControl == true)
         {
             Move();
@@ -72,7 +72,7 @@ public class Player : Actor
         transform.Translate(Vector3.forward * _moveSpeed * Time.deltaTime);
 
         var pos = transform.position;
-        var mapSize = GameManager.instance.mapSize;
+        var mapSize = BattleManager.instance.mapSize;
         if (pos.x > mapSize.x - 0.5f)
         {
             pos.x = mapSize.x - 0.5f;
@@ -100,9 +100,7 @@ public class Player : Actor
     {
         Debug.Log("game over");
 
-        EventHelper.Send(EventName.GameStatus, this, GameStatus.GameOver);
-
-        // base.Die();
+        BattleManager.instance.SetBattleStatus(BattleStatus.BattleOver);
     }
 
     private void OnBodyTriggerEnter(Body other)

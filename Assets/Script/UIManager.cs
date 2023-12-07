@@ -8,6 +8,20 @@ public class UIManager : MonoSingleton<UIManager>
     private GameObject _popupContainer = null;
     private Dictionary<string, UIPopup> _popupPool = new Dictionary<string, UIPopup>();
 
+    public override void Awake()
+    {
+        UIManager[] objs = FindObjectsOfType<UIManager>();
+        if (objs.Length > 1)
+        {
+            Debug.LogWarningFormat("Singleton {0} Destroy", typeof(UIManager).Name);
+            Destroy(gameObject);
+        }
+        else
+        {
+            base.Awake();
+        }
+    }
+
     protected override void OnAwake()
     {
         Debug.Log(this.GetType().Name + "." + MethodBase.GetCurrentMethod().Name);

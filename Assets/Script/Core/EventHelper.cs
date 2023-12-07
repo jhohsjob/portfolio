@@ -40,13 +40,18 @@ public static class EventHelper
         }
     }
 
-    public static void RemoveEventListener(string eventName, Action<object, object> newListener)
+    public static void RemoveEventListener(string eventName, Action<object, object> listener)
     {
         if (_actionTable == null) return;
 
-        if (_actionTable.TryGetValue(eventName, out var callback))
+        if (_actionTable.ContainsKey(eventName) == true)
         {
-            callback -= newListener;
+            _actionTable[eventName] -= listener;
+
+            if (_actionTable[eventName] == null)
+            {
+                _actionTable.Remove(eventName);
+            }
         }
     }
 }

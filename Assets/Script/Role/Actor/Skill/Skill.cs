@@ -19,7 +19,7 @@ public class Skill : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.instance.gameStatus == GameStatus.Run)
+        if (BattleManager.instance.battleStatus == BattleStatus.Run)
         {
             _shotTimer += Time.deltaTime;
 
@@ -47,7 +47,7 @@ public class Skill : MonoBehaviour
         reloadTime = data.reloadTime;
         projectileId = data.projectileId;
 
-        GameManager.instance.roleManager.InitProjectile(projectileId);
+        BattleManager.instance.roleManager.InitProjectile(projectileId);
     }
 
     protected void Shot()
@@ -60,9 +60,9 @@ public class Skill : MonoBehaviour
         for (int i = 0; i < shotCount; i++)
         {
             var data = GameTable.GetProjectileData(projectileId);
-            var parent = GameManager.instance.gameScene.actorContainer;
+            var parent = BattleManager.instance.battleScene.actorContainer;
             var position = _actor.transform.position;
-            var projectile = GameManager.instance.roleManager.GetRole(data, parent, position) as Projectile;
+            var projectile = BattleManager.instance.roleManager.GetRole(data, parent, position) as Projectile;
             projectile.Shot(_actor, _actor.point.transform.position);
 
             yield return new WaitForSeconds(shotDelay);

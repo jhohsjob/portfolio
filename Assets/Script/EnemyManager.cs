@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
-    private GameManager _gameManager = null;
+    private BattleManager _gameManager = null;
 
     private List<Enemy> _enemyList = new List<Enemy>();
 
     private int _dieCount = 0;
     public int dieCount => _dieCount;
 
-    public void Init(GameManager gameManager)
+    public void Init(BattleManager gameManager)
     {
         _gameManager = gameManager;
     }
@@ -19,8 +19,8 @@ public class EnemyManager : MonoBehaviour
     public void Spawn(int id)
     {
         var data = GameTable.GetEnemyData(id);
-        var parent = _gameManager.gameScene.actorContainer;
-        var position = _gameManager.gameScene.GetRandomPos();
+        var parent = _gameManager.battleScene.actorContainer;
+        var position = _gameManager.battleScene.GetRandomPos();
         var enemy = _gameManager.roleManager.GetRole(data, parent, position) as Enemy;
         enemy.Enter();
 

@@ -7,7 +7,7 @@ public class UIPopup : MonoBehaviour
     [SerializeField]
     protected Button _btnClose;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         if (_btnClose != null)
         {

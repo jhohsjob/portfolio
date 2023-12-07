@@ -31,7 +31,7 @@ public class MapLevel
 
         foreach (var actorId in spawnDatas.Keys)
         {
-            GameManager.instance.roleManager.InitEnemy(actorId);
+            BattleManager.instance.roleManager.InitEnemy(actorId);
         }
     }
 

@@ -68,7 +68,7 @@ public class Projectile : Role
         _bc.enabled = false;
         _dir = Vector3.zero;
 
-        GameManager.instance.roleManager.Retrieve(this);
+        BattleManager.instance.roleManager.Retrieve(this);
 
         base.Die();
     }

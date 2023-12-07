@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MapLevelManager : MonoBehaviour
 {
-    private GameManager _gameManager = null;
+    private BattleManager _gameManager = null;
 
     public Dictionary<int, MapLevel> mapLevels = new Dictionary<int, MapLevel>();
 
@@ -17,7 +17,7 @@ public class MapLevelManager : MonoBehaviour
 
     void Update()
     {
-        if (_gameManager != null && _gameManager.gameStatus == GameStatus.Run)
+        if (_gameManager != null && _gameManager.battleStatus == BattleStatus.Run)
         {
             _spawnTimer += Time.deltaTime;
 
@@ -35,7 +35,7 @@ public class MapLevelManager : MonoBehaviour
         }
     }
 
-    public void Init(GameManager gameManager, MapInfoData mapInfoData)
+    public void Init(BattleManager gameManager, MapInfoData mapInfoData)
     {
         _gameManager = gameManager;
 

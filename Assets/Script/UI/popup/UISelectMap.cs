@@ -1,4 +1,3 @@
-using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,11 +6,6 @@ public class UISelectMap : UISVPopup
 {
     [SerializeField]
     private HorizontalLayoutGroup _contentGorup;
-
-    private void OnDestroy()
-    {
-        Debug.Log(this.GetType().Name + "." + MethodBase.GetCurrentMethod().Name);
-    }
 
     protected override void Init(object data = null)
     {
@@ -46,6 +40,6 @@ public class UISelectMap : UISVPopup
         }
 
         var mapContent = content as UISelectMapConetnt;
-        EventHelper.Send(EventName.BattleSceneMove, this, mapContent.data);
+        SceneLoader.LoadBattleScene(mapContent.data);
     }
 }

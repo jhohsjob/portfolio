@@ -16,7 +16,12 @@ public class PlayerCamera : MonoBehaviour
 
     private void Awake()
     {
-        EventHelper.AddEventListener(EventName.MapLevelUp, OnGameLevelUp);
+        EventHelper.AddEventListener(EventName.MapLevelUp, OnMapLevelUp);
+    }
+
+    private void OnDestroy()
+    {
+        EventHelper.RemoveEventListener(EventName.MapLevelUp, OnMapLevelUp);
     }
 
     private void LateUpdate()
@@ -54,15 +59,15 @@ public class PlayerCamera : MonoBehaviour
         yield return null;
     }
 
-    private void OnGameLevelUp(object sender, object data)
+    private void OnMapLevelUp(object sender, object data)
     {
         if (data == null || (data is MapLevel) == false)
         {
             return;
         }
 
-        var gameLevelData = data as MapLevel;
+        var mapLevel = data as MapLevel;
 
-        ZoomOut(gameLevelData.growCameraSize);
+        ZoomOut(mapLevel.growCameraSize);
     }
 }

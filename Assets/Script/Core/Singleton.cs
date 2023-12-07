@@ -34,13 +34,11 @@ public class Singleton<T> : ISingleton where T : Singleton<T>, new()
 
     public Singleton()
     {
-        //SystemManager.RegisterSingleton(this);
     }
 
     public void DestroySingleton()
     {
         Debug.Log("Destroy Singleton: " + typeof(T).Name);
-        //SystemManager.UnregisterSingleton(this);
         _instance?.OnDestroy();
         _instance = null;
     }
@@ -69,7 +67,6 @@ public abstract class MonoSingleton<T> : MonoBehaviour, ISingleton where T : Mon
                 go.name = typeof(T).Name;
                 _instance = go.AddComponent<T>();
             }
-            //SystemManager.RegisterSingleton(_instance);
 
             return _instance;
         }
@@ -95,7 +92,6 @@ public abstract class MonoSingleton<T> : MonoBehaviour, ISingleton where T : Mon
 
         DontDestroyOnLoad(gameObject);
         _instance = (T)this;
-        //SystemManager.RegisterSingleton(_instance);
 
         OnAwake();
     }
@@ -108,7 +104,6 @@ public abstract class MonoSingleton<T> : MonoBehaviour, ISingleton where T : Mon
         {
             Debug.Log("Destroy Singleton: " + typeof(T).Name);
             _instance._destroyed = true;
-            //SystemManager.UnregisterSingleton(_instance);
             Destroy(_instance.gameObject);
             _instance.OnCallDestroy();
             _instance = null;

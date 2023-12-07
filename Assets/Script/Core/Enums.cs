@@ -1,4 +1,4 @@
-public enum GameStatus { None, Run, Pause, GameOver }
+public enum BattleStatus { None, Run, Pause, BattleOver }
 public enum RoleType
 {
     Player = 10000, 

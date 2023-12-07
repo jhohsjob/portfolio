@@ -28,6 +28,12 @@ public class HPBarController : MonoBehaviour
         PoolGenerate();
     }
 
+    private void OnDestroy()
+    {
+        EventHelper.RemoveEventListener(EventName.EnemySpawnEnd, OnEnemySpawnEnd);
+        EventHelper.RemoveEventListener(EventName.EnemyDieEnd, OnEnemyDieEnd);
+    }
+
     private void PoolGenerate()
     {
         for (int i = 0; i < 10; i++)
