@@ -28,15 +28,16 @@ public abstract class Role : MonoBehaviour
         gameObject.name = _roleData.roleName + "_" + ID;
     }
 
-    public virtual void Enter()
+    public virtual void Enter(object data = null)
     {
         SetID(BattleManager.instance.roleManager.GetNextID(roleId));
 
         _moveSpeed = _roleData.moveSpeed;
     }
 
-    protected abstract void Move();
-    public virtual void Die()
+    protected virtual void Move() { }
+
+    protected virtual void Die()
     {
         SetID(0);
     }

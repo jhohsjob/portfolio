@@ -7,6 +7,21 @@ public class Enemy : Actor
 
     private Vector3 _moveDirection = Vector3.zero;
 
+    private int _spawnMapLevel = 0;
+    public int spawnMapLevel => _spawnMapLevel;
+
+    private Vector3 _diePos = Vector3.zero;
+    public Vector3 diePos => _diePos;
+
+    private void Update()
+    {
+        bool isControl = (_moveDirection != Vector3.zero && BattleManager.instance.battleStatus == BattleStatus.Run);
+        if (isControl == true)
+        {
+            Move();
+        }
+    }
+
     public override void Init(RoleData roleData)
     {
         var data = roleData as EnemyData;
@@ -18,18 +33,14 @@ public class Enemy : Actor
         base.Init(roleData);
     }
 
-    private void Update()
+    public override void Enter(object data = null)
     {
-        bool isControl = (_moveDirection != Vector3.zero && BattleManager.instance.battleStatus == BattleStatus.Run);
-        if (isControl == true)
-        {
-            Move();
-        }
-    }
+        base.Enter(data);
 
-    public override void Enter()
-    {
-        base.Enter();
+        if (data is int)
+        {
+            _spawnMapLevel = (int)data;
+        }
 
         transform.rotation = GetRotation(ref _moveDirection);
     }
@@ -40,9 +51,10 @@ public class Enemy : Actor
         transform.Translate(Vector3.back * _moveSpeed * Time.deltaTime);
     }
 
-    public override void Die()
+    protected override void Die()
     {
         _moveDirection = Vector3.zero;
+        _diePos = transform.localPosition;
 
         BattleManager.instance.enemyManager.Die(this);
 

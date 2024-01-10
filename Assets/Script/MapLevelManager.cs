@@ -27,7 +27,7 @@ public class MapLevelManager : MonoBehaviour
                 
                 for (int i = 0; i < _currentMapLevel.spawnCount; i++)
                 {
-                    _gameManager.enemyManager.Spawn(_currentMapLevel.GetSpawnActorId());
+                    _gameManager.enemyManager.Spawn();
                 }
 
                 _gameManager.mapLevelManager.CheckNextLevel();
@@ -46,8 +46,7 @@ public class MapLevelManager : MonoBehaviour
             mapLevels.Add(datas[i].level, new MapLevel(datas[i], nextData));
         }
 
-        _currentMapLevel = mapLevels.First().Value;
-        _spawnTime = _currentMapLevel.respawnTime;
+        SetCurrentMap(mapLevels.First().Value);
     }
 
 
@@ -62,10 +61,18 @@ public class MapLevelManager : MonoBehaviour
 
         if (_expCount >= _currentMapLevel.levelupCount)
         {
-            _currentMapLevel = mapLevels[_currentMapLevel.nextLevel];
-            _spawnTime = _currentMapLevel.respawnTime;
+            SetCurrentMap(mapLevels[_currentMapLevel.nextLevel]);
 
             EventHelper.Send(EventName.MapLevelUp, this, _currentMapLevel);
         }
+    }
+
+    private void SetCurrentMap(MapLevel mapLevel)
+    {
+        _currentMapLevel = mapLevel;
+        _spawnTime = _currentMapLevel.respawnTime;
+
+        _gameManager.enemyManager.SetSpawnList(mapLevel);
+        _gameManager.dropItemManager.SetDropList(mapLevel);
     }
 }

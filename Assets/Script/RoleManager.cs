@@ -50,11 +50,15 @@ public class RoleManager : MonoBehaviour
 
     private Enemy _enemyPrefab;
     private Projectile _projectilePrefab;
+    private DropItem _dropItemPrefab;
+    private DIElement _diElementPrefab;
 
     private void Awake()
     {
         _enemyPrefab = Resources.Load<Enemy>("Prefabs/Enemy");
         _projectilePrefab = Resources.Load<Projectile>("Prefabs/Projectile");
+        _dropItemPrefab = Resources.Load<DropItem>("Prefabs/DropItem");
+        _diElementPrefab = Resources.Load<DIElement>("Prefabs/DIElement");
     }
 
     public void Init(BattleManager gameManager)
@@ -94,6 +98,22 @@ public class RoleManager : MonoBehaviour
         PoolGenerate(data);
     }
 
+    public void InitDropItem(int id)
+    {
+        var data = GameTable.GetDropItemData(id);
+        if (data == null)
+        {
+            return;
+        }
+
+        if (_pool.ContainsKey(id) == true)
+        {
+            return;
+        }
+
+        PoolGenerate(data);
+    }
+
     private void PoolGenerate(RoleData data)
     {
         var container = new GameObject(data.roleName + "Container");
@@ -118,6 +138,14 @@ public class RoleManager : MonoBehaviour
 
             case ProjectileData:
                 rolePrefab = _projectilePrefab;
+                break;
+
+            case DIElementData:
+                rolePrefab = _diElementPrefab;
+                break;
+
+            case DropItemData:
+                rolePrefab = _dropItemPrefab;
                 break;
 
             default:

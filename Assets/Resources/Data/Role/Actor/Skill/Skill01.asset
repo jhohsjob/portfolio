@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b970d6b62c0a00b49bbf2d4036e75cbe, type: 3}
   m_Name: Skill01
   m_EditorClassIdentifier: 
-  id: 401001
+  id: 501001
   skillName: Skill01
   behaviourName: Skill01
   projectileId: 301001
   shotCount: 1
   shotDelay: 0
-  reloadTime: 1
+  reloadTime: 0.5

@@ -5,11 +5,14 @@ using UnityEngine;
 public class HPBarController : MonoBehaviour
 {
     [SerializeField]
+    private Camera _uiCamera;
+    [SerializeField]
     private Transform _poolContianer;
     [SerializeField]
     private Transform _activeContianer;
     [SerializeField]
     private Actor _debugActor = null;
+    private RectTransform _rt;
 
     private Queue<HPBar> _pool = new Queue<HPBar>();
     private Dictionary<int, HPBar> _activeList = new Dictionary<int, HPBar>();
@@ -22,6 +25,8 @@ public class HPBarController : MonoBehaviour
     {
         EventHelper.AddEventListener(EventName.EnemySpawnEnd, OnEnemySpawnEnd);
         EventHelper.AddEventListener(EventName.EnemyDieEnd, OnEnemyDieEnd);
+
+        _rt = GetComponent<RectTransform>();
 
         _hpBarPrefab = Resources.Load<HPBar>("UI/HPBar");
 
@@ -39,7 +44,7 @@ public class HPBarController : MonoBehaviour
         for (int i = 0; i < 10; i++)
         {
             var wait = Instantiate(_hpBarPrefab, _poolContianer);
-            wait.Init();
+            wait.Init(_uiCamera, _rt);
             _pool.Enqueue(wait);
         }
     }

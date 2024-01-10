@@ -11,9 +11,10 @@ public class BattleManager : MonoSingleton<BattleManager>
     [NonSerialized]
     public BattleScene battleScene;
 
-    public MapLevelManager mapLevelManager;
     public RoleManager roleManager;
     public EnemyManager enemyManager;
+    public DropItemManager dropItemManager;
+    public MapLevelManager mapLevelManager;
 
     public BattleStatus battleStatus { get; private set; } = BattleStatus.None;
     
@@ -23,13 +24,15 @@ public class BattleManager : MonoSingleton<BattleManager>
     {
         EventHelper.AddEventListener(EventName.ChangeMapSize, OnChangeMapSize);
 
-        mapLevelManager = new GameObject("MapLevelManager").AddComponent<MapLevelManager>();
         roleManager = new GameObject("RoleManager").AddComponent<RoleManager>();
         enemyManager = new GameObject("EnemyManager").AddComponent<EnemyManager>();
+        dropItemManager = new GameObject("DropItemManager").AddComponent<DropItemManager>();
+        mapLevelManager = new GameObject("MapLevelManager").AddComponent<MapLevelManager>();
 
-        mapLevelManager.transform.SetParent(transform);
         roleManager.transform.SetParent(transform);
         enemyManager.transform.SetParent(transform);
+        dropItemManager.transform.SetParent(transform);
+        mapLevelManager.transform.SetParent(transform);
 
         transform.position = new Vector3(-1000f, -1000f, -1000f);
     }
@@ -41,9 +44,10 @@ public class BattleManager : MonoSingleton<BattleManager>
 
     public void Init(BattleManagerInitData data)
     {
-        mapLevelManager.Init(this, data.mapInfoData);
         roleManager.Init(this);
         enemyManager.Init(this);
+        dropItemManager.Init(this);
+        mapLevelManager.Init(this, data.mapInfoData);
     }
 
     public void SetBattleScene(BattleScene battleScene)

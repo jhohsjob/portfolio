@@ -7,5 +7,4 @@ public class MapInfoData : ScriptableObject
 {
     public string mapName;
     public List<MapLevelData> levelDatas;
-
 }

@@ -38,13 +38,13 @@ public abstract class Actor : Role
         base.Init(data);
     }
 
-    public override void Enter()
+    public override void Enter(object data = null)
     {
-        base.Enter();
+        base.Enter(data);
 
-        var data = _roleData as ActorData;
+        var actorData = _roleData as ActorData;
 
-        _hp.Init(data.maxHP);
+        _hp.Init(actorData.maxHP);
     }
 
     public virtual void BeHit(float damage)

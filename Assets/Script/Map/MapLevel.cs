@@ -10,10 +10,11 @@ public class MapLevel
     public float respawnTime;
     public Vector3 growMapSize;
     public int growCameraSize;
-    /// <summary>
-    /// key : actor id, value : rate
-    /// </summary>
-    public Dictionary<int, int> spawnDatas;
+
+    public SpawnData spawnData;
+
+    public List<int> spawnActorId = new List<int>();
+    public List<int> spawnActorRate = new List<int>();
 
     public int nextLevel;
 
@@ -25,32 +26,24 @@ public class MapLevel
         respawnTime = data.respawnTime;
         growMapSize = data.growMapSize;
         growCameraSize = data.growCameraSize;
-        spawnDatas = data.spawnDatas;
+        spawnData = data.spawnData;
 
         nextLevel = nextData == null ? -1 : nextData.level;
 
-        foreach (var actorId in spawnDatas.Keys)
+        spawnActorId.Clear();
+        foreach (var info in spawnData.spawnInfos)
         {
-            BattleManager.instance.roleManager.InitEnemy(actorId);
-        }
-    }
+            spawnActorId.Add(info.actorId);
 
-    public int GetSpawnActorId()
-    {
-        var rnd = Random.Range(0, 100);
-        var id = 0;
+            BattleManager.instance.roleManager.InitEnemy(info.actorId);
 
-        foreach (var pair in spawnDatas)
-        {
-            if (pair.Value > rnd)
+            foreach (var dropItemId in info.dropItemIds)
             {
-                id = pair.Key;
-                break;
+                BattleManager.instance.roleManager.InitDropItem(dropItemId);
             }
-
-            rnd -= pair.Value;
         }
 
-        return id;
+        spawnActorRate.Clear();
+        spawnActorRate.AddRange(spawnData.spawnRate);
     }
 }

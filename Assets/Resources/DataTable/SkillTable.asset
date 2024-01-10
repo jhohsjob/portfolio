@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _table:
     _pairs:
-    - _key: 401001
+    - _key: 501001
       _value: {fileID: 11400000, guid: e140c1f6322db304eaa5c5e3b288b482, type: 2}

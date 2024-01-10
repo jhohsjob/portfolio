@@ -8,10 +8,11 @@ public class Player : Actor
 {
     public override Team team { get; protected set; } = Team.Player;
 
-    [SerializeField]
     private Body _body;
     
     private Vector3 _moveDirection = Vector3.zero;
+
+    private Dictionary<ElementType, int> _elements = new Dictionary<ElementType, int>();
 
     // temp
     private List<SkillData> _tempSkillDatas = new List<SkillData>();
@@ -20,6 +21,7 @@ public class Player : Actor
     {
         base.Awake();
 
+        _body = transform.GetComponentInChildren<Body>();
         _body.cbTriggerEnter += OnBodyTriggerEnter;
 }
 
@@ -30,6 +32,38 @@ public class Player : Actor
         {
             Move();
         }
+    }
+
+    public void GetDropItem(DropItem dropItem)
+    {
+        switch (dropItem.type)
+        {
+            case DropItemType.Element:
+                AddElement(dropItem as DIElement);
+                break;
+
+            case DropItemType.Coin:
+                break;
+        }
+    }
+
+    private void AddElement(DIElement element)
+    {
+        if (element == null)
+        {
+            return;
+        }
+
+        if (_elements.ContainsKey(element.elementType) == false)
+        {
+            _elements.Add(element.elementType, 1);
+        }
+        else
+        {
+            _elements[element.elementType] += 1;
+        }
+
+        EventHelper.Send(EventName.AddElement, this, _elements);
     }
 
     // PlayerInput Send Messages
@@ -55,7 +89,7 @@ public class Player : Actor
         base.Init(roleData);
 
         // temp
-        _tempSkillDatas.Add(GameTable.GetSkillData(401001));
+        _tempSkillDatas.Add(GameTable.GetSkillData(501001));
 
         foreach (var tempSkillData in _tempSkillDatas)
         {
@@ -64,6 +98,8 @@ public class Player : Actor
             skill.transform.SetParent(transform, false);
             skill.Init(this, tempSkillData);
         }
+
+        _elements.Clear();
     }
 
     protected override void Move()
@@ -96,7 +132,7 @@ public class Player : Actor
         }
     }
 
-    public override void Die()
+    protected override void Die()
     {
         Debug.Log("game over");
 
@@ -110,7 +146,7 @@ public class Player : Actor
         // 피격시 로직
         if (other.TryGetComponent(out Body body))
         {
-            if (body.actor is Enemy enemy)
+            if (body.role is Enemy enemy)
             {
                 Die();
             }

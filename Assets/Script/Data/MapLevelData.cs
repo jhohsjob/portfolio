@@ -1,5 +1,3 @@
-using SerializableDictionary.Scripts;
-using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -14,8 +12,5 @@ public class MapLevelData : ScriptableObject
     public Vector3 growMapSize;
     public int growCameraSize;
 
-    [Tooltip("key : actor id, value : rate")]
-    [SerializeField]
-    private SerializableDictionary<int, int> _spawnDatas;
-    public Dictionary<int, int> spawnDatas => _spawnDatas.Dictionary;
+    public SpawnData spawnData;
 }

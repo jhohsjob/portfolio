@@ -6,3 +6,17 @@ public enum RoleType
     Projectile = 30000
 }
 public enum Team { None, Player, Enemy }
+
+public enum DropItemType
+{
+    None,
+    Element,
+    Coin,
+}
+
+public enum ElementType
+{
+    Water,
+    Forest,
+    Fire
+}

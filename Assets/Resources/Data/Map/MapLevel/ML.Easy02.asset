@@ -19,7 +19,4 @@ MonoBehaviour:
   respawnTime: 3
   growMapSize: {x: 3, y: 1, z: 3}
   growCameraSize: 6
-  _spawnDatas:
-    _pairs:
-    - _key: 201002
-      _value: 100
+  spawnData: {fileID: 11400000, guid: 6c4016e2275a63b4487c1519caec2b4c, type: 2}

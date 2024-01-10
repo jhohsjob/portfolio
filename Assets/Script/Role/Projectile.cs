@@ -34,18 +34,28 @@ public class Projectile : Role
         base.Init(roleData);
     }
 
-    public override void Enter()
+    public override void Enter(object data = null)
     {
-        base.Enter();
+        base.Enter(data);
 
-        var data = _roleData as ProjectileData;
+        var projectileData = _roleData as ProjectileData;
 
-        _power = data.power;
+        _power = projectileData.power;
     }
 
     protected override void Move()
     {
         transform.localPosition += _dir * _moveSpeed * Time.deltaTime;
+    }
+
+    protected override void Die()
+    {
+        _bc.enabled = false;
+        _dir = Vector3.zero;
+
+        BattleManager.instance.roleManager.Retrieve(this);
+
+        base.Die();
     }
 
     public void Shot(Actor actor, Vector3 position)
@@ -63,16 +73,6 @@ public class Projectile : Role
         transform.rotation = rot;
     }
 
-    public override void Die()
-    {
-        _bc.enabled = false;
-        _dir = Vector3.zero;
-
-        BattleManager.instance.roleManager.Retrieve(this);
-
-        base.Die();
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         // Debug.Log("OnTriggerEnter : " + other);
@@ -85,11 +85,14 @@ public class Projectile : Role
 
         if (other.TryGetComponent(out Body body))
         {
-            if (body.actor.team != team)
+            if (body.role is Actor actor)
             {
-                Die();
+                if (actor.team != team)
+                {
+                    Die();
 
-                body.actor.BeHit(_power);
+                    actor.BeHit(_power);
+                }
             }
         }
     }

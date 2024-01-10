@@ -7,8 +7,10 @@ public class HPBar : MonoBehaviour
     private TextMeshProUGUI _hp = null;
     
     private Actor _actor = null;
+    private Camera _uiCamera;
+    private RectTransform _parentRT;
 
-    private Vector3 _offset;
+    private Vector2 _offset = new Vector3(0f, 100f);
 
     private void Awake()
     {
@@ -22,12 +24,20 @@ public class HPBar : MonoBehaviour
             return;
         }
 
-        transform.position = Camera.main.WorldToScreenPoint(_actor.transform.position);
-        transform.position += _offset;
+        var screenPos = Camera.main.WorldToScreenPoint(_actor.transform.position);
+        screenPos.z = 0f;
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(_parentRT, screenPos, _uiCamera, out var localPos);
+
+        transform.localPosition = localPos + _offset;
+
     }
 
-    public void Init()
+    public void Init(Camera uiCamera, RectTransform parentRT)
     {
+        _uiCamera = uiCamera;
+        _parentRT = parentRT;
+
         gameObject.SetActive(false);
     }
 
@@ -35,8 +45,6 @@ public class HPBar : MonoBehaviour
     {
         _actor = actor;
         _actor.cbChangeHP += OnChangeHP;
-
-        _offset = new Vector3(0f, 80f, 0f);
 
         _hp.text = actor.HP + " / " + actor.maxHP;
         gameObject.SetActive(true);
