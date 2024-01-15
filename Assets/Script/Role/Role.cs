@@ -19,6 +19,8 @@ public abstract class Role : MonoBehaviour
 
         var body = Instantiate(Resources.Load<GameObject>(roleData.resourcePath), transform);
         body.transform.localPosition = roleData.resourceOffset;
+
+        body.AddComponent<RenderCheck>();
     }
 
     private void SetID(int id)
