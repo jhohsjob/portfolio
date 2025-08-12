@@ -11,7 +11,7 @@ public class UISelectMap : UISVPopup
     {
         var contentOriginal = Resources.Load<UISelectMapConetnt>("UI/Popup/UISelectMapContent");
 
-        var mapInfoList = GameTable.GetAllMapInfoData();
+        var mapInfoList = DataManager.GetAllMapInfoData();
         for (int i = 0; i < mapInfoList.Count; i++)
         {
             var contentData = new UISelectMapConetntData();

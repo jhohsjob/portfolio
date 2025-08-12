@@ -80,7 +80,7 @@ public class Player : Actor
 
     public override void Init(RoleData roleData)
     {
-        var data = roleData as PlayerData;
+        var data = roleData as MercenaryData;
         if (data == null)
         {
             return;
@@ -89,7 +89,7 @@ public class Player : Actor
         base.Init(roleData);
 
         // temp
-        _tempSkillDatas.Add(GameTable.GetSkillData(501001));
+        _tempSkillDatas.Add(DataManager.GetSkillData(501001));
 
         foreach (var tempSkillData in _tempSkillDatas)
         {

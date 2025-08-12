@@ -33,7 +33,7 @@ public class BattleScene : MonoBehaviour
     private void Init()
     {
         BattleManager.instance.SetBattleScene(this);
-        _player.Init(Resources.Load<PlayerData>("Data/Role/Actor/Player/Mercenary01"));
+        _player.Init(Resources.Load<MercenaryData>("Data/Role/Actor/Mercenary/Mercenary01"));
         _player.Enter();
 
         _map.Init();

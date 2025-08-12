@@ -35,7 +35,7 @@ public class EnemyManager : MonoBehaviour
 
     public void Spawn()
     {
-        var data = GameTable.GetEnemyData(GetSpawnActorId());
+        var data = DataManager.GetEnemyData(GetSpawnActorId());
         var parent = _gameManager.battleScene.actorContainer;
         var position = _gameManager.battleScene.GetRandomPos();
         var enemy = _gameManager.roleManager.GetRole(data, parent, position) as Enemy;

@@ -13,6 +13,6 @@ public class LobbyScene : MonoBehaviour
 
     private void Init()
     {
-        GameTable.Load();
+        DataManager.Load();
     }
 }

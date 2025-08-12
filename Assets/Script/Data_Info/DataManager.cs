@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public static class GameTable
+public static class DataManager
 {
     private static Dictionary<int, EnemyData> _enemyDatas = new Dictionary<int, EnemyData>();
     private static Dictionary<int, ProjectileData> _projectileData = new Dictionary<int, ProjectileData>();
@@ -13,6 +13,11 @@ public static class GameTable
     public static void Load()
     {
         Debug.Log("GameTable.Load");
+
+        {
+            var table = Resources.Load<MercenaryTable>("DataTable/MercenaryTable");
+            MercenaryHander.instance.Init(table.table);
+        }
 
         {
             var table = Resources.Load<EnemyTable>("DataTable/EnemyTable");

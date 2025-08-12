@@ -31,7 +31,7 @@ public class DropItemManager : MonoBehaviour
 
     public void Spawn(Enemy enemy)
     {
-        var data = GameTable.GetDropItemData(GetDropItemId(enemy.spawnMapLevel, enemy.roleId));
+        var data = DataManager.GetDropItemData(GetDropItemId(enemy.spawnMapLevel, enemy.roleId));
         var parent = _gameManager.battleScene.actorContainer;
         var position = enemy.diePos;
         var dropItem = _gameManager.roleManager.GetRole(data, parent, position) as DropItem;

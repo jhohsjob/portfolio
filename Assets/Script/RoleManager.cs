@@ -68,7 +68,7 @@ public class RoleManager : MonoBehaviour
 
     public void InitEnemy(int id)
     {
-        var data = GameTable.GetEnemyData(id);
+        var data = DataManager.GetEnemyData(id);
         if (data == null)
         {
             return;
@@ -84,7 +84,7 @@ public class RoleManager : MonoBehaviour
 
     public void InitProjectile(int id)
     {
-        var data = GameTable.GetProjectileData(id);
+        var data = DataManager.GetProjectileData(id);
         if (data == null)
         {
             return;
@@ -100,7 +100,7 @@ public class RoleManager : MonoBehaviour
 
     public void InitDropItem(int id)
     {
-        var data = GameTable.GetDropItemData(id);
+        var data = DataManager.GetDropItemData(id);
         if (data == null)
         {
             return;
