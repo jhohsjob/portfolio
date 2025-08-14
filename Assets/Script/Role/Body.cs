@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Body : MonoBehaviour
 {
-    private Role _role;
-    public Role role => _role;
+    private ActorBase _actor;
+    public ActorBase actor => _actor;
 
     private Action<Body> _cbTriggerEnter;
     public event Action<Body> cbTriggerEnter
@@ -16,7 +16,7 @@ public class Body : MonoBehaviour
 
     private void Awake()
     {
-        _role = transform.parent.GetComponent<Role>();
+        _actor = transform.parent.GetComponent<ActorBase>();
     }
 
     private void OnTriggerEnter(Collider other)

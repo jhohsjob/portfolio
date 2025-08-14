@@ -11,7 +11,7 @@ public class BattleManager : MonoSingleton<BattleManager>
     [NonSerialized]
     public BattleScene battleScene;
 
-    public RoleManager roleManager;
+    public ActorManager actorManager;
     public EnemyManager enemyManager;
     public DropItemManager dropItemManager;
     public MapLevelManager mapLevelManager;
@@ -24,12 +24,12 @@ public class BattleManager : MonoSingleton<BattleManager>
     {
         EventHelper.AddEventListener(EventName.ChangeMapSize, OnChangeMapSize);
 
-        roleManager = new GameObject("RoleManager").AddComponent<RoleManager>();
+        actorManager = new GameObject("ActorManager").AddComponent<ActorManager>();
         enemyManager = new GameObject("EnemyManager").AddComponent<EnemyManager>();
         dropItemManager = new GameObject("DropItemManager").AddComponent<DropItemManager>();
         mapLevelManager = new GameObject("MapLevelManager").AddComponent<MapLevelManager>();
 
-        roleManager.transform.SetParent(transform);
+        actorManager.transform.SetParent(transform);
         enemyManager.transform.SetParent(transform);
         dropItemManager.transform.SetParent(transform);
         mapLevelManager.transform.SetParent(transform);
@@ -40,11 +40,13 @@ public class BattleManager : MonoSingleton<BattleManager>
     protected override void OnCallDestroy()
     {
         EventHelper.RemoveEventListener(EventName.ChangeMapSize, OnChangeMapSize);
+
+        StopAllCoroutines();
     }
 
     public void Init(BattleManagerInitData data)
     {
-        roleManager.Init(this);
+        actorManager.Init(this);
         enemyManager.Init(this);
         dropItemManager.Init(this);
         mapLevelManager.Init(this, data.mapInfoData);

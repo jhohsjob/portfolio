@@ -9,11 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f2292d4e3566564b9313ea0f88f0871, type: 3}
+  m_Script: {fileID: 11500000, guid: 285dc909dde19254e9514a8980775945, type: 3}
   m_Name: Monster02
   m_EditorClassIdentifier: 
   id: 201002
   roleName: Monster02
+  roleDescription: Sphere
   resourcePath: Prefabs/Monster/SphereMonster
   resourceOffset: {x: 0, y: 0.5, z: 0}
   moveSpeed: 1

@@ -15,7 +15,7 @@ public class MercenaryHander : Singleton<MercenaryHander>
         _list.AddRange(_dic.Values);
     }
 
-    public Mercenary GetMercenary(int index)
+    public Mercenary GetMercenaryByIndex(int index)
     {
         if (index < 0 || index >= _list.Count)
         {
@@ -23,6 +23,16 @@ public class MercenaryHander : Singleton<MercenaryHander>
         }
 
         return _list[index];
+    }
+
+    public Mercenary GetMercenaryById(int id)
+    {
+        if (_dic.ContainsKey(id) == false)
+        {
+            return null;
+        }
+
+        return _dic[id];
     }
 
     public int CaclIndex(int index)

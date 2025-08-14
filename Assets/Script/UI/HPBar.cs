@@ -6,7 +6,7 @@ public class HPBar : MonoBehaviour
 {
     private TextMeshProUGUI _hp = null;
     
-    private Actor _actor = null;
+    private ActorBase _actor = null;
     private Camera _uiCamera;
     private RectTransform _parentRT;
 
@@ -41,7 +41,7 @@ public class HPBar : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void SetTarget(Actor actor)
+    public void SetTarget(ActorBase actor)
     {
         _actor = actor;
         _actor.cbChangeHP += OnChangeHP;

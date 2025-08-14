@@ -587,9 +587,9 @@ MonoBehaviour:
   _txtMaxHp: {fileID: 2352136879846664067}
   _txtMoveSpeed: {fileID: 195902517849616728}
   _txtDesc: {fileID: 6933353814665954392}
+  _btnSelect: {fileID: 8366942887311225979}
   _btnLeft: {fileID: 1767761419278142113}
   _btnRight: {fileID: 2092095718981408165}
-  dragThreshold: 50
 --- !u!1 &2254341290171748634
 GameObject:
   m_ObjectHideFlags: 0

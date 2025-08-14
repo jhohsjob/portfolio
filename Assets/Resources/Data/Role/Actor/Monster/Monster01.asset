@@ -9,11 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f2292d4e3566564b9313ea0f88f0871, type: 3}
+  m_Script: {fileID: 11500000, guid: 285dc909dde19254e9514a8980775945, type: 3}
   m_Name: Monster01
   m_EditorClassIdentifier: 
   id: 201001
   roleName: Monster01
+  roleDescription: Cube
   resourcePath: Prefabs/Monster/CubeMonster
   resourceOffset: {x: 0, y: 0.5, z: 0}
   moveSpeed: 0.5

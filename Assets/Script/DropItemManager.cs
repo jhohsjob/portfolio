@@ -14,7 +14,7 @@ public class DropItemManager : MonoBehaviour
 
     private Dictionary<int, SpawnData> _spawnDatas = new Dictionary<int, SpawnData>();
 
-    private List<DropItem> _dropItemList = new List<DropItem>();
+    private List<ActorBase> _dropItemList = new List<ActorBase>();
 
     private int _dieCount = 0;
     public int dieCount => _dieCount;
@@ -31,10 +31,10 @@ public class DropItemManager : MonoBehaviour
 
     public void Spawn(Enemy enemy)
     {
-        var data = DataManager.GetDropItemData(GetDropItemId(enemy.spawnMapLevel, enemy.roleId));
+        var role = DropItemHander.instance.GetDropItemById<DIElement>(GetDropItemId(enemy.spawnMapLevel, enemy.roleId));
         var parent = _gameManager.battleScene.actorContainer;
         var position = enemy.diePos;
-        var dropItem = _gameManager.roleManager.GetRole(data, parent, position) as DropItem;
+        var dropItem = _gameManager.actorManager.GetActor(role, parent, position) as ActorDIElement;
         dropItem.Enter();
 
         _dropItemList.Add(dropItem);
@@ -77,7 +77,7 @@ public class DropItemManager : MonoBehaviour
         return id;
     }
 
-    public void Die(DropItem dropItem)
+    public void Die(ActorBase dropItem)
     {
         if (_dropItemList.Contains(dropItem) == false)
         {
@@ -86,7 +86,7 @@ public class DropItemManager : MonoBehaviour
 
         _dropItemList.Remove(dropItem);
 
-        _gameManager.roleManager.Retrieve(dropItem);
+        _gameManager.actorManager.Return(dropItem);
 
         _dieCount++;
 

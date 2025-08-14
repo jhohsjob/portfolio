@@ -60,7 +60,7 @@ public abstract class MonoSingleton<T> : MonoBehaviour, ISingleton where T : Mon
             if (_instance != null)
                 return _instance;
 
-            _instance = FindObjectOfType<T>();
+            _instance = FindFirstObjectByType<T>();
             if (_instance == null)
             {
                 GameObject go = new GameObject();
@@ -87,7 +87,7 @@ public abstract class MonoSingleton<T> : MonoBehaviour, ISingleton where T : Mon
         Debug.Log("Create Singleton: " + typeof(T).Name);
 
         // 에디터에서 여러개를 배치한 경우, 에러 로그가 표시되록 한다.
-        T[] objs = FindObjectsOfType<T>();
+        T[] objs = FindObjectsByType<T>(FindObjectsSortMode.None);
         Debug.AssertFormat(objs.Length == 1, "Singleton {0} instance count: {1}", typeof(T).Name, objs.Length);
 
         DontDestroyOnLoad(gameObject);

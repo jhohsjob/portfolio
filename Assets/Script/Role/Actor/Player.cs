@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 
-public class Player : Actor
+public class Player : Actor<Mercenary, MercenaryData>
 {
     public override Team team { get; protected set; } = Team.Player;
 
@@ -12,10 +12,10 @@ public class Player : Actor
     
     private Vector3 _moveDirection = Vector3.zero;
 
-    private Dictionary<ElementType, int> _elements = new Dictionary<ElementType, int>();
+    private Dictionary<ElementType, int> _elements = new();
 
     // temp
-    private List<SkillData> _tempSkillDatas = new List<SkillData>();
+    private List<SkillData> _tempSkillDatas = new();
 
     protected override void Awake()
     {
@@ -33,60 +33,9 @@ public class Player : Actor
             Move();
         }
     }
-
-    public void GetDropItem(DropItem dropItem)
+    public override void Init(Mercenary role)
     {
-        switch (dropItem.type)
-        {
-            case DropItemType.Element:
-                AddElement(dropItem as DIElement);
-                break;
-
-            case DropItemType.Coin:
-                break;
-        }
-    }
-
-    private void AddElement(DIElement element)
-    {
-        if (element == null)
-        {
-            return;
-        }
-
-        if (_elements.ContainsKey(element.elementType) == false)
-        {
-            _elements.Add(element.elementType, 1);
-        }
-        else
-        {
-            _elements[element.elementType] += 1;
-        }
-
-        EventHelper.Send(EventName.AddElement, this, _elements);
-    }
-
-    // PlayerInput Send Messages
-    public void OnMove(InputValue value)
-    {
-        var input = value.Get<Vector2>();
-        if (input != null)
-        {
-            _moveDirection = new Vector3(input.x, 0f, input.y);
-
-            // Debug.Log(_moveDirection);
-        }
-    }
-
-    public override void Init(RoleData roleData)
-    {
-        var data = roleData as MercenaryData;
-        if (data == null)
-        {
-            return;
-        }
-
-        base.Init(roleData);
+        base.Init(role);
 
         // temp
         _tempSkillDatas.Add(DataManager.GetSkillData(501001));
@@ -102,10 +51,17 @@ public class Player : Actor
         _elements.Clear();
     }
 
+    public override void Enter(object data = null)
+    {
+        base.Enter();
+
+        _hp.Init(_role.maxHP);
+    }
+
     protected override void Move()
     {
         transform.rotation = Quaternion.LookRotation(_moveDirection);
-        transform.Translate(Vector3.forward * _moveSpeed * Time.deltaTime);
+        transform.Translate(Vector3.forward * _role.moveSpeed * Time.deltaTime);
 
         var pos = transform.position;
         var mapSize = BattleManager.instance.mapSize;
@@ -139,6 +95,37 @@ public class Player : Actor
         BattleManager.instance.SetBattleStatus(BattleStatus.BattleOver);
     }
 
+    public void AddElement(ActorDIElement element)
+    {
+        if (element == null)
+        {
+            return;
+        }
+
+        if (_elements.ContainsKey(element.elementType) == false)
+        {
+            _elements.Add(element.elementType, 1);
+        }
+        else
+        {
+            _elements[element.elementType] += 1;
+        }
+
+        EventHelper.Send(EventName.AddElement, this, _elements);
+    }
+
+    // PlayerInput Send Messages
+    public void OnMove(InputValue value)
+    {
+        var input = value.Get<Vector2>();
+        if (input != null)
+        {
+            _moveDirection = new Vector3(input.x, 0f, input.y);
+
+            // Debug.Log(_moveDirection);
+        }
+    }
+
     private void OnBodyTriggerEnter(Body other)
     {
         Debug.Log("OnTriggerEnter : " + other);
@@ -146,9 +133,13 @@ public class Player : Actor
         // 피격시 로직
         if (other.TryGetComponent(out Body body))
         {
-            if (body.role is Enemy enemy)
+            if (body.actor is Enemy enemy)
             {
                 Die();
+            }
+            else if (body.actor is ICollectableDropItem collectableDropItem)
+            {
+                collectableDropItem.OnCollectedByPlayer(this);
             }
         }
     }

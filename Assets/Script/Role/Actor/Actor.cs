@@ -3,23 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public abstract class Actor : Role
+public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> where TData : RoleData
 {
     [SerializeField]
-    public GameObject point;
+    private GameObject _point;
+
+    public int ID { get; private set; }
+
+    protected TRole _role { get; private set; }
 
     protected HP _hp { get; set; }
-    public float HP => _hp.currentHP;
-    public float maxHP => _hp.maxHP;
 
-    public List<Skill>  _skillList { get; set; }
-
-    private Action<ChangeHPData> _cbChangeHP;
-    public event Action<ChangeHPData> cbChangeHP
+    protected Action<ChangeHPData> _cbChangeHP;
+    public override event Action<ChangeHPData> cbChangeHP
     {
         add { _cbChangeHP -= value; _cbChangeHP += value; }
         remove { _cbChangeHP -= value; }
     }
+
+    public List<Skill> _skillList { get; set; }
+
+    public override GameObject point => _point;
+    public override int roleId => _role.id;
+    public override float HP => _hp.currentHP;
+    public override float maxHP => _hp.maxHP;
 
     protected virtual void Awake()
     {
@@ -27,29 +34,37 @@ public abstract class Actor : Role
         _skillList = new List<Skill>();
     }
 
-    public override void Init(RoleData roleData)
+    public override void InitBase(RoleData data)
     {
-        var data = roleData as ActorData;
-        if (data == null)
-        {
-            return;
-        }
-
-        base.Init(data);
+        var roleInstance = (TRole)Activator.CreateInstance(typeof(TRole), new object[] { data });
+        Init(roleInstance);
     }
 
-    public override void Enter(object data = null)
+    public virtual void Init(TRole role)
     {
-        base.Enter(data);
+        _role = role;
 
-        var actorData = _roleData as ActorData;
+        var body = Instantiate(Resources.Load<GameObject>(role.resourcePath), transform);
+        body.transform.localPosition = role.resourceOffset;
 
-        _hp.Init(actorData.maxHP);
+        body.AddComponent<RenderCheck>();
     }
 
-    public virtual void BeHit(float damage)
+    private void SetID(int id)
     {
-        _hp.AdjustHP(-damage, OnChangeHP);
+        ID = id;
+
+        gameObject.name = _role.name + "_" + ID;
+    }
+
+    public virtual void Enter(object data = null)
+    {
+        SetID(BattleManager.instance.actorManager.GetNextID(_role.id));
+    }
+
+    public override void BeHit(float damage)
+    {
+        _hp?.AdjustHP(-damage, OnChangeHP);
     }
 
     public virtual void OnChangeHP(ChangeHPData data)
@@ -62,5 +77,12 @@ public abstract class Actor : Role
         {
             _cbChangeHP?.Invoke(data);
         }
+    }
+
+    protected virtual void Move() { }
+
+    protected virtual void Die()
+    {
+        SetID(0);
     }
 }

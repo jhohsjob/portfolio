@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-public class Enemy : Actor
+public class Enemy : Actor<Monster, MonsterData>
 {
     public override Team team { get; protected set; } = Team.Enemy;
 
@@ -22,20 +22,11 @@ public class Enemy : Actor
         }
     }
 
-    public override void Init(RoleData roleData)
-    {
-        var data = roleData as EnemyData;
-        if (data == null)
-        {
-            return;
-        }
-        
-        base.Init(roleData);
-    }
-
     public override void Enter(object data = null)
     {
         base.Enter(data);
+
+        _hp.Init(_role.maxHP);
 
         if (data is int)
         {
@@ -48,7 +39,7 @@ public class Enemy : Actor
     protected override void Move()
     {
         transform.rotation = GetRotation(ref _moveDirection);
-        transform.Translate(Vector3.back * _moveSpeed * Time.deltaTime);
+        transform.Translate(Vector3.back * _role.moveSpeed * Time.deltaTime);
     }
 
     protected override void Die()

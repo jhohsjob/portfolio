@@ -24,6 +24,7 @@ public class UIPause : UIPopup
 
     private void OnClickLobby()
     {
+        Time.timeScale = 1f;
         SceneLoader.LoadLobbyScene();
     }
 

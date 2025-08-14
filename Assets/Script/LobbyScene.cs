@@ -14,5 +14,6 @@ public class LobbyScene : MonoBehaviour
     private void Init()
     {
         DataManager.Load();
+        User.instance.Init();
     }
 }

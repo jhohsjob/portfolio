@@ -11,7 +11,7 @@ public class HPBarController : MonoBehaviour
     [SerializeField]
     private Transform _activeContianer;
     [SerializeField]
-    private Actor _debugActor = null;
+    private Enemy _debugActor = null;
     private RectTransform _rt;
 
     private Queue<HPBar> _pool = new Queue<HPBar>();

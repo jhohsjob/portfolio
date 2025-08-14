@@ -1,15 +1,13 @@
 using UnityEngine;
 
 
-public class Projectile : Role
+public class ActorProjectile : Actor<Projectile, ProjectileData>
 {
     private BoxCollider _bc;
 
-    protected float _power = 0f;
-
     private Vector3 _dir = Vector3.zero;
 
-    private void Awake()
+    protected override void Awake()
     {
         _bc = GetComponent<BoxCollider>();
         _bc.enabled = false;
@@ -23,29 +21,9 @@ public class Projectile : Role
         }
     }
 
-    public override void Init(RoleData roleData)
-    {
-        var data = roleData as ProjectileData;
-        if (data == null)
-        {
-            return;
-        }
-        
-        base.Init(roleData);
-    }
-
-    public override void Enter(object data = null)
-    {
-        base.Enter(data);
-
-        var projectileData = _roleData as ProjectileData;
-
-        _power = projectileData.power;
-    }
-
     protected override void Move()
     {
-        transform.localPosition += _dir * _moveSpeed * Time.deltaTime;
+        transform.localPosition += _dir * _role.moveSpeed * Time.deltaTime;
     }
 
     protected override void Die()
@@ -53,12 +31,12 @@ public class Projectile : Role
         _bc.enabled = false;
         _dir = Vector3.zero;
 
-        BattleManager.instance.roleManager.Retrieve(this);
+        BattleManager.instance.actorManager.Return(this);
 
         base.Die();
     }
 
-    public void Shot(Actor actor, Vector3 position)
+    public void Shot(ActorBase actor, Vector3 position)
     {
         Enter();
 
@@ -85,13 +63,13 @@ public class Projectile : Role
 
         if (other.TryGetComponent(out Body body))
         {
-            if (body.role is Actor actor)
+            if (body.actor is ActorBase actor)
             {
-                if (actor.team != team)
+                if (actor.team != team && actor.team != Team.None)
                 {
                     Die();
 
-                    actor.BeHit(_power);
+                    actor.BeHit(_role.power);
                 }
             }
         }

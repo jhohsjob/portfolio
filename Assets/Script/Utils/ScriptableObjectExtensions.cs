@@ -12,11 +12,11 @@ public static class ScriptableObjectExtensions
             return null;
 
         // 새 ScriptableObject 인스턴스 생성
-        T copy = ScriptableObject.CreateInstance<T>();
+        var copy = ScriptableObject.CreateInstance(original.GetType());
 
         // Unity의 JsonUtility를 이용해 전체 필드 복사
         JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(original), copy);
 
-        return copy;
+        return copy as T;
     }
 }

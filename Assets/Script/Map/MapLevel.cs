@@ -35,11 +35,11 @@ public class MapLevel
         {
             spawnActorId.Add(info.actorId);
 
-            BattleManager.instance.roleManager.InitEnemy(info.actorId);
+            BattleManager.instance.actorManager.InitEnemy(info.actorId);
 
             foreach (var dropItemId in info.dropItemIds)
             {
-                BattleManager.instance.roleManager.InitDropItem(dropItemId);
+                BattleManager.instance.actorManager.InitDropItem(dropItemId);
             }
         }
 

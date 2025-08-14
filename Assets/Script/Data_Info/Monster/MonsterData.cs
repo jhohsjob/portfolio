@@ -1,4 +1,8 @@
-public class ActorData : RoleData
+using UnityEngine;
+
+
+[CreateAssetMenu(menuName = "GameData/MonsterData")]
+public class MonsterData : RoleData
 {
     public float maxHP;
 
@@ -6,7 +10,7 @@ public class ActorData : RoleData
     {
         base.Init(data);
 
-        if (data is ActorData actorData)
+        if (data is MonsterData actorData)
         {
             maxHP = actorData.maxHP;
         }

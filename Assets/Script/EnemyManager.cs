@@ -35,10 +35,10 @@ public class EnemyManager : MonoBehaviour
 
     public void Spawn()
     {
-        var data = DataManager.GetEnemyData(GetSpawnActorId());
+        var role = MonsterHander.instance.GetMonsterById(GetSpawnActorId());
         var parent = _gameManager.battleScene.actorContainer;
         var position = _gameManager.battleScene.GetRandomPos();
-        var enemy = _gameManager.roleManager.GetRole(data, parent, position) as Enemy;
+        var enemy = _gameManager.actorManager.GetActor(role, parent, position) as Enemy;
         enemy.Enter(_mapLevel);
 
         _enemyList.Add(enemy);
@@ -80,7 +80,7 @@ public class EnemyManager : MonoBehaviour
 
         _enemyList.Remove(enemy);
 
-        _gameManager.roleManager.Retrieve(enemy);
+        _gameManager.actorManager.Return(enemy);
 
         _dieCount++;
 

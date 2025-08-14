@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Skill : MonoBehaviour
 {
-    protected Actor _actor;
+    protected ActorBase _actor;
 
     public int ID { get; private set; }
     public string NAME { get; private set; }
@@ -33,7 +33,7 @@ public class Skill : MonoBehaviour
         }
     }
 
-    public void Init(Actor actor, SkillData data)
+    public void Init(ActorBase actor, SkillData data)
     {
         _actor = actor;
 
@@ -47,7 +47,7 @@ public class Skill : MonoBehaviour
         reloadTime = data.reloadTime;
         projectileId = data.projectileId;
 
-        BattleManager.instance.roleManager.InitProjectile(projectileId);
+        BattleManager.instance.actorManager.InitProjectile(projectileId);
     }
 
     protected void Shot()
@@ -59,10 +59,10 @@ public class Skill : MonoBehaviour
     {
         for (int i = 0; i < shotCount; i++)
         {
-            var data = DataManager.GetProjectileData(projectileId);
+            var role = ProjectileHander.instance.GetProjectileById(projectileId);
             var parent = BattleManager.instance.battleScene.actorContainer;
             var position = _actor.transform.position;
-            var projectile = BattleManager.instance.roleManager.GetRole(data, parent, position) as Projectile;
+            var projectile = BattleManager.instance.actorManager.GetActor(role, parent, position) as ActorProjectile;
             projectile.Shot(_actor, _actor.point.transform.position);
 
             yield return new WaitForSeconds(shotDelay);

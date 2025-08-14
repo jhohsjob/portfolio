@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public class RoleData : ScriptableObject
 {
     public int id;
