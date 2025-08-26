@@ -6,7 +6,7 @@ public abstract class ActorBase : MonoBehaviour
 {
     public abstract GameObject point { get; }
     public abstract int roleId { get; }
-    public virtual Team team { get; protected set; }
+    public Team team { get; protected set; }
     public abstract float HP { get; }
     public abstract float maxHP { get; }
     public abstract event Action<ChangeHPData> cbChangeHP;

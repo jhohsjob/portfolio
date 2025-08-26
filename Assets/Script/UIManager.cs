@@ -10,7 +10,7 @@ public class UIManager : MonoSingleton<UIManager>
 
     public override void Awake()
     {
-        UIManager[] objs = FindObjectsOfType<UIManager>();
+        UIManager[] objs = FindObjectsByType<UIManager>(FindObjectsSortMode.None);
         if (objs.Length > 1)
         {
             Debug.LogWarningFormat("Singleton {0} Destroy", typeof(UIManager).Name);

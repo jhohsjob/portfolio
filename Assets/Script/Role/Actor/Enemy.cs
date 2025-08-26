@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class Enemy : Actor<Monster, MonsterData>
 {
-    public override Team team { get; protected set; } = Team.Enemy;
-
     private Vector3 _moveDirection = Vector3.zero;
 
     private int _spawnMapLevel = 0;
@@ -12,6 +10,13 @@ public class Enemy : Actor<Monster, MonsterData>
 
     private Vector3 _diePos = Vector3.zero;
     public Vector3 diePos => _diePos;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        team = Team.Enemy;
+    }
 
     private void Update()
     {

@@ -10,7 +10,7 @@ public class HPBar : MonoBehaviour
     private Camera _uiCamera;
     private RectTransform _parentRT;
 
-    private Vector2 _offset = new Vector3(0f, 100f);
+    private Vector2 _offset = new Vector2(0f, 100f);
 
     private void Awake()
     {
@@ -25,12 +25,11 @@ public class HPBar : MonoBehaviour
         }
 
         var screenPos = Camera.main.WorldToScreenPoint(_actor.transform.position);
-        screenPos.z = 0f;
+        // screenPos.z = 0f;
 
         RectTransformUtility.ScreenPointToLocalPointInRectangle(_parentRT, screenPos, _uiCamera, out var localPos);
 
         transform.localPosition = localPos + _offset;
-
     }
 
     public void Init(Camera uiCamera, RectTransform parentRT)

@@ -6,8 +6,6 @@ using UnityEngine.InputSystem;
 
 public class Player : Actor<Mercenary, MercenaryData>
 {
-    public override Team team { get; protected set; } = Team.Player;
-
     private Body _body;
     
     private Vector3 _moveDirection = Vector3.zero;
@@ -23,6 +21,8 @@ public class Player : Actor<Mercenary, MercenaryData>
 
         _body = transform.GetComponentInChildren<Body>();
         _body.cbTriggerEnter += OnBodyTriggerEnter;
+
+        team = Team.Player;
 }
 
     void Update()
