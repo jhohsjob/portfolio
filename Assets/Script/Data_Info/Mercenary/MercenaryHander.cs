@@ -2,6 +2,10 @@ using System.Collections.Generic;
 
 public class MercenaryHander : Singleton<MercenaryHander>
 {
+    /// <summary>
+    /// key : mercenary Id
+    /// value : mercenary data
+    /// </summary>
     private Dictionary<int, Mercenary> _dic = new Dictionary<int, Mercenary>();
     private List<Mercenary> _list = new List<Mercenary>();
     public List<Mercenary> list => _list;

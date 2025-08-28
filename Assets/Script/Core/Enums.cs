@@ -24,7 +24,7 @@ public enum DropItemType
 {
     None,
     Element,
-    Coin,
+    Gold,
 }
 
 public enum ElementType

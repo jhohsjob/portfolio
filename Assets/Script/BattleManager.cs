@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+
 public class BattleManagerInitData
 {
     public MapInfoData mapInfoData;

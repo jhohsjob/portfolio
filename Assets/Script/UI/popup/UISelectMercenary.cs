@@ -4,8 +4,16 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+
 public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
 {
+    struct UIElement
+    {
+        public int id;
+        public Mercenary data;
+        public GameObject body;
+    }
+
     [SerializeField]
     private Transform _pivot;
     [SerializeField]
@@ -25,10 +33,8 @@ public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
     [SerializeField]
     private Button _btnRight;
 
-    private Mercenary _mercenary;
-
     private int _currentIndex;
-    private Dictionary<int, GameObject> _body = new Dictionary<int, GameObject>();
+    private List<UIElement> uiElements = new List<UIElement>();
 
     private float _dragThreshold = 150f;
     private Vector2 _startPos;
@@ -40,43 +46,49 @@ public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
         _btnSelect.onClick.AddListener(OnClickSelect);
         _btnLeft.onClick.AddListener(() => OnClickMove(-1));
         _btnRight.onClick.AddListener(() => OnClickMove(1));
+
+        uiElements.Clear();
+
+        var mercenaryList = MercenaryHander.instance.list;
+        foreach (var mercenary in mercenaryList)
+        {
+            var uiData = new UIElement
+            {
+                id = mercenary.id,
+                data = mercenary,
+                body = Instantiate(Resources.Load<GameObject>(mercenary.resourcePath), _pivot)
+            };
+            uiElements.Add(uiData);
+        }
     }
 
     protected override void Init(object data = null)
     {
-        _currentIndex = 0;
-        
+        _currentIndex = uiElements.FindIndex(x => x.id == User.instance.mercenaryId);
+
         SetMercenary();
     }
 
     private void SetMercenary()
     {
-        _mercenary = MercenaryHander.instance.GetMercenaryByIndex(_currentIndex);
+        foreach (var body in uiElements)
+        {
+            body.body.SetActive(false);
+        }
+        uiElements[_currentIndex].body.SetActive(true);
 
-        foreach (var body in _body.Values)
-        {
-            body.SetActive(false);
-        }
-        if (_body.ContainsKey(_currentIndex))
-        {
-            _body[_currentIndex].SetActive(true);
-        }
-        else
-        {
-            var body = Instantiate(Resources.Load<GameObject>(_mercenary.resourcePath), _pivot);
-            _body.Add(_currentIndex, body);
-        }
+        var mercenary = uiElements[_currentIndex].data;
 
-        _txtName.text = _mercenary.name;
-        _txtAtk.text = $"atk : {_mercenary.atk}";
-        _txtMaxHp.text = $"hp : {_mercenary.maxHP}";
-        _txtMoveSpeed.text = $"atk : {_mercenary.moveSpeed}";
-        _txtDesc.text = _mercenary.description;
+        _txtName.text = mercenary.name;
+        _txtAtk.text = $"atk : {mercenary.atk}";
+        _txtMaxHp.text = $"hp : {mercenary.maxHP}";
+        _txtMoveSpeed.text = $"atk : {mercenary.moveSpeed}";
+        _txtDesc.text = mercenary.description;
     }
 
     private void OnClickSelect()
     {
-        User.instance.SetMercenary(_mercenary.id);
+        User.instance.SetMercenary(uiElements[_currentIndex].id);
 
         Hide();
     }
