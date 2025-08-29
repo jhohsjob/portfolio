@@ -15,6 +15,8 @@ public class Player : Actor<Mercenary, MercenaryData>
     // temp
     private List<SkillData> _tempSkillDatas = new();
 
+    private int _gainGold;
+
     protected override void Awake()
     {
         base.Awake();
@@ -49,6 +51,8 @@ public class Player : Actor<Mercenary, MercenaryData>
         }
 
         _elements.Clear();
+
+        _gainGold = 0;
     }
 
     public override void Enter(object data = null)
@@ -92,6 +96,8 @@ public class Player : Actor<Mercenary, MercenaryData>
     {
         Debug.Log("game over");
 
+        BattleOver();
+
         BattleManager.instance.SetBattleStatus(BattleStatus.BattleOver);
     }
 
@@ -112,6 +118,18 @@ public class Player : Actor<Mercenary, MercenaryData>
         }
 
         EventHelper.Send(EventName.AddElement, this, _elements);
+    }
+
+    public void AddGold(int gold)
+    {
+        _gainGold += gold;
+
+        EventHelper.Send(EventName.AddGold, this, _gainGold.ToString());
+    }
+
+    private void BattleOver()
+    {
+        User.instance.ChangeGold(_gainGold);
     }
 
     // PlayerInput Send Messages

@@ -4,18 +4,11 @@ using UnityEngine;
 
 public static class DataManager
 {
-    private static bool isLoad = false;
-
     private static Dictionary<int, SkillData> _skillData = new Dictionary<int, SkillData>();
     private static Dictionary<int, MapInfoData> _mapInfoDatas = new Dictionary<int, MapInfoData>();
 
     public static void Load()
     {
-        if (isLoad == true)
-        {
-            return;
-        }
-        isLoad = true;
         Debug.Log("GameTable.Load");
 
         {
@@ -51,28 +44,17 @@ public static class DataManager
 
     public static List<MapInfoData> GetAllMapInfoData()
     {
-        var result = new List<MapInfoData>();
-
-        foreach (var data in _mapInfoDatas.Values)
-        {
-            result.Add(data);
-        }
-
-        return result;
+        return new List<MapInfoData>(_mapInfoDatas.Values);
     }
 
     public static SkillData GetSkillData(int id)
     {
-        SkillData result = null;
-        if (_skillData.ContainsKey(id))
+        if (_skillData.TryGetValue(id, out var result))
         {
-            result = _skillData[id];
+            return result;
         }
-        else
-        {
-            Debug.LogWarning("ProjectileData ID : " + id + " 가 없습니다.");
-        }
+        Debug.LogWarning("ProjectileData ID : " + id + " 가 없습니다.");
 
-        return result;
+        return null;
     }
 }

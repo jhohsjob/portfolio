@@ -13,7 +13,8 @@ public class User : Singleton<User>
         _userId = 0;
 
         var data = Storage.Data.player;
-        _currentGold = data.gold;
+        _currentGold = 0;
+        ChangeGold(data.gold, false);
         _mercenaryId = data.mercenaryId;
     }
 
@@ -29,7 +30,7 @@ public class User : Singleton<User>
         return MercenaryHander.instance.GetMercenaryById(_mercenaryId);
     }
 
-    public bool ChangeGold(int amount)
+    public bool ChangeGold(int amount, bool saveGold = true)
     {
         int newGold = _currentGold + amount;
 
@@ -39,7 +40,13 @@ public class User : Singleton<User>
         }
 
         _currentGold = newGold;
-        SaveGold();
+        if (saveGold == true)
+        {
+            SaveGold();
+        }
+
+        EventHelper.Send(EventName.ChangeGold, this);
+
         return true;
     }
 

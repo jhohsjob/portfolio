@@ -10,6 +10,11 @@ public static class DropItemFactory
             return new DIElement(diElementData);
         }
 
+        if (data is DIGoldData diGoldData)
+        {
+            return new DIGold(diGoldData);
+        }
+
         return null;
     }
 }
@@ -48,6 +53,16 @@ public class DropItemHander : Singleton<DropItemHander>
         }
 
         return _dic[id] as T;
+    }
+    
+    public RoleBase GetDropItemById(int id)
+    {
+        if (_dic.ContainsKey(id) == false)
+        {
+            return null;
+        }
+
+        return _dic[id];
     }
 
     public int CaclIndex(int index)

@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnInfos:
   - actorId: 201001
-    dropItemIds: 691e06006a1e0600
-    dropItemRate: 1e00000046000000
+    dropItemIds: 691e06006a1e06006b1e0600512206005222060053220600
+    dropItemRate: 140000001400000014000000140000000a0000000a000000
+    dropItemRateSum: 100
   - actorId: 201002
-    dropItemIds: 691e06006b1e0600
-    dropItemRate: 1e00000046000000
+    dropItemIds: 691e06006a1e06006b1e060051220600522206006b1e0600
+    dropItemRate: 1400000014000000140000000a000000140000000a000000
+    dropItemRateSum: 100
   spawnRate: 3200000032000000

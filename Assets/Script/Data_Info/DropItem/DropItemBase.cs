@@ -16,3 +16,10 @@ public class DIElement : DropItemBase<DIElementData>
 
     public DIElement(DIElementData data) : base(data) { }
 }
+
+public class DIGold : DropItemBase<DIGoldData>
+{
+    public int gold => _data.gold;
+
+    public DIGold(DIGoldData data) : base(data) { }
+}

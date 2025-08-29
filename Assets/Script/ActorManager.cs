@@ -51,12 +51,14 @@ public class ActorManager : MonoBehaviour
     private Enemy _enemyPrefab;
     private ActorProjectile _projectilePrefab;
     private ActorDIElement _diElementPrefab;
+    private ActorDIGold _diGoldPrefab;
 
     private void Awake()
     {
         _enemyPrefab = Resources.Load<Enemy>("Prefabs/Enemy");
         _projectilePrefab = Resources.Load<ActorProjectile>("Prefabs/Projectile");
         _diElementPrefab = Resources.Load<ActorDIElement>("Prefabs/DIElement");
+        _diGoldPrefab = Resources.Load<ActorDIGold>("Prefabs/DIGold");
     }
 
     public void Init(BattleManager gameManager)
@@ -88,21 +90,25 @@ public class ActorManager : MonoBehaviour
 
     public void InitDropItem(int id)
     {
-        var role = DropItemHander.instance.GetDropItemById<DIElement>(id);
+        var role = DropItemHander.instance.GetDropItemById(id);
         if (role == null || _pool.ContainsKey(id) == true)
         {
             return;
         }
 
-        switch (role.type)
+        switch (role)
         {
-            case DropItemType.Element:
+            case DIElement:
                 PoolGenerate(role as DIElement);
                 break;
 
-            default:
-                PoolGenerate(role);
+            case DIGold:
+                PoolGenerate(role as DIGold);
                 break;
+
+            //default:
+            //    PoolGenerate(role);
+            //    break;
         }
     }
 
@@ -134,6 +140,10 @@ public class ActorManager : MonoBehaviour
 
             case DIElement:
                 actorPrefab = _diElementPrefab;
+                break;
+
+            case DIGold:
+                actorPrefab = _diGoldPrefab;
                 break;
 
             default:

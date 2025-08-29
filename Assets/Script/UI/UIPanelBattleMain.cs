@@ -9,6 +9,8 @@ public class UIPanelBattleMain : UIPanel
     [SerializeField]
     private TextMeshProUGUI _txtKill;
     [SerializeField]
+    private TextMeshProUGUI _txtGold;
+    [SerializeField]
     private TextMeshProUGUI _txtElementWater;
     [SerializeField]
     private TextMeshProUGUI _txtElementForest;
@@ -21,6 +23,7 @@ public class UIPanelBattleMain : UIPanel
     {
         EventHelper.AddEventListener(EventName.EnemyDieEnd, OnEnemyDieEnd);
         EventHelper.AddEventListener(EventName.AddElement, OnAddElement);
+        EventHelper.AddEventListener(EventName.AddGold, OnAddGold);
 
         _btnPause.onClick.AddListener(OnClickPause);
     }
@@ -28,6 +31,7 @@ public class UIPanelBattleMain : UIPanel
     {
         EventHelper.RemoveEventListener(EventName.EnemyDieEnd, OnEnemyDieEnd);
         EventHelper.RemoveEventListener(EventName.AddElement, OnAddElement);
+        EventHelper.RemoveEventListener(EventName.AddGold, OnAddGold);
     }
 
     private void OnClickPause()
@@ -71,5 +75,10 @@ public class UIPanelBattleMain : UIPanel
                     break;
             }
         }
+    }
+
+    private void OnAddGold(object sender, object data)
+    {
+        _txtGold.text = (string)data;
     }
 }

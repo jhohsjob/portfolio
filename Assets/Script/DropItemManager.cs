@@ -31,15 +31,29 @@ public class DropItemManager : MonoBehaviour
 
     public void Spawn(Enemy enemy)
     {
-        var role = DropItemHander.instance.GetDropItemById<DIElement>(GetDropItemId(enemy.spawnMapLevel, enemy.roleId));
+        var role = DropItemHander.instance.GetDropItemById(GetDropItemId(enemy.spawnMapLevel, enemy.roleId));
         var parent = _gameManager.battleScene.actorContainer;
         var position = enemy.diePos;
-        var dropItem = _gameManager.actorManager.GetActor(role, parent, position) as ActorDIElement;
-        dropItem.Enter();
+        ActorBase dropItem = null;
+        switch (role)
+        {
+            case DIElement diElement:
+                dropItem = _gameManager.actorManager.GetActor(diElement, parent, position);
+                (dropItem as ActorDIElement).Enter();
+                break;
 
-        _dropItemList.Add(dropItem);
+            case DIGold diGold:
+                dropItem = _gameManager.actorManager.GetActor(diGold, parent, position);
+                (dropItem as ActorDIGold).Enter();
+                break;
+        }
 
-        EventHelper.Send(EventName.EnemySpawnEnd, this, dropItem);
+        if (dropItem != null)
+        {
+            _dropItemList.Add(dropItem);
+
+            EventHelper.Send(EventName.EnemySpawnEnd, this, dropItem);
+        }
     }
 
     public int GetDropItemId(int mapLevel, int roleId)

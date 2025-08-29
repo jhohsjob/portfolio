@@ -13,8 +13,10 @@ public class LobbyScene : MonoBehaviour
 
     private void Init()
     {
-        DataManager.Load();
-        Storage.Load();
+        LoadManager.Load();
+
         User.instance.Init();
+
+        EventHelper.Send(EventName.LoadEnd, this);
     }
 }

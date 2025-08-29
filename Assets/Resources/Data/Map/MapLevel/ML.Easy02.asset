@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e801a5890c61f4f9b89ac20a563d7a, type: 3}
   m_Name: ML.Easy02
   m_EditorClassIdentifier: 
-  mlName: "\uBCF4\uD1B5"
+  mlName: phase02
   level: 2
   levelupCount: 6
   spawnCount: 2
