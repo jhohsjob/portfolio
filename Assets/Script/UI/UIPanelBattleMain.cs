@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 
 public class UIPanelBattleMain : UIPanel
@@ -9,36 +8,22 @@ public class UIPanelBattleMain : UIPanel
     [SerializeField]
     private TextMeshProUGUI _txtKill;
     [SerializeField]
-    private TextMeshProUGUI _txtGold;
-    [SerializeField]
     private TextMeshProUGUI _txtElementWater;
     [SerializeField]
     private TextMeshProUGUI _txtElementForest;
     [SerializeField]
     private TextMeshProUGUI _txtElementFire;
-    [SerializeField]
-    private Button _btnPause;
-
+    
     protected override void Awake()
     {
         EventHelper.AddEventListener(EventName.EnemyDieEnd, OnEnemyDieEnd);
         EventHelper.AddEventListener(EventName.AddElement, OnAddElement);
-        EventHelper.AddEventListener(EventName.AddGold, OnAddGold);
-
-        _btnPause.onClick.AddListener(OnClickPause);
     }
+
     protected override void OnDestroy()
     {
         EventHelper.RemoveEventListener(EventName.EnemyDieEnd, OnEnemyDieEnd);
         EventHelper.RemoveEventListener(EventName.AddElement, OnAddElement);
-        EventHelper.RemoveEventListener(EventName.AddGold, OnAddGold);
-    }
-
-    private void OnClickPause()
-    {
-        BattleManager.instance.SetBattleStatus(BattleStatus.Pause);
-
-        UIManager.instance.ShowPopup(PopupName.UIPause);
     }
 
     private void OnEnemyDieEnd(object sender, object data)
@@ -75,10 +60,5 @@ public class UIPanelBattleMain : UIPanel
                     break;
             }
         }
-    }
-
-    private void OnAddGold(object sender, object data)
-    {
-        _txtGold.text = (string)data;
     }
 }
