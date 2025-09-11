@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Local Game Data
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Local Game Data
+  m_GUID: 162edae7266ca0344a7d9f1581df87a4
+  m_SerializeEntries:
+  - m_GUID: 98bcd984d6ac07048b0d089b41fc57b5
+    m_Address: Assets/Resource/DataTable
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b096f54b1f9b7184dbd9f40dc991bd26
+    m_Address: Assets/Resource/DefaultStoage
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd588e3d7e98a4545b8dad40378b31bb
+    m_Address: Assets/Resource/Data
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: e1eb3bcf68f81b749a27bb85c521c50e, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 9fe96e7f553fb4a4f902d5740203ba56, type: 2}
+    - {fileID: 11400000, guid: 8e9e70a114cb6e449a489ada3f9f07f1, type: 2}
