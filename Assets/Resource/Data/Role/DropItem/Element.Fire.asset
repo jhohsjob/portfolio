@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 401003
   roleName: Fire
-  resourcePath: Prefabs/DropItem/Element.Fire
+  roleDescription: 
+  resourcePath: Element.Fire
   resourceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 0
-  type: 1
   elementType: 2

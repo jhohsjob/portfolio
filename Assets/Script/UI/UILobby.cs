@@ -24,12 +24,12 @@ public class UILobby : MonoBehaviour
 
     private void OnClickStart()
     {
-        UIManager.instance.ShowPopup(PopupName.UISelectMap);
+        PopupManager.ShowPopup<UISelectMap>(PopupName.UISelectMap);
     }
 
     private void OnSelectMercenary()
     {
-        UIManager.instance.ShowPopup(PopupName.UISelectMercenary);
+        PopupManager.ShowPopup<UISelectMercenary>(PopupName.UISelectMercenary);
     }
 
     private void OnClickExit()

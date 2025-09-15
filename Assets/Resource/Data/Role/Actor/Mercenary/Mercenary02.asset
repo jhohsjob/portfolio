@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 101002
   roleName: Mercenary02
   roleDescription: Cylinder
-  resourcePath: Prefabs/Mercenary/Mercenary02
+  resourcePath: Mercenary02
   resourceOffset: {x: 0, y: 0.5, z: 0}
   moveSpeed: 3
   maxHP: 10

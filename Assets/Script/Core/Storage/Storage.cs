@@ -4,11 +4,20 @@ using UnityEngine;
 
 public class Storage
 {
-    private static string _savePath => Path.Combine(Application.persistentDataPath, "save.json");
+    private string _savePath => Path.Combine(Application.persistentDataPath, "save.json");
 
-    public static GameSaveData Data { get; private set; }
+    public GameSaveData data { get; private set; }
 
-    public static void Save(GameSaveData data)
+    public Storage()
+    {
+    }
+
+    public void RunGame()
+    {
+        Load();
+    }
+
+    public void Save(GameSaveData data)
     {
         try
         {
@@ -24,41 +33,43 @@ public class Storage
             
             File.Move(tempPath, _savePath);
             
-            Data = data;
+            this.data = data;
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("세이브 실패: " + ex);
+            Debug.LogError("save failed : " + ex);
         }
     }
 
-    public static void Load()
+    public void Load()
     {
         try
         {
             if (File.Exists(_savePath) == false)
             {
-                var userDefault = Resources.Load<UserDefaultData>("DefaultStoage/UserDefaultData");
-                var data = new GameSaveData
+                Client.asset.LoadAsset<UserDefaultData>("UserDefaultData", (task) =>
                 {
-                    player = new UserData(userDefault)
-                };
+                    var data = new GameSaveData
+                    {
+                        player = new UserData(task.GetAsset<UserDefaultData>())
+                    };
 
-                Save(data);
+                    Save(data);
+                });
                 return;
             }
 
             string json = File.ReadAllText(_savePath);
-            Data = JsonUtility.FromJson<GameSaveData>(json);
+            data = JsonUtility.FromJson<GameSaveData>(json);
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("로드 실패: " + ex);
-            Data = new GameSaveData();
+            Debug.LogError("load failed : " + ex);
+            data = new GameSaveData();
         }
     }
 
-    public static void Delete()
+    public void Delete()
     {
         if (File.Exists(_savePath))
         {

@@ -129,7 +129,7 @@ public class Player : Actor<Mercenary, MercenaryData>
 
     private void BattleOver()
     {
-        User.instance.ChangeGold(_gainGold);
+        Client.user.ChangeGold(_gainGold);
     }
 
     // PlayerInput Send Messages

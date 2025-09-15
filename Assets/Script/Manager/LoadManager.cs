@@ -11,6 +11,5 @@ public class LoadManager
         isLoad = true;
 
         DataManager.Load();
-        Storage.Load();
     }
 }

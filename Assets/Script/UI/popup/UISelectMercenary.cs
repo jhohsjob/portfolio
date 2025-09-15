@@ -56,19 +56,21 @@ public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
             {
                 id = mercenary.id,
                 data = mercenary,
-                body = Instantiate(Resources.Load<GameObject>(mercenary.resourcePath), _pivot)
+                body = Instantiate(mercenary.original, _pivot)
             };
             uiElements.Add(uiData);
         }
     }
 
-    protected override void Init(object data = null)
+    public override void OnPopupReady(object data = null)
     {
-        _currentIndex = uiElements.FindIndex(x => x.id == User.instance.mercenaryId);
+        _currentIndex = uiElements.FindIndex(x => x.id == Client.user.mercenaryId);
 
         SetMercenary();
-    }
 
+        base.OnPopupReady(data);
+    }
+    
     private void SetMercenary()
     {
         foreach (var body in uiElements)
@@ -88,9 +90,9 @@ public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
 
     private void OnClickSelect()
     {
-        User.instance.SetMercenary(uiElements[_currentIndex].id);
+        Client.user.SetMercenary(uiElements[_currentIndex].id);
 
-        Hide();
+        OnClickClose();
     }
 
     private void OnClickMove(int direction)

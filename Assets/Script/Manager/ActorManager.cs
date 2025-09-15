@@ -48,17 +48,8 @@ public class ActorManager : MonoBehaviour
     /// <summary> key : role id </summary>
     private Dictionary<int, IDGenerator> _idGenSet = new Dictionary<int, IDGenerator>();
 
-    private Enemy _enemyPrefab;
-    private ActorProjectile _projectilePrefab;
-    private ActorDIElement _diElementPrefab;
-    private ActorDIGold _diGoldPrefab;
-
     private void Awake()
     {
-        _enemyPrefab = Resources.Load<Enemy>("Prefabs/Enemy");
-        _projectilePrefab = Resources.Load<ActorProjectile>("Prefabs/Projectile");
-        _diElementPrefab = Resources.Load<ActorDIElement>("Prefabs/DIElement");
-        _diGoldPrefab = Resources.Load<ActorDIGold>("Prefabs/DIGold");
     }
 
     public void Init(BattleManager gameManager)
@@ -127,35 +118,57 @@ public class ActorManager : MonoBehaviour
 
     private void AddPool<TData>(Role<TData> role) where TData : RoleData
     {
-        ActorBase actorPrefab = null;
         switch (role)
         {
             case Monster:
-                actorPrefab = _enemyPrefab;
+                Client.asset.LoadAsset<GameObject>("Enemy", (task) =>
+                {
+                    var original = task.GetAsset<GameObject>().GetComponent<ActorBase>();
+
+                    InstantiateActor(role, original);
+                });
                 break;
 
             case Projectile:
-                actorPrefab = _projectilePrefab;
+                Client.asset.LoadAsset<GameObject>("Projectile", (task) =>
+                {
+                    var original = task.GetAsset<GameObject>().GetComponent<ActorBase>();
+
+                    InstantiateActor(role, original);
+                });
                 break;
 
             case DIElement:
-                actorPrefab = _diElementPrefab;
+                Client.asset.LoadAsset<GameObject>("DIElement", (task) =>
+                {
+                    var original = task.GetAsset<GameObject>().GetComponent<ActorBase>();
+
+                    InstantiateActor(role, original);
+                });
                 break;
 
             case DIGold:
-                actorPrefab = _diGoldPrefab;
+                Client.asset.LoadAsset<GameObject>("DIGold", (task) =>
+                {
+                    var original = task.GetAsset<GameObject>().GetComponent<ActorBase>();
+
+                    InstantiateActor(role, original);
+                });
                 break;
 
             default:
                 Debug.Assert(true);
                 break;
         }
+    }
 
+    private void InstantiateActor<TData>(Role<TData> role, ActorBase original) where TData : RoleData
+    {
         for (int i = 0; i < 10; i++)
         {
-            var wait = Instantiate(actorPrefab, _container[role.id].transform);
-            wait.InitBase(role.data);
-            
+            var wait = Instantiate(original, _container[role.id].transform);
+            wait.InitBase(role);
+
             _pool[role.id].Enqueue(wait);
         }
     }

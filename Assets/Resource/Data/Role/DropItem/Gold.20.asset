@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 402002
   roleName: Gold20
   roleDescription: 
-  resourcePath: Prefabs/DropItem/Gold.20
+  resourcePath: Gold.20
   resourceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 0
   gold: 20

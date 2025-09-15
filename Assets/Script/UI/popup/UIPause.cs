@@ -8,7 +8,7 @@ public class UIPause : UIPopup
     protected Button _btnOption;
     [SerializeField]
     protected Button _btnLobby;
-    
+
     protected override void Awake()
     {
         base.Awake();

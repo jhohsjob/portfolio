@@ -23,8 +23,6 @@ public class BattleManager : MonoSingleton<BattleManager>
 
     protected override void OnAwake()
     {
-        EventHelper.AddEventListener(EventName.ChangeMapSize, OnChangeMapSize);
-
         actorManager = new GameObject("ActorManager").AddComponent<ActorManager>();
         enemyManager = new GameObject("EnemyManager").AddComponent<EnemyManager>();
         dropItemManager = new GameObject("DropItemManager").AddComponent<DropItemManager>();
@@ -36,6 +34,8 @@ public class BattleManager : MonoSingleton<BattleManager>
         mapLevelManager.transform.SetParent(transform);
 
         transform.position = new Vector3(-1000f, -1000f, -1000f);
+
+        EventHelper.AddEventListener(EventName.ChangeMapSize, OnChangeMapSize);
     }
 
     protected override void OnCallDestroy()

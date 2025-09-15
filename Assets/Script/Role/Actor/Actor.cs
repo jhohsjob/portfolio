@@ -34,17 +34,16 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
         _skillList = new List<Skill>();
     }
 
-    public override void InitBase(RoleData data)
+    public override void InitBase<T>(Role<T> role)
     {
-        var roleInstance = (TRole)Activator.CreateInstance(typeof(TRole), new object[] { data });
-        Init(roleInstance);
+        Init(role as TRole);
     }
 
     public virtual void Init(TRole role)
     {
         _role = role;
 
-        var body = Instantiate(Resources.Load<GameObject>(role.resourcePath), transform);
+        var body = Instantiate(role.original, transform);
         body.transform.localPosition = role.resourceOffset;
 
         body.AddComponent<RenderCheck>();

@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 101003
   roleName: Mercenary03
   roleDescription: Capsule
-  resourcePath: Prefabs/Mercenary/Mercenary03
+  resourcePath: Mercenary03
   resourceOffset: {x: 0, y: 0.5, z: 0}
   moveSpeed: 3
   maxHP: 10

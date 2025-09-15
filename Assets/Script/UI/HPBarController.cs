@@ -17,8 +17,6 @@ public class HPBarController : MonoBehaviour
     private Queue<HPBar> _pool = new Queue<HPBar>();
     private Dictionary<int, HPBar> _activeList = new Dictionary<int, HPBar>();
 
-    private HPBar _hpBarPrefab;
-
     private Vector3 LOAD_POSITION = new Vector3(1000f, 1000f, 1000f);
 
     private void Awake()
@@ -27,8 +25,6 @@ public class HPBarController : MonoBehaviour
         EventHelper.AddEventListener(EventName.EnemyDieEnd, OnEnemyDieEnd);
 
         _rt = GetComponent<RectTransform>();
-
-        _hpBarPrefab = Resources.Load<HPBar>("UI/HPBar");
 
         PoolGenerate();
     }
@@ -41,12 +37,16 @@ public class HPBarController : MonoBehaviour
 
     private void PoolGenerate()
     {
-        for (int i = 0; i < 10; i++)
+        Client.asset.LoadAsset<GameObject>("HPBar", (task) =>
         {
-            var wait = Instantiate(_hpBarPrefab, _poolContianer);
-            wait.Init(_uiCamera, _rt);
-            _pool.Enqueue(wait);
-        }
+            var original = task.GetAsset<GameObject>().GetComponent<HPBar>();
+            for (int i = 0; i < 10; i++)
+            {
+                var wait = Instantiate(original, _poolContianer);
+                wait.Init(_uiCamera, _rt);
+                _pool.Enqueue(wait);
+            }
+        });
     }
 
     private void OnEnemySpawnEnd(object sender, object data)

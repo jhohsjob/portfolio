@@ -11,6 +11,6 @@ public abstract class ActorBase : MonoBehaviour
     public abstract float maxHP { get; }
     public abstract event Action<ChangeHPData> cbChangeHP;
 
-    public abstract void InitBase(RoleData data);
+    public abstract void InitBase<TData>(Role<TData> role) where TData : RoleData;
     public abstract void BeHit(float damage);
 }

@@ -15,18 +15,123 @@ MonoBehaviour:
   m_GroupName: Local Game Data
   m_GUID: 162edae7266ca0344a7d9f1581df87a4
   m_SerializeEntries:
-  - m_GUID: 98bcd984d6ac07048b0d089b41fc57b5
-    m_Address: Assets/Resource/DataTable
+  - m_GUID: 0229a2748ba7a37429744a3bf4aa2c52
+    m_Address: ProjectileTable
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b096f54b1f9b7184dbd9f40dc991bd26
-    m_Address: Assets/Resource/DefaultStoage
+  - m_GUID: 2d133e1322fb5084d8f38b4957b5e5de
+    m_Address: DropItem
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cd588e3d7e98a4545b8dad40378b31bb
-    m_Address: Assets/Resource/Data
+  - m_GUID: 351fbcbdf99ecd049b8c4bb141afe82e
+    m_Address: Mercenary01
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4db4b77f5a825d5428e7c1b91c0fd2dc
+    m_Address: DropItemTable
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 587465282467b344fa188a9ce07c6a8a
+    m_Address: Spawn01
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 609ea2fed48c61e488b3e8e7294e7d77
+    m_Address: Monster01
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c4016e2275a63b4487c1519caec2b4c
+    m_Address: Spawn02
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6dce7cd0f101d984687f97501451a450
+    m_Address: ML.Easy01
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 75297b858d9b55b458d96c4ae317aa44
+    m_Address: MapInfoTable
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83ba86fa44d40c24390d6081fff584c9
+    m_Address: SkillTable
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 88269f61700bd444181b7a962310f24b
+    m_Address: Monster02
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d06add70b661a046a3e9bb7e9ce90b6
+    m_Address: MapInfo03
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91c5c8e2129af5542b66339ba9b18f77
+    m_Address: UserDefaultData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a0b5d6622e9b714eb8831e17a3507f9
+    m_Address: ML.Easy03
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1bb8d37136a6c04fbec804bdb75065d
+    m_Address: MercenaryTable
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8108be619cb0ca4b82a68d3b12de4c9
+    m_Address: MonsterTable
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c06dd88fe14687846aaeea285dc8b0da
+    m_Address: Spawn03
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1c4b46c3e0deeb41abc2955906594a7
+    m_Address: Mercenary02
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c84c8b7e57042ae4d8d2a2634f463db6
+    m_Address: MapInfo01
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb18cf884c4c0ff4885e1b24a5252233
+    m_Address: MapInfo02
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d48ba0c47e5e31a419399534382f070d
+    m_Address: ML.Easy02
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dcc9e1fd17f237a4b8c55f53fc8299c8
+    m_Address: Mercenary03
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e140c1f6322db304eaa5c5e3b288b482
+    m_Address: Skill01
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3d6778bf38dfe3448b47bd9d7b43089
+    m_Address: Projectile01
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

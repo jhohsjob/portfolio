@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 401001
   roleName: Water
-  resourcePath: Prefabs/DropItem/Element.Water
+  roleDescription: 
+  resourcePath: Element.Water
   resourceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 0
-  type: 1
   elementType: 0

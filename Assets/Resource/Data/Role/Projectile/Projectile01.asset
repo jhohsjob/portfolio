@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 301001
   roleName: Projectile01
-  resourcePath: Prefabs/Projectile/SphereProjectile
+  roleDescription: 
+  resourcePath: SphereProjectile
   resourceOffset: {x: 0, y: 0.5, z: 0}
   moveSpeed: 10
   power: 1

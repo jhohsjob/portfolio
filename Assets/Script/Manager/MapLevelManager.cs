@@ -49,7 +49,6 @@ public class MapLevelManager : MonoBehaviour
         SetCurrentMap(mapLevels.First().Value);
     }
 
-
     public void CheckNextLevel()
     {
         _expCount++;

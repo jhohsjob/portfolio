@@ -15,18 +15,103 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 079ada1163bc33d4a89d8e93b5592962
   m_SerializeEntries:
+  - m_GUID: 03baa216816d8e44ca9df4148da24216
+    m_Address: DIGold
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d360f129d1e7fa479bcb406c6505974
+    m_Address: DIElement
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 14d2f1fa6dfb1b840aa4076c28cf6fd9
+    m_Address: Gold.100
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b364b7d47deaa04e8ea2ac6fde8777b
+    m_Address: SphereMonster
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c6bc6d7f22683946a4567a5a256a5c9
+    m_Address: CubeMonster
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ff746954e5f2984f89380e24089a964
+    m_Address: Element.Water
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3de03afbcdb4814419cbc6fea05a3cc6
+    m_Address: SphereProjectile
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 453818fc9816fe04d9ea7a08746c1902
+    m_Address: Mercenary02
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5967ed7616ede784b96feea8d652e5ba
+    m_Address: Mercenary01
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 63b8e44948ce7b24a80a90c610afc541
-    m_Address: Assets/Resource/Prefabs
+    m_Address: Prefabs
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 675792fc0cc5bff4fb38fc9b26f695bd
+    m_Address: Projectile
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83210ec43418d41469a7bc07e3047d7d
+    m_Address: Element.Forest
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 919ca2c534bd7e4489af80b0ebcd2f26
+    m_Address: HPBar
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 92020982ac2370d4a9aca4e1acc36c9c
-    m_Address: Assets/Resource/Material
+    m_Address: Material
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c025fd457d38ad43be2dc32afccc1df
+    m_Address: Gold.20
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae6fe03e29cc3144688aba7c0cd946da
+    m_Address: Mercenary03
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba7f59866229b444e975918b4fa1a2fc
+    m_Address: Element.Fire
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e027f8acaeb93c34d98142da2c567bf4
+    m_Address: Gold.10
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e11ae4db4f39e4b4788aaa642d9738af
+    m_Address: Enemy
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f1aab97eda96f824d8c5a5c58a193938
-    m_Address: Assets/Resource/UI/Atlas
+    m_Address: Atlas
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

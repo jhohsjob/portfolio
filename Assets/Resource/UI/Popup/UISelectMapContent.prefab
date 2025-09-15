@@ -132,13 +132,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4697157646181958994}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d022e5e0fa8f8e14190f331564e46836, type: 3}
+  m_Script: {fileID: 11500000, guid: 6534a2ce6376432458b0e5f5914bd777, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
   _txtName: {fileID: 4615467219821204674}
   _btn: {fileID: 2606448382003863621}
-  data: {fileID: 0}
 --- !u!1 &5415607576264132980
 GameObject:
   m_ObjectHideFlags: 0

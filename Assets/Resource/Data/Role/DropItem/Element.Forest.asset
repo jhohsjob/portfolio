@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 401002
   roleName: Forest
-  resourcePath: Prefabs/DropItem/Element.Forest
+  roleDescription: 
+  resourcePath: Element.Forest
   resourceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 0
-  type: 1
   elementType: 1

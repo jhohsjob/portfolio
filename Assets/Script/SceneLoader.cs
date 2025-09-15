@@ -2,17 +2,18 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
 public static class SceneLoader
 {
     public static void LoadBattleScene(MapInfoData mapInfoData)
     {
-        UIManager.instance.StartCoroutine(coLoadBattleScene(mapInfoData));
+        IEnumeratorTool.instance.StartCoroutine(coLoadBattleScene(mapInfoData));
     }
 
     private static IEnumerator coLoadBattleScene(MapInfoData mapInfoData)
     {
         yield return null;
-        UIManager.instance.PopupClear();
+        PopupManager.CloseAllPopup();
 
         yield return null;
         var initData = new BattleManagerInitData();
@@ -33,13 +34,13 @@ public static class SceneLoader
 
     public static void LoadLobbyScene()
     {
-        UIManager.instance.StartCoroutine(coLoadLobbyScene());
+        IEnumeratorTool.instance.StartCoroutine(coLoadLobbyScene());
     }
 
     private static IEnumerator coLoadLobbyScene()
     {
         yield return null;
-        UIManager.instance.PopupClear();
+        PopupManager.CloseAllPopup();
 
         yield return null;
         var op = SceneManager.LoadSceneAsync("LobbyScene");

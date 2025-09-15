@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,8 @@ public class UIPopup : MonoBehaviour
     [SerializeField]
     protected Button _btnClose;
 
+    protected bool _isEnableClick;
+
     protected virtual void Awake()
     {
         if (_btnClose != null)
@@ -15,32 +18,31 @@ public class UIPopup : MonoBehaviour
         }
     }
 
-    protected virtual void Init(object data = null)
+    public virtual void OnDestroy()
     {
-
-    }
-
-    protected virtual void Clear()
-    {
-
     }
 
     public virtual void Show(object data = null)
     {
-        Init(data);
-
         gameObject.SetActive(true);
     }
 
     public virtual void Hide()
     {
-        Clear();
-
         gameObject.SetActive(false);
+    }
+
+    public virtual void OnPopupReady(object data = null)
+    {
+        _isEnableClick = true;
+        DOVirtual.DelayedCall(1f, () =>
+        {
+            _isEnableClick = false;
+        });
     }
 
     protected virtual void OnClickClose()
     {
-        Hide();
+        PopupManager.ClosePopup(this);
     }
 }

@@ -11,35 +11,35 @@ public static class DataManager
     {
         Debug.Log("GameTable.Load");
 
+        Client.asset.LoadAsset<MercenaryTable>("MercenaryTable", (task) =>
         {
-            var table = Resources.Load<MercenaryTable>("DataTable/MercenaryTable");
-            MercenaryHander.instance.Init(table.table);
-        }
+            MercenaryHander.instance.Init(task.GetAsset<MercenaryTable>().table);
+        });
 
+        Client.asset.LoadAsset<MonsterTable>("MonsterTable", (task) =>
         {
-            var table = Resources.Load<MonsterTable>("DataTable/MonsterTable");
-            MonsterHander.instance.Init(table.table);
-        }
+            MonsterHander.instance.Init(task.GetAsset<MonsterTable>().table);
+        });
 
+        Client.asset.LoadAsset<ProjectileTable>("ProjectileTable", (task) =>
         {
-            var table = Resources.Load<ProjectileTable>("DataTable/ProjectileTable");
-            ProjectileHander.instance.Init(table.table);
-        }
+            ProjectileHander.instance.Init(task.GetAsset<ProjectileTable>().table);
+        });
 
+        Client.asset.LoadAsset<DropItemTable>("DropItemTable", (task) =>
         {
-            var table = Resources.Load<DropItemTable>("DataTable/DropItemTable");
-            DropItemHander.instance.Init(table.table);
-        }
+            DropItemHander.instance.Init(task.GetAsset<DropItemTable>().table);
+        });
 
+        Client.asset.LoadAsset<SkillTable>("SkillTable", (task) =>
         {
-            var table = Resources.Load<SkillTable>("DataTable/SkillTable");
-            _skillData = table.table;
-        }
+            _skillData = task.GetAsset<SkillTable>().table;
+        });
 
+        Client.asset.LoadAsset<MapInfoTable>("MapInfoTable", (task) =>
         {
-            var table = Resources.Load<MapInfoTable>("DataTable/MapInfoTable");
-            _mapInfoDatas = table.table;
-        }
+            _mapInfoDatas = task.GetAsset<MapInfoTable>().table;
+        });
     }
 
     public static List<MapInfoData> GetAllMapInfoData()

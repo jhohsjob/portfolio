@@ -6,7 +6,7 @@ public class UISVPopup : UIPopup
 {
     protected List<UISVPopupContent> _contents = new List<UISVPopupContent>();
 
-    protected override void Clear()
+    protected virtual void Clear()
     {
         foreach (var content in _contents)
         {
@@ -14,8 +14,6 @@ public class UISVPopup : UIPopup
         }
 
         _contents.Clear();
-
-        base.Clear();
     }
 
 

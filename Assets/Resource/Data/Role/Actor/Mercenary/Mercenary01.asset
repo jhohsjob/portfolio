@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 101001
   roleName: Mercenary01
   roleDescription: Cube
-  resourcePath: Prefabs/Mercenary/Mercenary01
+  resourcePath: Mercenary01
   resourceOffset: {x: 0, y: 0.5, z: 0}
   moveSpeed: 3
   maxHP: 10

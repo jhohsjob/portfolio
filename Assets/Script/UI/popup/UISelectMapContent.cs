@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -11,13 +12,14 @@ public class UISelectMapConetntData : UISVPopupContentData
     public UnityAction<int> action;
 }
 
-public class UISelectMapConetnt : UISVPopupContent
+public class UISelectMapContent : UISVPopupContent
 {
     [SerializeField]
     private TextMeshProUGUI _txtName;
     [SerializeField]
     private Button _btn;
 
+    [NonSerialized]
     public MapInfoData data;
 
     public override void Init(UISVPopupContentData data)

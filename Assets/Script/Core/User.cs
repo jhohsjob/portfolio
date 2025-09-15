@@ -1,4 +1,4 @@
-public class User : Singleton<User>
+public class User
 {
     private long _userId;
 
@@ -8,12 +8,15 @@ public class User : Singleton<User>
     private int _mercenaryId;
     public int mercenaryId => _mercenaryId;
 
-    public void Init()
+    public User()
     {
         _userId = 0;
-
-        var data = Storage.Data.player;
         _currentGold = 0;
+    }
+
+    public void RunGame()
+    {
+        var data = Client.storage.data.player;
         ChangeGold(data.gold, false);
         _mercenaryId = data.mercenaryId;
     }
@@ -52,13 +55,13 @@ public class User : Singleton<User>
 
     private void SaveMercenary()
     {
-        Storage.Data.player.mercenaryId = _mercenaryId;
-        Storage.Save(Storage.Data);
+        Client.storage.data.player.mercenaryId = _mercenaryId;
+        Client.storage.Save(Client.storage.data);
     }
 
     private void SaveGold()
     {
-        Storage.Data.player.gold = _currentGold;
-        Storage.Save(Storage.Data);
+        Client.storage.data.player.gold = _currentGold;
+        Client.storage.Save(Client.storage.data);
     }
 }

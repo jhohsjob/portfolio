@@ -15,8 +15,15 @@ public abstract class Role<TData> : RoleBase where TData : RoleData
     public string resourcePath => _data.resourcePath;
     public Vector3 resourceOffset => _data.resourceOffset;
 
+    public GameObject original;
+
     public Role(TData data)
     {
         _data = data.DeepCopy();
+
+        Client.asset.LoadAsset<GameObject>(_data.resourcePath, (task) =>
+        {
+            original = task.GetAsset<GameObject>();
+        });
     }
 }
