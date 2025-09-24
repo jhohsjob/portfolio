@@ -13,13 +13,27 @@ public class Client
 
     public void RunGame()
     {
-        storage.RunGame();
-        user.RunGame();
+        storage.RunGame(result =>
+        {
+            if (result == true)
+            {
+                user.RunGame();
+            }
+            else
+            {
+                RunFailed();
+            }
+        });
 
         PopupManager.Initialization();
 
         LoadManager.Load();
 
         EventHelper.Send(EventName.LoadEnd, this);
+    }
+
+    private void RunFailed()
+    {
+        // todo
     }
 }

@@ -1,10 +1,12 @@
+using System;
 using System.IO;
+using UnityEditor;
 using UnityEngine;
 
 
 public class Storage
 {
-    private string _savePath => Path.Combine(Application.persistentDataPath, "save.json");
+    private static string _savePath => Path.Combine(Application.persistentDataPath, "save.json");
 
     public GameSaveData data { get; private set; }
 
@@ -12,9 +14,9 @@ public class Storage
     {
     }
 
-    public void RunGame()
+    public void RunGame(Action<bool> callback)
     {
-        Load();
+        Load(callback);
     }
 
     public void Save(GameSaveData data)
@@ -41,7 +43,7 @@ public class Storage
         }
     }
 
-    public void Load()
+    public void Load(Action<bool> callback)
     {
         try
         {
@@ -55,25 +57,34 @@ public class Storage
                     };
 
                     Save(data);
-                });
-                return;
-            }
 
-            string json = File.ReadAllText(_savePath);
-            data = JsonUtility.FromJson<GameSaveData>(json);
+                    callback.Invoke(true);
+                });
+            }
+            else
+            {
+                string json = File.ReadAllText(_savePath);
+                data = JsonUtility.FromJson<GameSaveData>(json);
+
+                callback.Invoke(true);
+            }
         }
         catch (System.Exception ex)
         {
             Debug.LogError("load failed : " + ex);
-            data = new GameSaveData();
+
+            callback.Invoke(false);
         }
     }
 
-    public void Delete()
+    [MenuItem("CustomMenu/DataDelete")]
+    public static void Delete()
     {
         if (File.Exists(_savePath))
         {
             File.Delete(_savePath);
         }
+
+        Debug.Log("delete complete");
     }
 }
