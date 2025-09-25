@@ -138,7 +138,7 @@ public class Player : Actor<Mercenary, MercenaryData>
 
     private void OnBodyTriggerEnter(Body other)
     {
-        Debug.Log("OnTriggerEnter player : " + other);
+        // Debug.Log("OnTriggerEnter player : " + other);
 
         // 피격시 로직
         if (other.TryGetComponent(out Body body))

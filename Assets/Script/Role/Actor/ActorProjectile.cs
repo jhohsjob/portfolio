@@ -34,7 +34,7 @@ public class ActorProjectile : Actor<Projectile, ProjectileData>
     {
         base.Enter(data);
         
-        _collider.enabled = true;
+        _moveDistance = 0f;
         _prevPos = transform.position;
     }
 
@@ -55,7 +55,8 @@ public class ActorProjectile : Actor<Projectile, ProjectileData>
 
     protected override void Die()
     {
-        _collider.enabled = false;
+        // Debug.Log("Die : " + ID);
+
         _dir = Vector3.zero;
         _moveDistance = 0f;
         _prevPos = Vector3.zero;

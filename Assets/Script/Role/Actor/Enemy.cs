@@ -43,6 +43,11 @@ public class Enemy : Actor<Monster, MonsterData>
 
     protected override void Move()
     {
+        if (BattleManager.instance.debugEnemyPause == true)
+        {
+            return;
+        }
+
         SetRotation(ref _moveDirection);
         transform.Translate(_moveDirection * _role.moveSpeed * Time.deltaTime);
     }

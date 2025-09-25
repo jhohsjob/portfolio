@@ -9,6 +9,7 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
     protected Transform _point;
     protected Body _body;
     protected SpriteRenderer _sprite;
+    protected FlashShader _flashShader;
     protected Animator _animator;
     protected BoxCollider2D _collider;
 
@@ -54,8 +55,10 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
         _body = body.AddComponent<Body>();
 
         _sprite = body.GetComponent<SpriteRenderer>();
+        _flashShader = body.GetComponent<FlashShader>();
         _animator = body.GetComponent<Animator>();
         _collider = body.GetComponent<BoxCollider2D>();
+        if (_collider != null) _collider.enabled = false;
     }
 
     private void SetID(int id)
@@ -73,11 +76,15 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
         {
             _sprite.sortingOrder = BattleManager.instance.actorManager.GetNextOrderInLayer();
         }
+
+        if (_collider != null) _collider.enabled = true;
     }
 
     public override void BeHit(float damage)
     {
         _hp?.AdjustHP(-damage, OnChangeHP);
+
+        _flashShader?.FlashOnce();
     }
 
     public virtual void OnChangeHP(ChangeHPData data)
@@ -97,5 +104,7 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
     protected virtual void Die()
     {
         SetID(0);
+
+        if (_collider != null) _collider.enabled = false;
     }
 }

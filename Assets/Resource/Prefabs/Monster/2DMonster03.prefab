@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 497895541726641543}
   - component: {fileID: 7140969838055335414}
   - component: {fileID: 7283642824646987652}
+  - component: {fileID: -3718075943830599254}
   m_Layer: 0
   m_Name: 2DMonster03
   m_TagString: Untagged
@@ -59,7 +60,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 2100000, guid: 1201164bfa3c9604eba45caaba7af5be, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -151,3 +152,17 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1, y: 1}
   m_Direction: 0
+--- !u!114 &-3718075943830599254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8193831111808689357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a615e9785b92ad49bd1c1258ecfc7b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ActorBeHitShader
+  flashDuration: 0.2
+  flashColor: {r: 1, g: 1, b: 1, a: 1}

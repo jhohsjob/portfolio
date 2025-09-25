@@ -21,6 +21,8 @@ public class BattleManager : MonoSingleton<BattleManager>
     
     public Bounds mapBounds { get; private set; }
 
+    public bool debugEnemyPause { get; private set; }
+
     protected override void OnAwake()
     {
         actorManager = new GameObject("ActorManager").AddComponent<ActorManager>();
@@ -36,6 +38,14 @@ public class BattleManager : MonoSingleton<BattleManager>
         transform.position = new Vector3(-1000f, -1000f, -1000f);
 
         EventHelper.AddEventListener(EventName.ChangeMapSize, OnChangeMapSize);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            debugEnemyPause = !debugEnemyPause;
+        }
     }
 
     protected override void OnCallDestroy()
