@@ -6,7 +6,11 @@ using UnityEngine;
 public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> where TData : RoleData
 {
     [SerializeField]
-    private GameObject _point;
+    protected Transform _point;
+    protected Body _body;
+    protected SpriteRenderer _sprite;
+    protected Animator _animator;
+    protected BoxCollider2D _collider;
 
     public int ID { get; private set; }
 
@@ -23,7 +27,7 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
 
     public List<Skill> _skillList { get; set; }
 
-    public override GameObject point => _point;
+    public override Transform point => _point;
     public override int roleId => _role.id;
     public override float HP => _hp.currentHP;
     public override float maxHP => _hp.maxHP;
@@ -47,6 +51,11 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
         body.transform.localPosition = role.resourceOffset;
 
         body.AddComponent<RenderCheck>();
+        _body = body.AddComponent<Body>();
+
+        _sprite = body.GetComponent<SpriteRenderer>();
+        _animator = body.GetComponent<Animator>();
+        _collider = body.GetComponent<BoxCollider2D>();
     }
 
     private void SetID(int id)
@@ -59,6 +68,11 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
     public virtual void Enter(object data = null)
     {
         SetID(BattleManager.instance.actorManager.GetNextID(_role.id));
+
+        if (_sprite != null)
+        {
+            _sprite.sortingOrder = BattleManager.instance.actorManager.GetNextOrderInLayer();
+        }
     }
 
     public override void BeHit(float damage)

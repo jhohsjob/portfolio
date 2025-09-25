@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8970733887414077302}
-  - component: {fileID: 7505538981855131073}
   - component: {fileID: 8548964804886183585}
   m_Layer: 0
   m_Name: Projectile
@@ -33,27 +32,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &7505538981855131073
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3115120875694125900}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8548964804886183585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,3 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9eb3cd69fb26b04486f64fbed24a5a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _point: {fileID: 0}

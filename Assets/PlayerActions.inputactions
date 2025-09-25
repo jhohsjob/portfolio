@@ -10,7 +10,7 @@
                     "name": "ModeChange",
                     "type": "Button",
                     "id": "92006ad0-132a-4f59-aa80-4436c557d552",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false

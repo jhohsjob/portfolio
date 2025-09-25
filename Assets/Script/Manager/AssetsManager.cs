@@ -236,9 +236,6 @@ public class AssetsManager
     private Dictionary<AsyncOperationHandle<IList<IResourceLocation>>, Action<AsyncOperationHandle<IList<IResourceLocation>>>> checkResourceOpDict;
     private Dictionary<AsyncOperationHandle<long>, Action<AsyncOperationHandle<long>>> checkAddressOpDict;
 
-    // 콘텐츠 다운로드 지연
-    private bool isAfterEnterAssetsLoaded;
-
     public AssetsManager()
     {
         taskList = new List<AssetLoadingTask>();

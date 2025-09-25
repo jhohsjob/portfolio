@@ -51,6 +51,6 @@ public class BattleScene : MonoBehaviour
 
     public Vector3 GetRandomPos()
     {
-        return _map.GetRandomPos();
+        return _map.GetRandomPos(_player.transform.position);
     }
 }

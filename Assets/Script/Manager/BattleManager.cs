@@ -19,7 +19,7 @@ public class BattleManager : MonoSingleton<BattleManager>
 
     public BattleStatus battleStatus { get; private set; } = BattleStatus.None;
     
-    public Vector3 mapSize { get; private set; }
+    public Bounds mapBounds { get; private set; }
 
     protected override void OnAwake()
     {
@@ -81,11 +81,11 @@ public class BattleManager : MonoSingleton<BattleManager>
 
     private void OnChangeMapSize(object sender, object data)
     {
-        if (data == null || (data is Vector3) == false)
+        if (data == null || (data is Bounds bounds) == false)
         {
             return;
         }
 
-        mapSize = (Vector3)data;
+        mapBounds = bounds;
     }
 }

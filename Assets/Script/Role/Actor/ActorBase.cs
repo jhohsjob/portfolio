@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class ActorBase : MonoBehaviour
 {
-    public abstract GameObject point { get; }
+    public abstract Transform point { get; }
     public abstract int roleId { get; }
     public Team team { get; protected set; }
     public abstract float HP { get; }

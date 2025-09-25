@@ -7,6 +7,7 @@ public class RoleData : ScriptableObject
     public string roleDescription;
 
     public string resourcePath;
+    public GameObject body;
     public Vector3 resourceOffset = Vector3.zero;
     public float moveSpeed;
 

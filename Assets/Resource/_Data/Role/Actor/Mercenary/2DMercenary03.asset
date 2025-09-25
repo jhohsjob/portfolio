@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc1fe3460dca268498cbdf0189de94d5, type: 3}
+  m_Name: 2DMercenary03
+  m_EditorClassIdentifier: 
+  id: 101003
+  roleName: Mercenary03
+  roleDescription: Cube
+  resourcePath: 2DMercenary03
+  body: {fileID: 8193831111808689357, guid: 2c940298843c92a4c8ebed2479ec3d3b, type: 3}
+  resourceOffset: {x: 0, y: 0, z: 0}
+  moveSpeed: 3
+  maxHP: 10

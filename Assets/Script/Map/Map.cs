@@ -1,16 +1,16 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 
 public class Map : MonoBehaviour
 {
     [SerializeField]
-    private Transform _plane;
+    private Tilemap _plane;
 
-    private float PLANE_SIZE = 5f;
-    private Vector3 _mapSize = Vector3.zero;
-    
     private void Awake()
     {
+        _plane.CompressBounds();
+
         EventHelper.AddEventListener(EventName.MapLevelUp, OnMapLevelUp);
     }
 
@@ -26,26 +26,32 @@ public class Map : MonoBehaviour
 
     private void SetMapSize()
     {
-        _mapSize.x = _plane.localScale.x * PLANE_SIZE;
-        _mapSize.y = _plane.localScale.y * PLANE_SIZE;
-        _mapSize.z = _plane.localScale.z * PLANE_SIZE;
-
-        EventHelper.Send(EventName.ChangeMapSize, this, _mapSize);
+        EventHelper.Send(EventName.ChangeMapSize, this, _plane.localBounds);
     }
 
     public void SizeChange(Vector3 end)
     {
-        _plane.localScale = end;
+        //_plane.localScale = end;
 
         SetMapSize();
     }
 
-    public Vector3 GetRandomPos()
+    public Vector3 GetRandomPos(Vector3 player)
     {
-        var x = Random.Range(-_mapSize.x, _mapSize.x);
-        var z = Random.Range(-_mapSize.z, _mapSize.z);
+        Vector3 pos;
+        int maxAttempts = 100;
+        int attempts = 0;
 
-        return new Vector3(x, 0, z);
+        do
+        {
+            float x = Random.Range(_plane.localBounds.min.x, _plane.localBounds.max.x);
+            float y = Random.Range(_plane.localBounds.min.y, _plane.localBounds.max.y);
+            pos = new Vector3(x, y, 0f);
+
+            attempts++;
+        } while (Vector3.Distance(pos, player) < 3f && attempts < maxAttempts);
+
+        return pos;
     }
 
     private void OnMapLevelUp(object sender, object data)
@@ -57,6 +63,6 @@ public class Map : MonoBehaviour
 
         var mapLevel = data as MapLevel;
 
-        SizeChange(mapLevel.growMapSize);
+        // SizeChange(mapLevel.growMapSize);
     }
 }

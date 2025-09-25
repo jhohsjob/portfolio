@@ -3,14 +3,13 @@ using UnityEngine;
 
 public class ActorProjectile : Actor<Projectile, ProjectileData>
 {
-    private BoxCollider _bc;
-
     private Vector3 _dir = Vector3.zero;
+
+    private float _moveDistance;
+    private Vector3 _prevPos;
 
     protected override void Awake()
     {
-        _bc = GetComponent<BoxCollider>();
-        _bc.enabled = false;
     }
 
     void Update()
@@ -21,45 +20,62 @@ public class ActorProjectile : Actor<Projectile, ProjectileData>
         }
     }
 
+    public override void Init(Projectile role)
+    {
+        base.Init(role);
+
+        _moveDistance = 0f;
+        _prevPos = Vector3.zero;
+
+        _body.cbTriggerEnter += OnBodyTriggerEnter;
+    }
+
+    public override void Enter(object data = null)
+    {
+        base.Enter(data);
+        
+        _collider.enabled = true;
+        _prevPos = transform.position;
+    }
+
     protected override void Move()
     {
-        transform.localPosition += _dir * _role.moveSpeed * Time.deltaTime;
+        Vector3 moveStep = _dir * _role.moveSpeed * Time.deltaTime;
+        transform.Translate(moveStep);
+
+        _moveDistance += (transform.position - _prevPos).magnitude;
+
+        _prevPos = transform.position;
+
+        if (_moveDistance > _role.data.distance)
+        {
+            Die();
+        }
     }
 
     protected override void Die()
     {
-        _bc.enabled = false;
+        _collider.enabled = false;
         _dir = Vector3.zero;
+        _moveDistance = 0f;
+        _prevPos = Vector3.zero;
 
         BattleManager.instance.actorManager.Return(this);
 
         base.Die();
     }
 
-    public void Shot(ActorBase actor, Vector3 position)
+    public void Shot(ActorBase actor)
     {
         Enter();
 
-        _bc.enabled = true;
-
         team = actor.team;
-
-        var dir = position - actor.transform.position;
-        dir.y = 0f;
-        var rot = Quaternion.LookRotation(dir);
-        _dir = dir.normalized;
-        transform.rotation = rot;
+        _dir = actor.point.right;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnBodyTriggerEnter(Body other)
     {
         // Debug.Log("OnTriggerEnter : " + other);
-        
-        if (other.CompareTag("Outside") == true)
-        {
-            Die();
-            return;
-        }
 
         if (other.TryGetComponent(out Body body))
         {
@@ -73,15 +89,5 @@ public class ActorProjectile : Actor<Projectile, ProjectileData>
                 }
             }
         }
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        // Debug.Log("OnTriggerStay : " + other);
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        // Debug.Log("OnTriggerExit : " + other);
     }
 }

@@ -62,7 +62,7 @@ public class MapLevelManager : MonoBehaviour
         {
             SetCurrentMap(mapLevels[_currentMapLevel.nextLevel]);
 
-            EventHelper.Send(EventName.MapLevelUp, this, _currentMapLevel);
+            // EventHelper.Send(EventName.MapLevelUp, this, _currentMapLevel);
         }
     }
 

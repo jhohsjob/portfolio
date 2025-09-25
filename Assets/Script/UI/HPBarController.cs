@@ -14,6 +14,8 @@ public class HPBarController : MonoBehaviour
     private Enemy _debugActor = null;
     private RectTransform _rt;
 
+    private HPBar _original;
+
     private Queue<HPBar> _pool = new Queue<HPBar>();
     private Dictionary<int, HPBar> _activeList = new Dictionary<int, HPBar>();
 
@@ -37,16 +39,28 @@ public class HPBarController : MonoBehaviour
 
     private void PoolGenerate()
     {
-        Client.asset.LoadAsset<GameObject>("HPBar", (task) =>
+        if (_original == null)
         {
-            var original = task.GetAsset<GameObject>().GetComponent<HPBar>();
+            Client.asset.LoadAsset<GameObject>("HPBar", (task) =>
+            {
+                _original = task.GetAsset<GameObject>().GetComponent<HPBar>();
+                for (int i = 0; i < 10; i++)
+                {
+                    var wait = Instantiate(_original, _poolContianer);
+                    wait.Init(_uiCamera, _rt);
+                    _pool.Enqueue(wait);
+                }
+            });
+        }
+        else
+        {
             for (int i = 0; i < 10; i++)
             {
-                var wait = Instantiate(original, _poolContianer);
+                var wait = Instantiate(_original, _poolContianer);
                 wait.Init(_uiCamera, _rt);
                 _pool.Enqueue(wait);
             }
-        });
+        }
     }
 
     private void OnEnemySpawnEnd(object sender, object data)

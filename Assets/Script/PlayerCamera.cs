@@ -9,7 +9,7 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField]
     private Transform _player;
 
-    private Vector3 _movePosition = new Vector3(0f, 10f, 0f);
+    private Vector3 _movePosition = Vector3.back;
 
     private float _zoomOutTimer = 0f;
     private float _zoomOutSpeed = 1f;
@@ -27,7 +27,7 @@ public class PlayerCamera : MonoBehaviour
     private void LateUpdate()
     {
         _movePosition.x = _player.position.x;
-        _movePosition.z = _player.position.z;
+        _movePosition.y = _player.position.y;
 
         transform.position = _movePosition;
     }

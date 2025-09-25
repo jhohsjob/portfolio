@@ -61,9 +61,9 @@ public class Skill : MonoBehaviour
         {
             var role = ProjectileHander.instance.GetProjectileById(projectileId);
             var parent = BattleManager.instance.battleScene.actorContainer;
-            var position = _actor.transform.position;
+            var position = _actor.point.GetChild(0).transform.position;
             var projectile = BattleManager.instance.actorManager.GetActor(role, parent, position) as ActorProjectile;
-            projectile.Shot(_actor, _actor.point.transform.position);
+            projectile.Shot(_actor);
 
             yield return new WaitForSeconds(shotDelay);
         }

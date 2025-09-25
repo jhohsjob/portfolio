@@ -48,6 +48,10 @@ public class ActorManager : MonoBehaviour
     /// <summary> key : role id </summary>
     private Dictionary<int, IDGenerator> _idGenSet = new Dictionary<int, IDGenerator>();
 
+    private Dictionary<int, AssetLoadingTask> _tasks = new Dictionary<int, AssetLoadingTask>();
+
+    private int _orderInLayer;
+
     private void Awake()
     {
     }
@@ -55,6 +59,8 @@ public class ActorManager : MonoBehaviour
     public void Init(BattleManager gameManager)
     {
         _gameManager = gameManager;
+
+        _orderInLayer = 10;
     }
 
     public void InitEnemy(int id)
@@ -121,39 +127,83 @@ public class ActorManager : MonoBehaviour
         switch (role)
         {
             case Monster:
-                Client.asset.LoadAsset<GameObject>("Enemy", (task) =>
+                if (_tasks.ContainsKey(role.id) == true)
                 {
-                    var original = task.GetAsset<GameObject>().GetComponent<ActorBase>();
+                    var original = _tasks[role.id].GetAsset<GameObject>().GetComponent<ActorBase>();
 
                     InstantiateActor(role, original);
-                });
+                }
+                else
+                {
+                    Client.asset.LoadAsset<GameObject>("Enemy", (task) =>
+                    {
+                        _tasks.Add(role.id, task);
+
+                        var original = task.GetAsset<GameObject>().GetComponent<ActorBase>();
+
+                        InstantiateActor(role, original);
+                    });
+                }
                 break;
 
             case Projectile:
-                Client.asset.LoadAsset<GameObject>("Projectile", (task) =>
+                if (_tasks.ContainsKey(role.id) == true)
                 {
-                    var original = task.GetAsset<GameObject>().GetComponent<ActorBase>();
+                    var original = _tasks[role.id].GetAsset<GameObject>().GetComponent<ActorBase>();
 
                     InstantiateActor(role, original);
-                });
+                }
+                else
+                {
+                    Client.asset.LoadAsset<GameObject>("2DProjectile", (task) =>
+                    {
+                        _tasks.Add(role.id, task);
+
+                        var original = task.GetAsset<GameObject>().GetComponent<ActorBase>();
+
+                        InstantiateActor(role, original);
+                    });
+                }
                 break;
 
             case DIElement:
-                Client.asset.LoadAsset<GameObject>("DIElement", (task) =>
+                if (_tasks.ContainsKey(role.id) == true)
                 {
-                    var original = task.GetAsset<GameObject>().GetComponent<ActorBase>();
+                    var original = _tasks[role.id].GetAsset<GameObject>().GetComponent<ActorBase>();
 
                     InstantiateActor(role, original);
-                });
+                }
+                else
+                {
+                    Client.asset.LoadAsset<GameObject>("DIElement", (task) =>
+                    {
+                        _tasks.Add(role.id, task);
+
+                        var original = task.GetAsset<GameObject>().GetComponent<ActorBase>();
+
+                        InstantiateActor(role, original);
+                    });
+                }
                 break;
 
             case DIGold:
-                Client.asset.LoadAsset<GameObject>("DIGold", (task) =>
+                if (_tasks.ContainsKey(role.id) == true)
                 {
-                    var original = task.GetAsset<GameObject>().GetComponent<ActorBase>();
+                    var original = _tasks[role.id].GetAsset<GameObject>().GetComponent<ActorBase>();
 
                     InstantiateActor(role, original);
-                });
+                }
+                else
+                {
+                    Client.asset.LoadAsset<GameObject>("DIGold", (task) =>
+                    {
+                        _tasks.Add(role.id, task);
+
+                        var original = task.GetAsset<GameObject>().GetComponent<ActorBase>();
+
+                        InstantiateActor(role, original);
+                    });
+                }
                 break;
 
             default:
@@ -202,5 +252,10 @@ public class ActorManager : MonoBehaviour
     public int GetNextID(int roleId)
     {
         return _idGenSet.ContainsKey(roleId) == true ? _idGenSet[roleId].Next() : 0;
+    }
+
+    public int GetNextOrderInLayer()
+    {
+        return _orderInLayer++;
     }
 }

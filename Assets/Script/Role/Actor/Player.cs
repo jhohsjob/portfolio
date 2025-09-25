@@ -6,9 +6,7 @@ using UnityEngine.InputSystem;
 
 public class Player : Actor<Mercenary, MercenaryData>
 {
-    private Body _body;
-    
-    private Vector3 _moveDirection = Vector3.zero;
+    private Vector2 _moveDirection = Vector2.zero;
 
     private Dictionary<ElementType, int> _elements = new();
 
@@ -21,23 +19,23 @@ public class Player : Actor<Mercenary, MercenaryData>
     {
         base.Awake();
 
-        _body = transform.GetComponentInChildren<Body>();
-        _body.cbTriggerEnter += OnBodyTriggerEnter;
-
         team = Team.Player;
-}
+    }
 
     void Update()
     {
-        bool isControl = (_moveDirection != Vector3.zero && BattleManager.instance.battleStatus == BattleStatus.Run);
+        bool isControl = (_moveDirection != Vector2.zero && BattleManager.instance.battleStatus == BattleStatus.Run);
         if (isControl == true)
         {
             Move();
         }
     }
+
     public override void Init(Mercenary role)
     {
         base.Init(role);
+
+        _body.cbTriggerEnter += OnBodyTriggerEnter;
 
         // temp
         _tempSkillDatas.Add(DataManager.GetSkillData(501001));
@@ -64,32 +62,21 @@ public class Player : Actor<Mercenary, MercenaryData>
 
     protected override void Move()
     {
-        transform.rotation = Quaternion.LookRotation(_moveDirection);
-        transform.Translate(Vector3.forward * _role.moveSpeed * Time.deltaTime);
+        if (_moveDirection != Vector2.zero)
+        {
+            float angle = Mathf.Atan2(_moveDirection.y, _moveDirection.x) * Mathf.Rad2Deg;
+            _point.rotation = Quaternion.Euler(0f, 0f, angle);
+        }
+
+        transform.Translate(_moveDirection * _role.moveSpeed * Time.deltaTime);
 
         var pos = transform.position;
-        var mapSize = BattleManager.instance.mapSize;
-        if (pos.x > mapSize.x - 0.5f)
-        {
-            pos.x = mapSize.x - 0.5f;
-            transform.position = pos;
-        }
-        else if (pos.x < -mapSize.x + 0.5f)
-        {
-            pos.x = -mapSize.x + 0.5f;
-            transform.position = pos;
-        }
+        var mapBounds = BattleManager.instance.mapBounds;
 
-        if (pos.z > mapSize.z - 0.5f)
-        {
-            pos.z = mapSize.z - 0.5f;
-            transform.position = pos;
-        }
-        else if (pos.z < -mapSize.z + 0.5f)
-        {
-            pos.z = -mapSize.z + 0.5f;
-            transform.position = pos;
-        }
+        pos.x = Mathf.Clamp(pos.x, mapBounds.min.x + 0.5f, mapBounds.max.x - 0.5f);
+        pos.y = Mathf.Clamp(pos.y, mapBounds.min.y + 0.6f, mapBounds.max.y - 0.6f);
+
+        transform.position = pos;
     }
 
     protected override void Die()
@@ -135,18 +122,21 @@ public class Player : Actor<Mercenary, MercenaryData>
     // PlayerInput Send Messages
     public void OnMove(InputValue value)
     {
-        var input = value.Get<Vector2>();
-        if (input != null)
-        {
-            _moveDirection = new Vector3(input.x, 0f, input.y);
+        _moveDirection = value.Get<Vector2>();
 
-            // Debug.Log(_moveDirection);
+        _animator.SetFloat("Speed", _moveDirection == Vector2.zero ? 0f : 1f);
+        
+        if (_moveDirection.x != 0f && _sprite.flipX != _moveDirection.x < 0f)
+        {
+            _sprite.flipX = _moveDirection.x < 0f;
         }
+
+        // Debug.Log(_moveDirection);
     }
 
     private void OnBodyTriggerEnter(Body other)
     {
-        Debug.Log("OnTriggerEnter : " + other);
+        Debug.Log("OnTriggerEnter player : " + other);
 
         // 피격시 로직
         if (other.TryGetComponent(out Body body))

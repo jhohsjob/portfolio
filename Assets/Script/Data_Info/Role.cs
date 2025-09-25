@@ -21,9 +21,16 @@ public abstract class Role<TData> : RoleBase where TData : RoleData
     {
         _data = data.DeepCopy();
 
-        Client.asset.LoadAsset<GameObject>(_data.resourcePath, (task) =>
+        if (_data.body == null)
         {
-            original = task.GetAsset<GameObject>();
-        });
+            Client.asset.LoadAsset<GameObject>(_data.resourcePath, (task) =>
+            {
+                original = task.GetAsset<GameObject>();
+            });
+        }
+        else
+        {
+            original = _data.body;
+        }
     }
 }

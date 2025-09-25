@@ -38,13 +38,13 @@ public class Enemy : Actor<Monster, MonsterData>
             _spawnMapLevel = (int)data;
         }
 
-        transform.rotation = GetRotation(ref _moveDirection);
+        SetRotation(ref _moveDirection);
     }
 
     protected override void Move()
     {
-        transform.rotation = GetRotation(ref _moveDirection);
-        transform.Translate(Vector3.back * _role.moveSpeed * Time.deltaTime);
+        SetRotation(ref _moveDirection);
+        transform.Translate(_moveDirection * _role.moveSpeed * Time.deltaTime);
     }
 
     protected override void Die()
@@ -57,12 +57,15 @@ public class Enemy : Actor<Monster, MonsterData>
         base.Die();
     }
 
-    private Quaternion GetRotation(ref Vector3 direction)
+    private void SetRotation(ref Vector3 direction)
     {
         var playerPos = BattleManager.instance.battleScene.player.transform.position;
-        var dir = transform.position - playerPos;
-        dir.y = 0f;
+        var dir = playerPos - transform.position;
         direction = dir.normalized;
-        return Quaternion.LookRotation(dir);
+
+        if (_sprite.flipX != _moveDirection.x < 0f)
+        {
+            _sprite.flipX = _moveDirection.x < 0f;
+        }
     }
 }

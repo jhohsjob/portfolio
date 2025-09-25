@@ -19,7 +19,7 @@ public class Body : MonoBehaviour
         _actor = transform.parent.GetComponent<ActorBase>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         // Debug.Log("OnTriggerEnter : " + other);
 
@@ -29,12 +29,12 @@ public class Body : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerStay2D(Collider2D other)
     {
         // Debug.Log("OnTriggerStay : " + other);
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnTriggerExit2D(Collider2D other)
     {
         // Debug.Log("OnTriggerExit : " + other);
     }

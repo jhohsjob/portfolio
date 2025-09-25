@@ -5,4 +5,5 @@ using UnityEngine;
 public class ProjectileData : RoleData
 {
     public float power;
+    public float distance;
 }
