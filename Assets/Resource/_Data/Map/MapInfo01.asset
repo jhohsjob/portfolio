@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: MapInfo01
   m_EditorClassIdentifier: 
   mapName: Easy
+  map: {fileID: 8219949325511761634, guid: d04ff550ffb85a6418f7ce07a337c42d, type: 3}
   levelDatas:
   - {fileID: 11400000, guid: 6dce7cd0f101d984687f97501451a450, type: 2}
   - {fileID: 11400000, guid: d48ba0c47e5e31a419399534382f070d, type: 2}

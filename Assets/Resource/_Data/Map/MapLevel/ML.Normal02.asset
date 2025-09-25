@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5e801a5890c61f4f9b89ac20a563d7a, type: 3}
-  m_Name: ML.Easy03
+  m_Name: ML.Normal02
   m_EditorClassIdentifier: 
-  mlName: phase03
-  level: 3
-  levelupCount: -1
-  spawnCount: 3
-  respawnTime: 4
-  spawnData: {fileID: 11400000, guid: c06dd88fe14687846aaeea285dc8b0da, type: 2}
+  mlName: phase02
+  level: 2
+  levelupCount: 10
+  spawnCount: 2
+  respawnTime: 3
+  spawnData: {fileID: 11400000, guid: 587465282467b344fa188a9ce07c6a8a, type: 2}

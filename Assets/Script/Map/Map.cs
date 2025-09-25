@@ -4,36 +4,29 @@ using UnityEngine.Tilemaps;
 
 public class Map : MonoBehaviour
 {
-    [SerializeField]
     private Tilemap _plane;
 
     private void Awake()
     {
-        _plane.CompressBounds();
-
-        EventHelper.AddEventListener(EventName.MapLevelUp, OnMapLevelUp);
     }
 
     private void OnDestroy()
     {
-        EventHelper.RemoveEventListener(EventName.MapLevelUp, OnMapLevelUp);
     }
 
     public void Init()
     {
+        var map = Instantiate(BattleManager.instance.mapLevelManager.mapOriginal, transform);
+        
+        _plane = map.GetChild(0).GetComponent<Tilemap>();
+        _plane.CompressBounds();
+
         SetMapSize();
     }
 
     private void SetMapSize()
     {
         EventHelper.Send(EventName.ChangeMapSize, this, _plane.localBounds);
-    }
-
-    public void SizeChange(Vector3 end)
-    {
-        //_plane.localScale = end;
-
-        SetMapSize();
     }
 
     public Vector3 GetRandomPos(Vector3 player)
@@ -52,17 +45,5 @@ public class Map : MonoBehaviour
         } while (Vector3.Distance(pos, player) < 3f && attempts < maxAttempts);
 
         return pos;
-    }
-
-    private void OnMapLevelUp(object sender, object data)
-    {
-        if (data == null || (data is MapLevel) == false)
-        {
-            return;
-        }
-
-        var mapLevel = data as MapLevel;
-
-        // SizeChange(mapLevel.growMapSize);
     }
 }

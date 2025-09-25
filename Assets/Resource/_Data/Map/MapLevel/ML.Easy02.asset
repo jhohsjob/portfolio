@@ -14,9 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mlName: phase02
   level: 2
-  levelupCount: 6
+  levelupCount: 10
   spawnCount: 2
-  respawnTime: 3
-  growMapSize: {x: 3, y: 1, z: 3}
-  growCameraSize: 6
+  respawnTime: 4
   spawnData: {fileID: 11400000, guid: 6c4016e2275a63b4487c1519caec2b4c, type: 2}

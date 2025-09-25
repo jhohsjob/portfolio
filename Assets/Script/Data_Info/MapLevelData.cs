@@ -9,8 +9,6 @@ public class MapLevelData : ScriptableObject
     public int levelupCount;
     public int spawnCount;
     public float respawnTime;
-    public Vector3 growMapSize;
-    public int growCameraSize;
 
     public SpawnData spawnData;
 }

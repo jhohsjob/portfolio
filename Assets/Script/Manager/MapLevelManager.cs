@@ -15,6 +15,9 @@ public class MapLevelManager : MonoBehaviour
     private float _spawnTimer = 0f;
     private int _expCount = 0;
 
+    private Transform _mapOriginal;
+    public Transform mapOriginal => _mapOriginal;
+
     void Update()
     {
         if (_gameManager != null && _gameManager.battleStatus == BattleStatus.Run)
@@ -45,6 +48,8 @@ public class MapLevelManager : MonoBehaviour
             var nextData = i < datas.Count - 1 ? datas[i + 1] : null;
             mapLevels.Add(datas[i].level, new MapLevel(datas[i], nextData));
         }
+
+        _mapOriginal = mapInfoData.map;
 
         SetCurrentMap(mapLevels.First().Value);
     }

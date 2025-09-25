@@ -85,6 +85,8 @@ public class Player : Actor<Mercenary, MercenaryData>
 
         BattleOver();
 
+        _animator.SetBool("Dead", true);
+
         BattleManager.instance.SetBattleStatus(BattleStatus.BattleOver);
     }
 

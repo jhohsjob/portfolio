@@ -9,6 +9,8 @@ public class UIBattle : MonoBehaviour
     private enum PanelMode { start, run, over }
 
     [SerializeField]
+    private RectTransform _topUI;
+    [SerializeField]
     private GameObject _panelStartDirection;
     [SerializeField]
     private UIPanelBattleMain _panelBattleMain;
@@ -78,6 +80,15 @@ public class UIBattle : MonoBehaviour
         }
     }
 
+    public float GetTopUIHeight()
+    {
+        float screenHeight = Screen.height;
+        float camHeight = Camera.main.orthographicSize * 2f;
+
+        float uiRatio = _topUI.rect.height / screenHeight;
+
+        return camHeight * uiRatio;
+    }
     
     private void OnClickLobby()
     {

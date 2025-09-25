@@ -5,6 +5,8 @@ using UnityEngine;
 public class BattleScene : MonoBehaviour
 {
     [SerializeField]
+    private UIBattle _uiBattle;
+    [SerializeField]
     private Map _map;
     [SerializeField]
     private Player _player;
@@ -36,6 +38,8 @@ public class BattleScene : MonoBehaviour
         var mercenary = Client.user.GetMercenary();
         _player.Init(mercenary);
         _player.Enter();
+
+        _playerCamera.Init(_uiBattle.GetTopUIHeight());
 
         _map.Init();
 

@@ -10,18 +10,17 @@ public class PlayerCamera : MonoBehaviour
     private Transform _player;
 
     private Vector3 _movePosition = Vector3.back;
+    private float _topUIHeight;
 
     private float _zoomOutTimer = 0f;
     private float _zoomOutSpeed = 1f;
 
     private void Awake()
     {
-        EventHelper.AddEventListener(EventName.MapLevelUp, OnMapLevelUp);
     }
 
     private void OnDestroy()
     {
-        EventHelper.RemoveEventListener(EventName.MapLevelUp, OnMapLevelUp);
     }
 
     private void LateUpdate()
@@ -29,7 +28,20 @@ public class PlayerCamera : MonoBehaviour
         _movePosition.x = _player.position.x;
         _movePosition.y = _player.position.y;
 
+        var mapBounds = BattleManager.instance.mapBounds;
+
+        float camHeight = Camera.main.orthographicSize;
+        float camWidth = camHeight * Camera.main.aspect;
+
+        _movePosition.x = Mathf.Clamp(_movePosition.x, mapBounds.min.x + camWidth, mapBounds.max.x - camWidth);
+        _movePosition.y = Mathf.Clamp(_movePosition.y, mapBounds.min.y + camHeight, mapBounds.max.y - (camHeight - _topUIHeight));
+
         transform.position = _movePosition;
+    }
+
+    public  void Init(float height)
+    {
+        _topUIHeight = height;
     }
 
     public void ZoomOut(int end)
@@ -57,17 +69,5 @@ public class PlayerCamera : MonoBehaviour
         }
 
         yield return null;
-    }
-
-    private void OnMapLevelUp(object sender, object data)
-    {
-        if (data == null || (data is MapLevel) == false)
-        {
-            return;
-        }
-
-        var mapLevel = data as MapLevel;
-
-        ZoomOut(mapLevel.growCameraSize);
     }
 }

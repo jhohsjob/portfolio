@@ -6,5 +6,6 @@ using UnityEngine;
 public class MapInfoData : ScriptableObject
 {
     public string mapName;
+    public Transform map;
     public List<MapLevelData> levelDatas;
 }

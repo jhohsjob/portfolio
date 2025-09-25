@@ -17,4 +17,8 @@ MonoBehaviour:
     dropItemIds: 691e06006a1e06006b1e060051220600
     dropItemRate: 1e0000001e0000001e0000000a000000
     dropItemRateSum: 100
+  - actorId: 201002
+    dropItemIds: 691e06006a1e06006b1e060052220600
+    dropItemRate: 1e0000001e0000001e0000000a000000
+    dropItemRateSum: 100
   spawnRate: 64000000

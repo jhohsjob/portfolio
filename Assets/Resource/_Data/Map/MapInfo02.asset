@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: MapInfo02
   m_EditorClassIdentifier: 
   mapName: Normal
+  map: {fileID: 8219949325511761634, guid: 3c17a5bcb070cdf44bd45d04d9d15f99, type: 3}
   levelDatas:
-  - {fileID: 11400000, guid: 6dce7cd0f101d984687f97501451a450, type: 2}
-  - {fileID: 11400000, guid: d48ba0c47e5e31a419399534382f070d, type: 2}
-  - {fileID: 11400000, guid: 9a0b5d6622e9b714eb8831e17a3507f9, type: 2}
+  - {fileID: 11400000, guid: d1b3f201c3577fe45b89ff712adb6828, type: 2}
+  - {fileID: 11400000, guid: 5ddd50c5bd3b865479fdbddcbd3651aa, type: 2}
+  - {fileID: 11400000, guid: 3c453630416a7fc419b9b0d8f1e55f36, type: 2}

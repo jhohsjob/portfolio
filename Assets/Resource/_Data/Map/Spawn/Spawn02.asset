@@ -13,8 +13,16 @@ MonoBehaviour:
   m_Name: Spawn02
   m_EditorClassIdentifier: 
   spawnInfos:
-  - actorId: 201002
-    dropItemIds: 691e06006a1e06006b1e060052220600
+  - actorId: 201001
+    dropItemIds: 691e06006a1e06006b1e060051220600
     dropItemRate: 1e0000001e0000001e0000000a000000
+    dropItemRateSum: 100
+  - actorId: 201002
+    dropItemIds: 691e06006a1e06006b1e060051220600
+    dropItemRate: 1e0000001e0000001e0000000a000000
+    dropItemRateSum: 100
+  - actorId: 201003
+    dropItemIds: 691e06006a1e06006b1e06005122060052220600
+    dropItemRate: 1900000019000000190000000f0000000a000000
     dropItemRateSum: 100
   spawnRate: 64000000

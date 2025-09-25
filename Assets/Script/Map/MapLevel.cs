@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 
 public class MapLevel
@@ -8,8 +7,6 @@ public class MapLevel
     public int levelupCount;
     public int spawnCount;
     public float respawnTime;
-    public Vector3 growMapSize;
-    public int growCameraSize;
 
     public SpawnData spawnData;
 
@@ -24,8 +21,6 @@ public class MapLevel
         levelupCount = data.levelupCount;
         spawnCount = data.spawnCount;
         respawnTime = data.respawnTime;
-        growMapSize = data.growMapSize;
-        growCameraSize = data.growCameraSize;
         spawnData = data.spawnData;
 
         nextLevel = nextData == null ? -1 : nextData.level;
