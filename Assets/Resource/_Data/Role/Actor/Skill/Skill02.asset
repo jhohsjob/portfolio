@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b970d6b62c0a00b49bbf2d4036e75cbe, type: 3}
-  m_Name: Skill01
+  m_Name: Skill02
   m_EditorClassIdentifier: 
-  id: 501001
-  skillName: Skill01
-  behaviourScript: {fileID: 11500000, guid: 16304727df6e35a4da8919a5d58b7d59, type: 3}
+  id: 501002
+  skillName: Skill02
+  behaviourScript: {fileID: 11500000, guid: 04573d26b51b0724486f428b6dc8fbc3, type: 3}
   behaviourTypeName: 
-  projectileId: 301001
-  shotCount: 1
+  projectileId: 301002
+  shotCount: 5
   shotDelay: 0
-  reloadTime: 0.5
+  reloadTime: 1

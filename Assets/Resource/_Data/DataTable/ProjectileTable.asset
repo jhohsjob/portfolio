@@ -16,3 +16,5 @@ MonoBehaviour:
     _pairs:
     - _key: 301001
       _value: {fileID: 11400000, guid: efdb4700292203a488e3fc9dfe192774, type: 2}
+    - _key: 301002
+      _value: {fileID: 11400000, guid: e252b35a8d31e8b4c984ef10b867c100, type: 2}

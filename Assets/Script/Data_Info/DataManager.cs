@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,38 +8,54 @@ public static class DataManager
     private static Dictionary<int, SkillData> _skillData = new Dictionary<int, SkillData>();
     private static Dictionary<int, MapInfoData> _mapInfoDatas = new Dictionary<int, MapInfoData>();
 
-    public static void Load()
+    public static bool IsLoaded { get; private set; }
+
+    private static int _pendingCount = 0;
+    private static Action _onComplete;
+
+    public static void Load(Action callback)
     {
         Debug.Log("GameTable.Load");
 
-        Client.asset.LoadAsset<MercenaryTable>("MercenaryTable", (task) =>
-        {
-            MercenaryHander.instance.Init(task.GetAsset<MercenaryTable>().table);
-        });
+        IsLoaded = false;
+        _pendingCount = 0;
+        _onComplete = callback;
 
-        Client.asset.LoadAsset<MonsterTable>("MonsterTable", (task) =>
-        {
-            MonsterHander.instance.Init(task.GetAsset<MonsterTable>().table);
-        });
+        Load<MercenaryTable>("MercenaryTable",table => MercenaryHander.instance.Init(table.table));
 
-        Client.asset.LoadAsset<ProjectileTable>("ProjectileTable", (task) =>
-        {
-            ProjectileHander.instance.Init(task.GetAsset<ProjectileTable>().table);
-        });
+        Load<MonsterTable>("MonsterTable",table => MonsterHander.instance.Init(table.table));
 
-        Client.asset.LoadAsset<DropItemTable>("DropItemTable", (task) =>
-        {
-            DropItemHander.instance.Init(task.GetAsset<DropItemTable>().table);
-        });
+        Load<ProjectileTable>("ProjectileTable",table => ProjectileHander.instance.Init(table.table));
 
-        Client.asset.LoadAsset<SkillTable>("SkillTable", (task) =>
-        {
-            _skillData = task.GetAsset<SkillTable>().table;
-        });
+        Load<DropItemTable>("DropItemTable",table => DropItemHander.instance.Init(table.table));
 
-        Client.asset.LoadAsset<MapInfoTable>("MapInfoTable", (task) =>
+        Load<SkillTable>("SkillTable",table => _skillData = table.table);
+
+        Load<MapInfoTable>("MapInfoTable",table => _mapInfoDatas = table.table);
+    }
+
+    private static void Load<T>(string address, Action<T> callback) where T : UnityEngine.Object
+    {
+        _pendingCount++;
+
+        Client.asset.LoadAsset<T>(address, task =>
         {
-            _mapInfoDatas = task.GetAsset<MapInfoTable>().table;
+            var asset = task.GetAsset<T>();
+            if (asset != null)
+            {
+                callback?.Invoke(asset);
+            }
+            else
+            {
+                Debug.LogError("Data Load Failed");
+            }
+
+            _pendingCount--;
+            if (_pendingCount == 0)
+            {
+                IsLoaded = true;
+                _onComplete?.Invoke();
+            }
         });
     }
 

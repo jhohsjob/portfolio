@@ -15,7 +15,10 @@ MonoBehaviour:
   id: 401002
   roleName: Forest
   roleDescription: 
-  resourcePath: Element.Forest
+  behaviourScript: {fileID: 11500000, guid: 599e6f1db6e654044a36e3ed35d7f75c, type: 3}
+  behaviourTypeName: 
+  resourcePath: 
+  body: {fileID: 3093370748363751238, guid: 83210ec43418d41469a7bc07e3047d7d, type: 3}
   resourceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 0
   elementType: 1

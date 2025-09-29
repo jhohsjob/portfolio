@@ -9,16 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db00efd0bdbdde143b799af820571b2b, type: 3}
-  m_Name: Element.Water
+  m_Script: {fileID: 11500000, guid: cca1a56654c773f47850467d9ed3d779, type: 3}
+  m_Name: 2DProjectile02
   m_EditorClassIdentifier: 
-  id: 401001
-  roleName: Water
+  id: 301002
+  roleName: Projectile02
   roleDescription: 
-  behaviourScript: {fileID: 11500000, guid: 599e6f1db6e654044a36e3ed35d7f75c, type: 3}
+  behaviourScript: {fileID: 11500000, guid: f9eb3cd69fb26b04486f64fbed24a5a7, type: 3}
   behaviourTypeName: 
   resourcePath: 
-  body: {fileID: 7458564200767833722, guid: 1ff746954e5f2984f89380e24089a964, type: 3}
+  body: {fileID: 8193831111808689357, guid: 612730b8fb3287e4c854bd60ce102938, type: 3}
   resourceOffset: {x: 0, y: 0, z: 0}
-  moveSpeed: 0
-  elementType: 0
+  moveSpeed: 10
+  power: 1
+  distance: 2

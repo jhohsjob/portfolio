@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -38,12 +39,11 @@ public class Player : Actor<Mercenary, MercenaryData>
         _body.cbTriggerEnter += OnBodyTriggerEnter;
 
         // temp
-        _tempSkillDatas.Add(DataManager.GetSkillData(501001));
+        _tempSkillDatas.Add(role.skillData);
 
         foreach (var tempSkillData in _tempSkillDatas)
         {
-            var type = Type.GetType(tempSkillData.behaviourName);
-            var skill = (new GameObject(tempSkillData.skillName)).AddComponent(type) as Skill;
+            var skill = (new GameObject(tempSkillData.skillName)).AddComponent(tempSkillData.behaviourType) as Skill;
             skill.transform.SetParent(transform, false);
             skill.Init(this, tempSkillData);
         }

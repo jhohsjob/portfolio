@@ -40,6 +40,7 @@ public class IDGenerator
 public class ActorManager : MonoBehaviour
 {
     private BattleManager _gameManager = null;
+    private ActorFactory _actorFactory = null;
 
     /// <summary> key : role id </summary>
     private Dictionary<int, Queue<ActorBase>> _pool = new Dictionary<int, Queue<ActorBase>>();
@@ -48,12 +49,11 @@ public class ActorManager : MonoBehaviour
     /// <summary> key : role id </summary>
     private Dictionary<int, IDGenerator> _idGenSet = new Dictionary<int, IDGenerator>();
 
-    private Dictionary<int, AssetLoadingTask> _tasks = new Dictionary<int, AssetLoadingTask>();
-
     private int _orderInLayer;
 
     private void Awake()
     {
+        _actorFactory = new ActorFactory();
     }
 
     public void Init(BattleManager gameManager)
@@ -124,102 +124,10 @@ public class ActorManager : MonoBehaviour
 
     private void AddPool<TData>(Role<TData> role) where TData : RoleData
     {
-        switch (role)
-        {
-            case Monster:
-                if (_tasks.ContainsKey(role.id) == true)
-                {
-                    var original = _tasks[role.id].GetAsset<GameObject>().GetComponent<ActorBase>();
-
-                    InstantiateActor(role, original);
-                }
-                else
-                {
-                    Client.asset.LoadAsset<GameObject>("Enemy", (task) =>
-                    {
-                        _tasks.Add(role.id, task);
-
-                        var original = task.GetAsset<GameObject>().GetComponent<ActorBase>();
-
-                        InstantiateActor(role, original);
-                    });
-                }
-                break;
-
-            case Projectile:
-                if (_tasks.ContainsKey(role.id) == true)
-                {
-                    var original = _tasks[role.id].GetAsset<GameObject>().GetComponent<ActorBase>();
-
-                    InstantiateActor(role, original);
-                }
-                else
-                {
-                    Client.asset.LoadAsset<GameObject>("2DProjectile", (task) =>
-                    {
-                        _tasks.Add(role.id, task);
-
-                        var original = task.GetAsset<GameObject>().GetComponent<ActorBase>();
-
-                        InstantiateActor(role, original);
-                    });
-                }
-                break;
-
-            case DIElement:
-                if (_tasks.ContainsKey(role.id) == true)
-                {
-                    var original = _tasks[role.id].GetAsset<GameObject>().GetComponent<ActorBase>();
-
-                    InstantiateActor(role, original);
-                }
-                else
-                {
-                    Client.asset.LoadAsset<GameObject>("DIElement", (task) =>
-                    {
-                        _tasks.Add(role.id, task);
-
-                        var original = task.GetAsset<GameObject>().GetComponent<ActorBase>();
-
-                        InstantiateActor(role, original);
-                    });
-                }
-                break;
-
-            case DIGold:
-                if (_tasks.ContainsKey(role.id) == true)
-                {
-                    var original = _tasks[role.id].GetAsset<GameObject>().GetComponent<ActorBase>();
-
-                    InstantiateActor(role, original);
-                }
-                else
-                {
-                    Client.asset.LoadAsset<GameObject>("DIGold", (task) =>
-                    {
-                        _tasks.Add(role.id, task);
-
-                        var original = task.GetAsset<GameObject>().GetComponent<ActorBase>();
-
-                        InstantiateActor(role, original);
-                    });
-                }
-                break;
-
-            default:
-                Debug.Assert(true);
-                break;
-        }
-    }
-
-    private void InstantiateActor<TData>(Role<TData> role, ActorBase original) where TData : RoleData
-    {
         for (int i = 0; i < 10; i++)
         {
-            var wait = Instantiate(original, _container[role.id].transform);
-            wait.InitBase(role);
-
-            _pool[role.id].Enqueue(wait);
+            var actor = _actorFactory.CreateActor(role, _container[role.id].transform);
+            _pool[role.id].Enqueue(actor);
         }
     }
 

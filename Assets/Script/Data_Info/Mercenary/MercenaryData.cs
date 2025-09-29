@@ -5,14 +5,5 @@ using UnityEngine;
 public class MercenaryData : RoleData
 {
     public float maxHP;
-
-    public override void Init(RoleData data)
-    {
-        base.Init(data);
-
-        if (data is MercenaryData actorData)
-        {
-            maxHP = actorData.maxHP;
-        }
-    }
+    public SkillData skillData;
 }

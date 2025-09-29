@@ -55,7 +55,7 @@ public class Skill : MonoBehaviour
         StartCoroutine(coShot());
     }
 
-    protected IEnumerator coShot()
+    protected virtual IEnumerator coShot()
     {
         for (int i = 0; i < shotCount; i++)
         {

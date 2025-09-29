@@ -14,11 +14,6 @@ public class Storage
     {
     }
 
-    public void RunGame(Action<bool> callback)
-    {
-        Load(callback);
-    }
-
     public void Save(GameSaveData data)
     {
         try
@@ -37,13 +32,13 @@ public class Storage
             
             this.data = data;
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
-            Debug.LogError("save failed : " + ex);
+            Debug.LogError("Storage Save Failed : " + ex);
         }
     }
 
-    public void Load(Action<bool> callback)
+    public void Load(Action callback)
     {
         try
         {
@@ -58,7 +53,7 @@ public class Storage
 
                     Save(data);
 
-                    callback.Invoke(true);
+                    callback?.Invoke();
                 });
             }
             else
@@ -66,14 +61,12 @@ public class Storage
                 string json = File.ReadAllText(_savePath);
                 data = JsonUtility.FromJson<GameSaveData>(json);
 
-                callback.Invoke(true);
+                callback?.Invoke();
             }
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
-            Debug.LogError("load failed : " + ex);
-
-            callback.Invoke(false);
+            Debug.LogError("Storage Load Failed : " + ex);
         }
     }
 

@@ -1,15 +1,25 @@
+using System;
+
+
 public class LoadManager
 {
-    private static bool isLoad = false;
-
-    public static void Load()
+    public static void Load(Action callback)
     {
-        if (isLoad == true)
-        {
-            return;
-        }
-        isLoad = true;
+        LoadData(() => LoadStorage(() => LoadComplete(callback)));
+    }
 
-        DataManager.Load();
+    private static void LoadData(Action callback)
+    {
+        DataManager.Load(() => { callback?.Invoke(); });
+    }
+
+    private static void LoadStorage(Action callback)
+    {
+        Client.storage.Load(() => { callback?.Invoke(); });
+    }
+
+    private static void LoadComplete(Action callback)
+    {
+        callback?.Invoke();
     }
 }

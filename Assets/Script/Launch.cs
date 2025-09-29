@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -5,14 +6,30 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class Launch : MonoBehaviour
 {
-    void Start()
-    {
-        DontDestroyOnLoad(gameObject);
+    private static Launch _instance;
 
-        InitializeAddressable();
+    void Awake()
+    {
+        if (_instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        _instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
-    private void InitializeAddressable()
+    void Start()
+    {
+        var client = new Client();
+
+        PopupManager.Initialization();
+
+        InitializeAddressable(() => InitializeLoad(() => InitializeComplete(client)));
+    }
+
+    private void InitializeAddressable(Action callback)
     {
         Addressables.InitializeAsync().Completed += (data) =>
         {
@@ -22,7 +39,7 @@ public class Launch : MonoBehaviour
             {
                 Debug.Log("InitializeAddressable Succeeded LocatorId : " + data.Result.LocatorId);
 
-                InitializeComplete();
+                callback?.Invoke();
             }
             else
             {
@@ -31,8 +48,16 @@ public class Launch : MonoBehaviour
         };
     }
 
-    private void InitializeComplete()
+    private void InitializeLoad(Action callback)
     {
-        new Client().RunGame();
+        LoadManager.Load(() =>
+        {
+            callback?.Invoke();
+        });
+    }
+
+    private void InitializeComplete(Client client)
+    {
+        client?.RunGame();
     }
 }

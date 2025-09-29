@@ -4,36 +4,21 @@ public class Client
     public static Storage storage { get; private set; }
     public static User user { get; private set; }
 
+    public static bool isRunGame { get; private set; }
+
     public Client()
     {
         asset = new AssetsManager();
         storage = new Storage();
         user = new User();
+
+        isRunGame = false;
     }
 
     public void RunGame()
     {
-        storage.RunGame(result =>
-        {
-            if (result == true)
-            {
-                user.RunGame();
-            }
-            else
-            {
-                RunFailed();
-            }
-        });
+        user.RunGame();
 
-        PopupManager.Initialization();
-
-        LoadManager.Load();
-
-        EventHelper.Send(EventName.LoadEnd, this);
-    }
-
-    private void RunFailed()
-    {
-        // todo
+        isRunGame = true;
     }
 }

@@ -15,11 +15,6 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 079ada1163bc33d4a89d8e93b5592962
   m_SerializeEntries:
-  - m_GUID: 03baa216816d8e44ca9df4148da24216
-    m_Address: DIGold
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0c5445d415c30404b840ec903ea05598
     m_Address: HardMap
     m_ReadOnly: 0
@@ -27,11 +22,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0d166b79ff90017489897da834a08695
     m_Address: Assets/Resource/Animations
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0d360f129d1e7fa479bcb406c6505974
-    m_Address: DIElement
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -87,11 +77,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 63b8e44948ce7b24a80a90c610afc541
     m_Address: Prefabs
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 675792fc0cc5bff4fb38fc9b26f695bd
-    m_Address: 2DProjectile
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -152,11 +137,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e027f8acaeb93c34d98142da2c567bf4
     m_Address: Gold.10
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e11ae4db4f39e4b4788aaa642d9738af
-    m_Address: Enemy
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
