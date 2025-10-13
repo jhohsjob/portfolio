@@ -55,5 +55,7 @@ public static class SceneLoader
         
         yield return null;
         BattleManager.instance.DestroySingleton();
+
+        EventHelper.Send(EventName.ChangeGold);
     }
 }
