@@ -10,4 +10,6 @@ public static class EventName
     public static readonly string EnemyDieEnd = "EnemyDieEnd";
     public static readonly string AddElement = "AddElement";
     public static readonly string AddGold = "AddGold";
+
+    public static readonly string ClickBtnDash = "ClickBtnDash";
 }

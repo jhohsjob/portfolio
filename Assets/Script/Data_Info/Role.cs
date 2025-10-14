@@ -13,7 +13,7 @@ public abstract class Role<TData> : RoleBase where TData : RoleData
     public string description => _data.roleDescription;
     public int atk => 0;
     public float moveSpeed => _data.moveSpeed;
-
+    
     public Type behaviourType => _data.behaviourType;
     public string resourcePath => _data.resourcePath;
     public Vector3 resourceOffset => _data.resourceOffset;

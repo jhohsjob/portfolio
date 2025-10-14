@@ -33,3 +33,13 @@ public enum ElementType
     Forest,
     Fire
 }
+
+[System.Flags]
+public enum ActorState
+{
+    None = 0,
+    Idle = 1 << 0,
+    Move = 1 << 1,
+    Dash = 1 << 2,
+    Die = 1 << 3,
+}

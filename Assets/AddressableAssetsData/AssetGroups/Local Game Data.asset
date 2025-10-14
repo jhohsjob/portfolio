@@ -105,6 +105,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ce55bc2f58a47d45a724fa6f272188e
+    m_Address: DashMat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8d06add70b661a046a3e9bb7e9ce90b6
     m_Address: MapInfo03
     m_ReadOnly: 0

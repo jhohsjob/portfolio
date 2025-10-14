@@ -23,3 +23,5 @@ MonoBehaviour:
   moveSpeed: 3
   maxHP: 10
   skillData: {fileID: 11400000, guid: e140c1f6322db304eaa5c5e3b288b482, type: 2}
+  dashCount: 1
+  dashCooldown: 5

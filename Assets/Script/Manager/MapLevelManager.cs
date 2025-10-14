@@ -20,7 +20,7 @@ public class MapLevelManager : MonoBehaviour
 
     void Update()
     {
-        if (_gameManager != null && _gameManager.battleStatus == BattleStatus.Run)
+        if (_gameManager != null && _gameManager.IsBattleRun())
         {
             _spawnTimer += Time.deltaTime;
 

@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,8 +6,12 @@ using UnityEngine.InputSystem;
 public class Player : Actor<Mercenary, MercenaryData>
 {
     private Vector2 _moveDirection = Vector2.zero;
+    private Vector2 _lookDirection = Vector2.right;
 
     private Dictionary<ElementType, int> _elements = new();
+
+    private DashController _dash;
+    public DashController dash => _dash;
 
     // temp
     private List<SkillData> _tempSkillDatas = new();
@@ -21,12 +23,24 @@ public class Player : Actor<Mercenary, MercenaryData>
         base.Awake();
 
         team = Team.Player;
+
+        _dash = new DashController();
+
+        _state.OnStateChanged += OnStateChanged;
+
+        EventHelper.AddEventListener(EventName.ClickBtnDash, OnClickBtnDash);
+    }
+
+    private void OnDestroy()
+    {
+        EventHelper.RemoveEventListener(EventName.ClickBtnDash, OnClickBtnDash);
     }
 
     void Update()
     {
-        bool isControl = (_moveDirection != Vector2.zero && BattleManager.instance.battleStatus == BattleStatus.Run);
-        if (isControl == true)
+        _dash.Update(Time.deltaTime);
+
+        if (_state.HasState(ActorState.Move))
         {
             Move();
         }
@@ -49,6 +63,8 @@ public class Player : Actor<Mercenary, MercenaryData>
         }
 
         _elements.Clear();
+
+        _dash.Init(_role.dashSpeed, _role.dashCount, _role.dashCooldown, _sprite);
 
         _gainGold = 0;
     }
@@ -124,16 +140,39 @@ public class Player : Actor<Mercenary, MercenaryData>
     // PlayerInput Send Messages
     public void OnMove(InputValue value)
     {
+        if (BattleManager.instance.IsBattleRun() == false)
+        {
+            return;
+        }
+
         _moveDirection = value.Get<Vector2>();
+        if (_moveDirection != Vector2.zero)
+        {
+            _lookDirection = _moveDirection;
+        }
 
         _animator.SetFloat("Speed", _moveDirection == Vector2.zero ? 0f : 1f);
-        
+
         if (_moveDirection.x != 0f && _sprite.flipX != _moveDirection.x < 0f)
         {
             _sprite.flipX = _moveDirection.x < 0f;
         }
 
+        _state.SetState(_moveDirection == Vector2.zero ? ActorState.Idle : ActorState.Move);
+
         // Debug.Log(_moveDirection);
+    }
+
+    // PlayerInput Send Messages
+    public void OnDash(InputValue value)
+    {
+        if (BattleManager.instance.IsBattleRun() == false ||
+            _dash.canDash == false)
+        {
+            return;
+        }
+
+        _state.SetState(ActorState.Dash);
     }
 
     private void OnBodyTriggerEnter(Body other)
@@ -145,12 +184,41 @@ public class Player : Actor<Mercenary, MercenaryData>
         {
             if (body.actor is Enemy enemy)
             {
-                Die();
+                _state.SetState(ActorState.Die);
             }
             else if (body.actor is ICollectableDropItem collectableDropItem)
             {
                 collectableDropItem.OnCollectedByPlayer(this);
             }
         }
+    }
+
+    private void OnStateChanged(ActorState state)
+    {
+        if (state == ActorState.Dash)
+        {
+            _collider.enabled = false;
+            _dash.Dash(transform, _lookDirection, () =>
+            {
+                _collider.enabled = true;
+                _state.SetState(_moveDirection == Vector2.zero ? ActorState.Idle : ActorState.Move);
+            });
+        }
+        else if (state == ActorState.Die)
+        {
+            Die();
+        }
+
+        Debug.Log("state change : " + state);
+    }
+
+    private void OnClickBtnDash(object sender, object data)
+    {
+        if (_dash.canDash == false)
+        {
+            return;
+        }
+
+        _state.SetState(ActorState.Dash);
     }
 }

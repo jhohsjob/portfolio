@@ -19,7 +19,7 @@ public class Skill : MonoBehaviour
 
     void Update()
     {
-        if (BattleManager.instance.battleStatus == BattleStatus.Run)
+        if (BattleManager.instance.IsBattleRun())
         {
             _shotTimer += Time.deltaTime;
 

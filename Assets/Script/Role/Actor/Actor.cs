@@ -11,11 +11,12 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
     protected SpriteRenderer _sprite;
     protected FlashShader _flashShader;
     protected Animator _animator;
-    protected BoxCollider2D _collider;
+    protected Collider2D _collider;
 
     public int ID { get; private set; }
 
     protected TRole _role { get; private set; }
+    protected ActorStateController _state;
 
     protected HP _hp { get; set; }
 
@@ -37,6 +38,8 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
     {
         _hp = new HP();
         _skillList = new List<Skill>();
+
+        _state = new ActorStateController();
     }
 
     public override void InitBase<T>(Role<T> role)
@@ -57,7 +60,7 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
         _sprite = body.GetComponent<SpriteRenderer>();
         _flashShader = body.GetComponent<FlashShader>();
         _animator = body.GetComponent<Animator>();
-        _collider = body.GetComponent<BoxCollider2D>();
+        _collider = body.GetComponent<Collider2D>();
         if (_collider != null) _collider.enabled = false;
     }
 
@@ -70,6 +73,9 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
 
     public virtual void Enter(object data = null)
     {
+        _state.Clear();
+        _state.SetState(ActorState.Idle);
+
         SetID(BattleManager.instance.actorManager.GetNextID(_role.id));
 
         if (_sprite != null)
@@ -103,6 +109,8 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
 
     protected virtual void Die()
     {
+        _state.SetState(ActorState.Die);
+
         SetID(0);
 
         if (_collider != null) _collider.enabled = false;

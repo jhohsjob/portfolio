@@ -17,7 +17,7 @@ public class BattleManager : MonoSingleton<BattleManager>
     public DropItemManager dropItemManager;
     public MapLevelManager mapLevelManager;
 
-    public BattleStatus battleStatus { get; private set; } = BattleStatus.None;
+    private BattleStatus _battleStatus { get; set; } = BattleStatus.None;
     
     public Bounds mapBounds { get; private set; }
 
@@ -70,9 +70,9 @@ public class BattleManager : MonoSingleton<BattleManager>
 
     public void SetBattleStatus(BattleStatus status)
     {
-        battleStatus = status;
+        _battleStatus = status;
 
-        switch (battleStatus)
+        switch (_battleStatus)
         {
             case BattleStatus.Run:
                 Time.timeScale = 1f;
@@ -86,7 +86,12 @@ public class BattleManager : MonoSingleton<BattleManager>
                 break;
         }
 
-        EventHelper.Send(EventName.BattleStatus, this, battleStatus);
+        EventHelper.Send(EventName.BattleStatus, this, _battleStatus);
+    }
+
+    public bool IsBattleRun()
+    {
+        return _battleStatus == BattleStatus.Run;
     }
 
     private void OnChangeMapSize(object sender, object data)

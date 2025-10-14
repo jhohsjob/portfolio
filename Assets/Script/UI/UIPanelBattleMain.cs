@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class UIPanelBattleMain : UIPanel
@@ -13,9 +14,17 @@ public class UIPanelBattleMain : UIPanel
     private TextMeshProUGUI _txtElementForest;
     [SerializeField]
     private TextMeshProUGUI _txtElementFire;
-    
+    [SerializeField]
+    private Button _btnDash;
+    [SerializeField]
+    private Image _dashCooldown;
+
+    private Player _player;
+
     protected override void Awake()
     {
+        _btnDash.onClick.AddListener(OnButtonDash);
+
         EventHelper.AddEventListener(EventName.EnemyDieEnd, OnEnemyDieEnd);
         EventHelper.AddEventListener(EventName.AddElement, OnAddElement);
     }
@@ -24,6 +33,23 @@ public class UIPanelBattleMain : UIPanel
     {
         EventHelper.RemoveEventListener(EventName.EnemyDieEnd, OnEnemyDieEnd);
         EventHelper.RemoveEventListener(EventName.AddElement, OnAddElement);
+    }
+
+    private void Update()
+    {
+        if (BattleManager.instance.IsBattleRun() == false)
+        {
+            return;
+        }
+
+        if (_player == null)
+        {
+            _player = BattleManager.instance.battleScene.player;
+        }
+
+        float ratio = (_player?.dash?.isOnCooldown ?? false) ? (_player?.dash?.cooldownTimer ?? 0f) / (_player?.dash?.cooldownDuration ?? 1f) : 0f;
+
+        _dashCooldown.fillAmount = ratio;
     }
 
     private void OnEnemyDieEnd(object sender, object data)
@@ -60,5 +86,15 @@ public class UIPanelBattleMain : UIPanel
                     break;
             }
         }
+    }
+
+    private void OnButtonDash()
+    {
+        if (_player?.dash.canDash == false)
+        {
+            return;
+        }
+
+        EventHelper.Send(EventName.ClickBtnDash);
     }
 }

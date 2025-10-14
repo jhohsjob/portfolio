@@ -20,7 +20,7 @@ public class Enemy : Actor<Monster, MonsterData>
 
     private void Update()
     {
-        bool isControl = (_moveDirection != Vector3.zero && BattleManager.instance.battleStatus == BattleStatus.Run);
+        bool isControl = _moveDirection != Vector3.zero && BattleManager.instance.IsBattleRun();
         if (isControl == true)
         {
             Move();

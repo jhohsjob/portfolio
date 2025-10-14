@@ -15,10 +15,13 @@ MonoBehaviour:
   id: 101002
   roleName: Mercenary02
   roleDescription: Cube
-  behaviourName: 
+  behaviourScript: {fileID: 0}
+  behaviourTypeName: 
   resourcePath: 
   body: {fileID: 8193831111808689357, guid: 6f60b82e82e3fb4499fb4786a8f9e871, type: 3}
   resourceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 3
   maxHP: 10
   skillData: {fileID: 11400000, guid: e140c1f6322db304eaa5c5e3b288b482, type: 2}
+  dashCount: 2
+  dashCooldown: 7

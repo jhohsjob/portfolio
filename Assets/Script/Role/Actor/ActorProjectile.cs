@@ -10,6 +10,7 @@ public class ActorProjectile : Actor<Projectile, ProjectileData>
 
     protected override void Awake()
     {
+        base.Awake();
     }
 
     void Update()
