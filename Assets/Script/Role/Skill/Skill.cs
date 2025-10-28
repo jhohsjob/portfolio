@@ -9,31 +9,29 @@ public class Skill : MonoBehaviour
     public int ID { get; private set; }
     public string NAME { get; private set; }
 
-    protected int shotCount { get; private set; }
-    protected float shotDelay { get; private set; }
-    protected float reloadTime { get; private set; }
-    protected int projectileId { get; private set; }
+    protected int _shotCount { get; private set; }
+    protected float _shotDelay { get; private set; }
+    protected float _reloadTime { get; private set; }
+    protected ProjectileData[] _projectileData { get; private set; }
 
     protected float _shotTimer = 0f;
-    protected int _shotCount = 0;
 
-    void Update()
+    public virtual void Update()
     {
         if (BattleManager.instance.IsBattleRun())
         {
             _shotTimer += Time.deltaTime;
 
-            if (_shotTimer >= reloadTime)
+            if (_shotTimer >= _reloadTime)
             {
                 _shotTimer = 0f;
-                _shotCount++;
 
                 Shot();
             }
         }
     }
 
-    public void Init(ActorBase actor, SkillData data)
+    public virtual void Init(ActorBase actor, SkillData data)
     {
         _actor = actor;
 
@@ -42,12 +40,15 @@ public class Skill : MonoBehaviour
 
         ID = data.id;
         NAME = data.name;
-        shotCount = data.shotCount;
-        shotDelay = data.shotDelay;
-        reloadTime = data.reloadTime;
-        projectileId = data.projectileId;
+        _shotCount = data.shotCount;
+        _shotDelay = data.shotDelay;
+        _reloadTime = data.reloadTime;
+        _projectileData = data.projectileData;
 
-        BattleManager.instance.actorManager.InitProjectile(projectileId);
+        foreach (var item in _projectileData)
+        {
+            BattleManager.instance.actorManager.InitProjectile(item.id);
+        }
     }
 
     protected void Shot()
@@ -57,15 +58,15 @@ public class Skill : MonoBehaviour
 
     protected virtual IEnumerator coShot()
     {
-        for (int i = 0; i < shotCount; i++)
+        for (int i = 0; i < _shotCount; i++)
         {
-            var role = ProjectileHander.instance.GetProjectileById(projectileId);
+            var role = ProjectileHander.instance.GetProjectileById(_projectileData[0].id);
             var parent = BattleManager.instance.battleScene.actorContainer;
             var position = _actor.point.GetChild(0).transform.position;
             var projectile = BattleManager.instance.actorManager.GetActor(role, parent, position) as ActorProjectile;
             projectile.Shot(_actor);
 
-            yield return new WaitForSeconds(shotDelay);
+            yield return new WaitForSeconds(_shotDelay);
         }
 
         yield return null;

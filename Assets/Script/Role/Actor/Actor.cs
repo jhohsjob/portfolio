@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +9,6 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
     [SerializeField]
     protected Transform _point;
     protected Body _body;
-    protected SpriteRenderer _sprite;
     protected FlashShader _flashShader;
     protected Animator _animator;
     protected Collider2D _collider;
@@ -16,9 +16,18 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
     public int ID { get; private set; }
 
     protected TRole _role { get; private set; }
+    public TRole role => _role;
     protected ActorStateController _state;
+    public ActorStateController state => _state;
 
     protected HP _hp { get; set; }
+
+    public List<Skill> _skillList { get; set; }
+
+    public override Transform point => _point;
+    public override int roleId => _role.id;
+    public override float HP => _hp.currentHP;
+    public override float maxHP => _hp.maxHP;
 
     protected Action<ChangeHPData> _cbChangeHP;
     public override event Action<ChangeHPData> cbChangeHP
@@ -27,12 +36,12 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
         remove { _cbChangeHP -= value; }
     }
 
-    public List<Skill> _skillList { get; set; }
-
-    public override Transform point => _point;
-    public override int roleId => _role.id;
-    public override float HP => _hp.currentHP;
-    public override float maxHP => _hp.maxHP;
+    protected Action<ActorBase> _cbDie;
+    public override event Action<ActorBase> cbDie
+    {
+        add { _cbDie -= value; _cbDie += value; }
+        remove { _cbDie -= value; }
+    }
 
     protected virtual void Awake()
     {
@@ -56,8 +65,8 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
 
         body.AddComponent<RenderCheck>();
         _body = body.AddComponent<Body>();
+        _body.Init(this);
 
-        _sprite = body.GetComponent<SpriteRenderer>();
         _flashShader = body.GetComponent<FlashShader>();
         _animator = body.GetComponent<Animator>();
         _collider = body.GetComponent<Collider2D>();
@@ -75,13 +84,11 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
     {
         _state.Clear();
         _state.SetState(ActorState.Idle);
+        _state.OnStateChanged += OnStateChanged;
 
         SetID(BattleManager.instance.actorManager.GetNextID(_role.id));
 
-        if (_sprite != null)
-        {
-            _sprite.sortingOrder = BattleManager.instance.actorManager.GetNextOrderInLayer();
-        }
+        _body.Enter(_role.roleType);
 
         if (_collider != null) _collider.enabled = true;
     }
@@ -107,12 +114,35 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
 
     protected virtual void Move() { }
 
+    public void ResetCollider()
+    {
+        StartCoroutine(coResetCollider());
+    }
+
+    IEnumerator coResetCollider()
+    {
+        if (_collider != null) _collider.enabled = false;
+        yield return null;
+        if (_collider != null) _collider.enabled = true;
+    }
+
+    protected virtual void DieAfter()
+    {
+        _cbDie?.Invoke(this);
+    }
+
     protected virtual void Die()
     {
-        _state.SetState(ActorState.Die);
-
         SetID(0);
 
         if (_collider != null) _collider.enabled = false;
+    }
+
+    protected virtual void OnStateChanged(ActorState state)
+    {
+        if (state == ActorState.Die)
+        {
+            Die();
+        }
     }
 }

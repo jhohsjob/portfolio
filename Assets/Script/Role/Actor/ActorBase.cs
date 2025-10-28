@@ -10,6 +10,7 @@ public abstract class ActorBase : MonoBehaviour
     public abstract float HP { get; }
     public abstract float maxHP { get; }
     public abstract event Action<ChangeHPData> cbChangeHP;
+    public abstract event Action<ActorBase> cbDie;
 
     public abstract void InitBase<TData>(Role<TData> role) where TData : RoleData;
     public abstract void BeHit(float damage);

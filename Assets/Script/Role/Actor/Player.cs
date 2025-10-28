@@ -26,8 +26,6 @@ public class Player : Actor<Mercenary, MercenaryData>
 
         _dash = new DashController();
 
-        _state.OnStateChanged += OnStateChanged;
-
         EventHelper.AddEventListener(EventName.ClickBtnDash, OnClickBtnDash);
     }
 
@@ -64,7 +62,7 @@ public class Player : Actor<Mercenary, MercenaryData>
 
         _elements.Clear();
 
-        _dash.Init(_role.dashSpeed, _role.dashCount, _role.dashCooldown, _sprite);
+        _dash.Init(_role.dashSpeed, _role.dashCount, _role.dashCooldown, _body.sprite);
 
         _gainGold = 0;
     }
@@ -153,9 +151,9 @@ public class Player : Actor<Mercenary, MercenaryData>
 
         _animator.SetFloat("Speed", _moveDirection == Vector2.zero ? 0f : 1f);
 
-        if (_moveDirection.x != 0f && _sprite.flipX != _moveDirection.x < 0f)
+        if (_moveDirection.x != 0f)
         {
-            _sprite.flipX = _moveDirection.x < 0f;
+            _body.FlipX(_moveDirection.x);
         }
 
         _state.SetState(_moveDirection == Vector2.zero ? ActorState.Idle : ActorState.Move);
@@ -193,7 +191,7 @@ public class Player : Actor<Mercenary, MercenaryData>
         }
     }
 
-    private void OnStateChanged(ActorState state)
+    protected override void OnStateChanged(ActorState state)
     {
         if (state == ActorState.Dash)
         {

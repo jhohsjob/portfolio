@@ -25,23 +25,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 14d2f1fa6dfb1b840aa4076c28cf6fd9
-    m_Address: Gold.100
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 193609839bef2e74e8d1e24bd9e34924
-    m_Address: Gold.10 1
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1b364b7d47deaa04e8ea2ac6fde8777b
-    m_Address: SphereMonster
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1c6bc6d7f22683946a4567a5a256a5c9
-    m_Address: CubeMonster
+    m_Address: 2DGold.10
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -57,21 +42,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3c17a5bcb070cdf44bd45d04d9d15f99
     m_Address: NormalMap
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3de03afbcdb4814419cbc6fea05a3cc6
-    m_Address: SphereProjectile
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 453818fc9816fe04d9ea7a08746c1902
-    m_Address: Mercenary02
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5967ed7616ede784b96feea8d652e5ba
-    m_Address: Mercenary01
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -95,6 +65,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ce55bc2f58a47d45a724fa6f272188e
+    m_Address: DashMat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 919ca2c534bd7e4489af80b0ebcd2f26
     m_Address: HPBar
     m_ReadOnly: 0
@@ -110,16 +85,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9c025fd457d38ad43be2dc32afccc1df
-    m_Address: Gold.20
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ae6fe03e29cc3144688aba7c0cd946da
-    m_Address: Mercenary03
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ba7f59866229b444e975918b4fa1a2fc
     m_Address: Element.Fire
     m_ReadOnly: 0
@@ -132,11 +97,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dc55dc713d11d3448bd3ce85960f228e
     m_Address: 2DGold.20
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e027f8acaeb93c34d98142da2c567bf4
-    m_Address: Gold.10
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

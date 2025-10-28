@@ -21,7 +21,8 @@ MonoBehaviour:
   body: {fileID: 8193831111808689357, guid: 2c940298843c92a4c8ebed2479ec3d3b, type: 3}
   resourceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 3
+  roleType: 4000
   maxHP: 10
-  skillData: {fileID: 11400000, guid: e140c1f6322db304eaa5c5e3b288b482, type: 2}
+  skillData: {fileID: 11400000, guid: e4cedd2a4cc7ecc459882075da20a765, type: 2}
   dashCount: 1
   dashCooldown: 4

@@ -21,5 +21,8 @@ MonoBehaviour:
   body: {fileID: 8193831111808689357, guid: 823e4d62817e58d47996f20410902720, type: 3}
   resourceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 10
+  roleType: 1000
   power: 1
   distance: 30
+  beHitDie: 1
+  moveType: 0

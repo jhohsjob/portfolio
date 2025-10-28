@@ -12,10 +12,10 @@ public class SkillData : ScriptableObject
 #if UNITY_EDITOR
     public MonoScript behaviourScript;
 #endif
-    [HideInInspector]
+    // [HideInInspector]
     public string behaviourTypeName;
 
-    public int projectileId;
+    public ProjectileData[] projectileData;
 
     public int shotCount;
     public float shotDelay;

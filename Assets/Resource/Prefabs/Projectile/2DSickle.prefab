@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6042748006630200897}
   - component: {fileID: -3178213862617836326}
   m_Layer: 0
-  m_Name: 2DCircle
+  m_Name: 2DSickle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

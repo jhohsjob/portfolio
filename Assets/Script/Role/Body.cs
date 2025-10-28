@@ -7,6 +7,11 @@ public class Body : MonoBehaviour
     private ActorBase _actor;
     public ActorBase actor => _actor;
 
+    private SpriteRenderer _sprite;
+    public SpriteRenderer sprite => _sprite;
+    
+    private Renderer _particle;
+
     private Action<Body> _cbTriggerEnter;
     public event Action<Body> cbTriggerEnter
     {
@@ -16,7 +21,34 @@ public class Body : MonoBehaviour
 
     private void Awake()
     {
-        _actor = transform.parent.GetComponent<ActorBase>();
+        _sprite = GetComponent<SpriteRenderer>();
+        _particle = GetComponent<Renderer>();
+    }
+
+    public  void Init(ActorBase actor)
+    {
+        _actor = actor;
+    }
+
+    public void Enter(RoleType roleType)
+    {
+        if (_sprite != null)
+        {
+            _sprite.sortingOrder = ((int)roleType) + BattleManager.instance.actorManager.GetNextOrderInLayer();
+        }
+
+        if (_particle != null)
+        {
+            _particle.sortingOrder = ((int)roleType) + BattleManager.instance.actorManager.GetNextOrderInLayer();
+        }
+    }
+
+    public void FlipX(float dirX)
+    {
+        if (_sprite != null && _sprite.flipX != dirX < 0f)
+        {
+            _sprite.flipX = dirX < 0f;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)

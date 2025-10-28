@@ -8,9 +8,10 @@ public enum BattleStatus
 
 public enum RoleType
 {
-    Player = 10000, 
-    Enemy = 20000, 
-    Projectile = 30000
+    Projectile = 1000,
+    Item = 2000,
+    Enemy = 3000,
+    Player = 4000,
 }
 
 public enum Team
@@ -42,4 +43,12 @@ public enum ActorState
     Move = 1 << 1,
     Dash = 1 << 2,
     Die = 1 << 3,
+}
+
+public enum ProjectileMoveType
+{
+    Straight,
+    Orbit,
+    Homing,
+    GroundZone
 }

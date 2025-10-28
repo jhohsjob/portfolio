@@ -13,7 +13,7 @@ public class ActorStateController
         { ActorState.Die,    new ActorState[0] },
     };
 
-    public ActorState Current => _state;
+    public ActorState current => _state;
 
     public event Action<ActorState> OnStateChanged;
 
@@ -53,6 +53,11 @@ public class ActorStateController
         OnStateChanged?.Invoke(_state);
     }
 
-    public void Clear() => _state = ActorState.None;
+    public void Clear()
+    {
+        _state = ActorState.None;
+        OnStateChanged = null;
+    }
+
     public bool HasState(ActorState state) => (_state & state) == state;
 }

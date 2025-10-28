@@ -68,9 +68,6 @@ public class Enemy : Actor<Monster, MonsterData>
         var dir = playerPos - transform.position;
         direction = dir.normalized;
 
-        if (_sprite.flipX != _moveDirection.x < 0f)
-        {
-            _sprite.flipX = _moveDirection.x < 0f;
-        }
+        _body.FlipX(_moveDirection.x);
     }
 }

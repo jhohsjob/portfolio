@@ -20,6 +20,8 @@ public class RoleData : ScriptableObject
     public Vector3 resourceOffset = Vector3.zero;
     public float moveSpeed;
 
+    public RoleType roleType;
+
     public System.Type behaviourType
     {
         get

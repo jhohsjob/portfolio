@@ -16,7 +16,8 @@ MonoBehaviour:
   skillName: Skill01
   behaviourScript: {fileID: 11500000, guid: 16304727df6e35a4da8919a5d58b7d59, type: 3}
   behaviourTypeName: 
-  projectileId: 301001
+  projectileData:
+  - {fileID: 11400000, guid: efdb4700292203a488e3fc9dfe192774, type: 2}
   shotCount: 1
   shotDelay: 0
   reloadTime: 0.5
