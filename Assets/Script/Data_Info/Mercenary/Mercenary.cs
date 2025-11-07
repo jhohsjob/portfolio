@@ -1,6 +1,5 @@
 public class Mercenary : Role<MercenaryData>
 {
-    public float maxHP => _data.maxHP;
     public SkillData skillData => _data.skillData;
 
     public float dashSpeed => 0.2f;

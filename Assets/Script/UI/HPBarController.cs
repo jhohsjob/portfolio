@@ -10,95 +10,105 @@ public class HPBarController : MonoBehaviour
     private Transform _poolContianer;
     [SerializeField]
     private Transform _activeContianer;
-    [SerializeField]
-    private Enemy _debugActor = null;
     private RectTransform _rt;
 
     private HPBar _original;
 
-    private Queue<HPBar> _pool = new Queue<HPBar>();
-    private Dictionary<int, HPBar> _activeList = new Dictionary<int, HPBar>();
+    private Queue<HPBar> _pool = new();
+    private Dictionary<int, HPBar> _activeList = new();
+
+    private Queue<ActorBase> _waitList = new();
 
     private Vector3 LOAD_POSITION = new Vector3(1000f, 1000f, 1000f);
 
+    private bool _isLoadEnd = false;
+
     private void Awake()
     {
-        EventHelper.AddEventListener(EventName.EnemySpawnEnd, OnEnemySpawnEnd);
-        EventHelper.AddEventListener(EventName.EnemyDieEnd, OnEnemyDieEnd);
+        _isLoadEnd = false;
+        Client.asset.LoadAsset<GameObject>("HPBar", (task) =>
+        {
+            _original = task.GetAsset<GameObject>().GetComponent<HPBar>();
+            
+            PoolGenerate();
+
+            _isLoadEnd = true;
+        });
 
         _rt = GetComponent<RectTransform>();
 
-        PoolGenerate();
+        EventHelper.AddEventListener(EventName.HpBarConnection, OnHpBarConnection);
+        EventHelper.AddEventListener(EventName.HpBarDisconnection, OnHpBarDisconnection);
     }
 
     private void OnDestroy()
     {
-        EventHelper.RemoveEventListener(EventName.EnemySpawnEnd, OnEnemySpawnEnd);
-        EventHelper.RemoveEventListener(EventName.EnemyDieEnd, OnEnemyDieEnd);
+        EventHelper.RemoveEventListener(EventName.HpBarConnection, OnHpBarConnection);
+        EventHelper.RemoveEventListener(EventName.HpBarDisconnection, OnHpBarDisconnection);
     }
 
-    private void PoolGenerate()
+    private void Update()
     {
-        if (_original == null)
-        {
-            Client.asset.LoadAsset<GameObject>("HPBar", (task) =>
-            {
-                _original = task.GetAsset<GameObject>().GetComponent<HPBar>();
-                for (int i = 0; i < 10; i++)
-                {
-                    var wait = Instantiate(_original, _poolContianer);
-                    wait.Init(_uiCamera, _rt);
-                    _pool.Enqueue(wait);
-                }
-            });
-        }
-        else
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                var wait = Instantiate(_original, _poolContianer);
-                wait.Init(_uiCamera, _rt);
-                _pool.Enqueue(wait);
-            }
-        }
-    }
-
-    private void OnEnemySpawnEnd(object sender, object data)
-    {
-        if (data is Enemy enemy == false)
+        if (_isLoadEnd == false || _waitList.Count <= 0)
         {
             return;
         }
 
+        Connect(_waitList.Dequeue());
+    }
+
+    private void PoolGenerate()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            var wait = Instantiate(_original, _poolContianer);
+            wait.Init(_uiCamera, _rt);
+            _pool.Enqueue(wait);
+        }
+    }
+
+    private void Connect(ActorBase actor)
+    {
         if (_pool.Count == 0)
         {
             PoolGenerate();
         }
 
         var hpBar = _pool.Dequeue();
-        hpBar.transform.SetParent(_activeContianer.transform, false);
+        hpBar.transform.SetParent(_activeContianer, false);
         hpBar.transform.localPosition = LOAD_POSITION;
-        hpBar.SetTarget(enemy);
+        hpBar.SetTarget(actor);
 
-        _debugActor = enemy;
-
-        _activeList.Add(enemy.ID, hpBar);
+        _activeList[actor.ID] = hpBar;
     }
 
-    private void OnEnemyDieEnd(object sender, object data)
+    private void Disconnect(ActorBase actor)
     {
-        if (data is Enemy enemy == false)
+        if (_activeList.TryGetValue(actor.ID, out var hpBar) == false)
         {
             return;
         }
 
-        var hpBar = _activeList[enemy.ID];
-        hpBar.transform.SetParent(_poolContianer.transform, false);
+        hpBar.transform.SetParent(_poolContianer, false);
         hpBar.ResetTarget();
 
-        _debugActor = null;
-
-        _activeList.Remove(enemy.ID);
+        _activeList.Remove(actor.ID);
         _pool.Enqueue(hpBar);
+    }
+
+    private void OnHpBarConnection(object sender, object data)
+    {
+        if (sender is ActorBase actor)
+        {
+            _waitList.Enqueue(actor);
+        }
+    }
+
+    private void OnHpBarDisconnection(object sender, object data)
+    {
+        if (sender is ActorBase actor)
+        {
+            Disconnect(actor);
+        }
     }
 }

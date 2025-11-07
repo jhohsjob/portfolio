@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 
 public class Enemy : Actor<Monster, MonsterData>
@@ -10,6 +10,8 @@ public class Enemy : Actor<Monster, MonsterData>
 
     private Vector3 _diePos = Vector3.zero;
     public Vector3 diePos => _diePos;
+
+    private float _damage = 1f;
 
     protected override void Awake()
     {
@@ -27,33 +29,38 @@ public class Enemy : Actor<Monster, MonsterData>
         }
     }
 
+    public override void Init(Monster role)
+    {
+        base.Init(role);
+
+        _body.cbTriggerEnter += OnBodyTriggerEnter;
+    }
+
     public override void Enter(object data = null)
     {
         base.Enter(data);
-
-        _hp.Init(_role.maxHP);
 
         if (data is int)
         {
             _spawnMapLevel = (int)data;
         }
 
-        SetRotation(ref _moveDirection);
+        UpdateDirection();
     }
 
     protected override void Move()
     {
-        if (BattleManager.instance.debugEnemyPause == true)
-        {
+        if (BattleManager.instance.debugEnemyPause)
             return;
-        }
 
-        SetRotation(ref _moveDirection);
-        transform.Translate(_moveDirection * _role.moveSpeed * Time.deltaTime);
+        UpdateDirection();
+        MoveTowardsPlayer(0.5f);
     }
 
     protected override void Die()
     {
+        DieAfter();
+
         _moveDirection = Vector3.zero;
         _diePos = transform.localPosition;
 
@@ -62,12 +69,35 @@ public class Enemy : Actor<Monster, MonsterData>
         base.Die();
     }
 
-    private void SetRotation(ref Vector3 direction)
+    private void UpdateDirection()
     {
         var playerPos = BattleManager.instance.battleScene.player.transform.position;
         var dir = playerPos - transform.position;
-        direction = dir.normalized;
+        _moveDirection = dir.normalized;
 
         _body.FlipX(_moveDirection.x);
+    }
+
+    private void MoveTowardsPlayer(float stopDistance)
+    {
+        var playerPos = BattleManager.instance.battleScene.player.transform.position;
+        var distance = Vector3.Distance(transform.position, playerPos);
+
+        if (distance > stopDistance)
+        {
+            transform.Translate(_moveDirection * _role.moveSpeed * Time.deltaTime);
+        }
+    }
+
+    private void OnBodyTriggerEnter(Body other)
+    {
+        if (other.TryGetComponent(out Body body))
+        {
+            if (body.actor is Player actor && actor.state.current != ActorState.Die)
+            {
+                actor.BeHit(_damage);
+                ResetCollider();
+            }
+        }
     }
 }

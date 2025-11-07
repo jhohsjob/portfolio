@@ -1,6 +1,3 @@
-using UnityEngine;
-
-
 public interface ICollectableDropItem
 {
     void OnCollectedByPlayer(Player player);

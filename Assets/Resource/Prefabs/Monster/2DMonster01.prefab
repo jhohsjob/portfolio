@@ -164,5 +164,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a615e9785b92ad49bd1c1258ecfc7b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ActorBeHit
-  flashDuration: 0.2
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  _flashDuration: 0.2
+  _flashColor: {r: 1, g: 1, b: 1, a: 1}

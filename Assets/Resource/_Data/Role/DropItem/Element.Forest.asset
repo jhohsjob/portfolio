@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db00efd0bdbdde143b799af820571b2b, type: 3}
   m_Name: Element.Forest
   m_EditorClassIdentifier: 
+  roleType: 2000
   id: 401002
   roleName: Forest
   roleDescription: 
@@ -20,6 +21,6 @@ MonoBehaviour:
   resourcePath: 
   body: {fileID: 3093370748363751238, guid: 83210ec43418d41469a7bc07e3047d7d, type: 3}
   resourceOffset: {x: 0, y: 0, z: 0}
+  maxHP: 0
   moveSpeed: 0
-  roleType: 2000
-  elementType: 1
+  elementType: 2

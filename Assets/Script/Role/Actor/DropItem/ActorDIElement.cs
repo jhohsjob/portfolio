@@ -25,7 +25,7 @@ public class ActorDIElement : Actor<DIElement, DIElementData>, ICollectableDropI
 
     public void OnCollectedByPlayer(Player player)
     {
-        player.AddElement(this);
+        player.element.AddElement(this);
 
         Die();
     }

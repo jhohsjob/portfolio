@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db00efd0bdbdde143b799af820571b2b, type: 3}
   m_Name: Element.Fire
   m_EditorClassIdentifier: 
+  roleType: 2000
   id: 401003
   roleName: Fire
   roleDescription: 
@@ -20,6 +21,6 @@ MonoBehaviour:
   resourcePath: 
   body: {fileID: 5099431166652583641, guid: ba7f59866229b444e975918b4fa1a2fc, type: 3}
   resourceOffset: {x: 0, y: 0, z: 0}
+  maxHP: 0
   moveSpeed: 0
-  roleType: 2000
-  elementType: 2
+  elementType: 3

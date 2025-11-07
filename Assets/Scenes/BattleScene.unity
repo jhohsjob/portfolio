@@ -207,7 +207,6 @@ MonoBehaviour:
   _uiCamera: {fileID: 420921821}
   _poolContianer: {fileID: 1536745987}
   _activeContianer: {fileID: 8229230}
-  _debugActor: {fileID: 0}
 --- !u!1 &73016012
 GameObject:
   m_ObjectHideFlags: 0
@@ -47312,6 +47311,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 963194228}
   - {fileID: 705507995}
-  - {fileID: 909519616}
   - {fileID: 1266678682}
+  - {fileID: 909519616}
   - {fileID: 601036014}

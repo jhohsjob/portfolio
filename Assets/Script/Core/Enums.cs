@@ -30,6 +30,7 @@ public enum DropItemType
 
 public enum ElementType
 {
+    None,
     Water,
     Forest,
     Fire

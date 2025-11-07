@@ -1,10 +1,14 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class HPBar : MonoBehaviour
 {
-    private TextMeshProUGUI _hp = null;
+    [SerializeField]
+    private Image _hp = null;
+    [SerializeField]
+    private TextMeshProUGUI _debug = null;
     
     private ActorBase _actor = null;
     private Camera _uiCamera;
@@ -14,7 +18,6 @@ public class HPBar : MonoBehaviour
 
     private void Awake()
     {
-        _hp = GetComponent<TextMeshProUGUI>();
     }
 
     private void Update()
@@ -43,15 +46,17 @@ public class HPBar : MonoBehaviour
     public void SetTarget(ActorBase actor)
     {
         _actor = actor;
-        _actor.cbChangeHP += OnChangeHP;
+        actor.hp.cbChange += OnChangeHP;
 
-        _hp.text = actor.HP + " / " + actor.maxHP;
         gameObject.SetActive(true);
+
+        _hp.fillAmount = actor.hp.currentHP / actor.hp.maxHP;
+        _debug.text = actor.hp.currentHP + " / " + actor.hp.maxHP;
     }
 
     public void ResetTarget()
     {
-        _actor.cbChangeHP -= OnChangeHP;
+        _actor.hp.cbChange -= OnChangeHP;
         _actor = null;
 
         gameObject.SetActive(false);
@@ -59,6 +64,7 @@ public class HPBar : MonoBehaviour
 
     private void OnChangeHP(ChangeHPData data)
     {
-        _hp.text = data.remainHP + " / " + _actor.maxHP;
+        _hp.fillAmount = data.fillAmount;
+        _debug.text = data.text;
     }
 }

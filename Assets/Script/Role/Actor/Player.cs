@@ -8,10 +8,14 @@ public class Player : Actor<Mercenary, MercenaryData>
     private Vector2 _moveDirection = Vector2.zero;
     private Vector2 _lookDirection = Vector2.right;
 
-    private Dictionary<ElementType, int> _elements = new();
+    private ElementController _element;
+    public ElementController element => _element;
 
     private DashController _dash;
     public DashController dash => _dash;
+
+    private float _elementMoveSpeed = 0f;
+    private float _moveSpeed => _role.moveSpeed + _elementMoveSpeed;
 
     // temp
     private List<SkillData> _tempSkillDatas = new();
@@ -24,6 +28,7 @@ public class Player : Actor<Mercenary, MercenaryData>
 
         team = Team.Player;
 
+        _element = new ElementController();
         _dash = new DashController();
 
         EventHelper.AddEventListener(EventName.ClickBtnDash, OnClickBtnDash);
@@ -60,8 +65,7 @@ public class Player : Actor<Mercenary, MercenaryData>
             skill.Init(this, tempSkillData);
         }
 
-        _elements.Clear();
-
+        _element.Init(this);
         _dash.Init(_role.dashSpeed, _role.dashCount, _role.dashCooldown, _body.sprite);
 
         _gainGold = 0;
@@ -71,7 +75,7 @@ public class Player : Actor<Mercenary, MercenaryData>
     {
         base.Enter();
 
-        _hp.Init(_role.maxHP);
+        _element.cbLevelup += OnElementLevelUp;
     }
 
     protected override void Move()
@@ -82,7 +86,7 @@ public class Player : Actor<Mercenary, MercenaryData>
             _point.rotation = Quaternion.Euler(0f, 0f, angle);
         }
 
-        transform.Translate(_moveDirection * _role.moveSpeed * Time.deltaTime);
+        transform.Translate(_moveDirection * _moveSpeed * Time.deltaTime);
 
         var pos = transform.position;
         var mapBounds = BattleManager.instance.mapBounds;
@@ -102,25 +106,6 @@ public class Player : Actor<Mercenary, MercenaryData>
         _animator.SetBool("Dead", true);
 
         BattleManager.instance.SetBattleStatus(BattleStatus.BattleOver);
-    }
-
-    public void AddElement(ActorDIElement element)
-    {
-        if (element == null)
-        {
-            return;
-        }
-
-        if (_elements.ContainsKey(element.elementType) == false)
-        {
-            _elements.Add(element.elementType, 1);
-        }
-        else
-        {
-            _elements[element.elementType] += 1;
-        }
-
-        EventHelper.Send(EventName.AddElement, this, _elements);
     }
 
     public void AddGold(int gold)
@@ -177,14 +162,9 @@ public class Player : Actor<Mercenary, MercenaryData>
     {
         // Debug.Log("OnTriggerEnter player : " + other);
 
-        // 피격시 로직
         if (other.TryGetComponent(out Body body))
         {
-            if (body.actor is Enemy enemy)
-            {
-                _state.SetState(ActorState.Die);
-            }
-            else if (body.actor is ICollectableDropItem collectableDropItem)
+            if (body.actor is ICollectableDropItem collectableDropItem)
             {
                 collectableDropItem.OnCollectedByPlayer(this);
             }
@@ -208,6 +188,38 @@ public class Player : Actor<Mercenary, MercenaryData>
         }
 
         Debug.Log("state change : " + state);
+    }
+
+    private void OnElementLevelUp(ElementType type)
+    {
+        switch (type)
+        {
+            case ElementType.Water:
+                HandleWaterLevelUp();
+                break;
+            case ElementType.Forest:
+                HandleForestLevelUp();
+                break;
+            case ElementType.Fire:
+                HandleFireLevelUp();
+                break;
+        }
+    }
+    private void HandleWaterLevelUp()
+    {
+        _elementMoveSpeed += 0.5f;
+
+        _dash.OnElementLevelUp();
+    }
+
+    private void HandleForestLevelUp()
+    {
+        _hp.OnElementLevelUp();
+    }
+
+    private void HandleFireLevelUp()
+    {
+        // todo : skill update
     }
 
     private void OnClickBtnDash(object sender, object data)

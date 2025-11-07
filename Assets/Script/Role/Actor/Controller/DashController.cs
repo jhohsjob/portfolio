@@ -50,7 +50,7 @@ public class DashController
             _cooldownTimer -= deltaTime;
             if (_cooldownTimer <= 0f)
             {
-                _currentCount = _maxCount; // 쿨다운 끝나면 카운트 초기화
+                _currentCount = _maxCount;
                 _cooldownTimer = 0f;
             }
         }
@@ -100,5 +100,10 @@ public class DashController
         }
 
         _sprite.material = prev;
+    }
+
+    public void OnElementLevelUp()
+    {
+        _distance += 0.1f;
     }
 }

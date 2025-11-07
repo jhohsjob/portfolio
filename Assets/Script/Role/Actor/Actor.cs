@@ -13,28 +13,20 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
     protected Animator _animator;
     protected Collider2D _collider;
 
-    public int ID { get; private set; }
+    public override int ID { get; protected set; }
 
     protected TRole _role { get; private set; }
     public TRole role => _role;
     protected ActorStateController _state;
     public ActorStateController state => _state;
 
-    protected HP _hp { get; set; }
+    protected HPController _hp;
+    public override HPController hp => _hp;
 
     public List<Skill> _skillList { get; set; }
 
     public override Transform point => _point;
     public override int roleId => _role.id;
-    public override float HP => _hp.currentHP;
-    public override float maxHP => _hp.maxHP;
-
-    protected Action<ChangeHPData> _cbChangeHP;
-    public override event Action<ChangeHPData> cbChangeHP
-    {
-        add { _cbChangeHP -= value; _cbChangeHP += value; }
-        remove { _cbChangeHP -= value; }
-    }
 
     protected Action<ActorBase> _cbDie;
     public override event Action<ActorBase> cbDie
@@ -45,10 +37,10 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
 
     protected virtual void Awake()
     {
-        _hp = new HP();
         _skillList = new List<Skill>();
 
         _state = new ActorStateController();
+        _hp = new HPController();
     }
 
     public override void InitBase<T>(Role<T> role)
@@ -82,20 +74,26 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
 
     public virtual void Enter(object data = null)
     {
-        _state.Clear();
-        _state.SetState(ActorState.Idle);
-        _state.OnStateChanged += OnStateChanged;
-
         SetID(BattleManager.instance.actorManager.GetNextID(_role.id));
-
+        
         _body.Enter(_role.roleType);
+
+        _state.SetState(ActorState.Idle);
+        _state.cbStateChanged += OnStateChanged;
+
+        if (_role.maxHP > 0f)
+        {
+            _hp.Enter(_role.maxHP);
+            _hp.cbChange += OnChangeHP;
+            EventHelper.Send(EventName.HpBarConnection, this);
+        }
 
         if (_collider != null) _collider.enabled = true;
     }
 
     public override void BeHit(float damage)
     {
-        _hp?.AdjustHP(-damage, OnChangeHP);
+        _hp?.Damage(damage);
 
         _flashShader?.FlashOnce();
     }
@@ -104,35 +102,39 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
     {
         if (data.remainHP == 0)
         {
-            Die();
-        }
-        else
-        {
-            _cbChangeHP?.Invoke(data);
+            _state.SetState(ActorState.Die);
         }
     }
 
     protected virtual void Move() { }
 
-    public void ResetCollider()
+    public void ResetCollider(float time = 0.5f)
     {
-        StartCoroutine(coResetCollider());
+        StartCoroutine(coResetCollider(time));
     }
 
-    IEnumerator coResetCollider()
+    IEnumerator coResetCollider(float time)
     {
         if (_collider != null) _collider.enabled = false;
-        yield return null;
+        yield return WaitCache.Get(time);
         if (_collider != null) _collider.enabled = true;
     }
 
     protected virtual void DieAfter()
     {
+        if (_hp.maxHP > 0)
+        {
+            EventHelper.Send(EventName.HpBarDisconnection, this);
+        }
+
         _cbDie?.Invoke(this);
     }
 
     protected virtual void Die()
     {
+        _state.Clear();
+        _hp.Clear();
+
         SetID(0);
 
         if (_collider != null) _collider.enabled = false;

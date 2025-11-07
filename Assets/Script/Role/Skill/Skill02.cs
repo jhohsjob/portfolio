@@ -64,7 +64,7 @@ public class Skill02 : Skill
         var position = _actor.point.GetChild(0).transform.position;
         var projectile = BattleManager.instance.actorManager.GetActor(role, parent, position) as ActorProjectile;
         projectile.Shot(_actor, moveData);
-        projectile.state.OnStateChanged += (state) =>
+        projectile.state.cbStateChanged += (state) =>
         {
             if (state.HasFlag(ActorState.Die))
             {

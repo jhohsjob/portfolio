@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class RoleData : ScriptableObject
 {
+    public RoleType roleType;
     public int id;
     public string roleName;
     public string roleDescription;
@@ -18,9 +19,10 @@ public class RoleData : ScriptableObject
     public string resourcePath;
     public GameObject body;
     public Vector3 resourceOffset = Vector3.zero;
+
+    public float maxHP;
     public float moveSpeed;
 
-    public RoleType roleType;
 
     public System.Type behaviourType
     {
