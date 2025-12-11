@@ -71,5 +71,5 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-/[Aa]ssets/Packages/
-/[Aa]ssets/Packages.meta
+/[Aa]ssets/_backup/
+/[Aa]ssets/_backup.meta
