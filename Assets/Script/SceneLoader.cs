@@ -21,7 +21,7 @@ public static class SceneLoader
         BattleManager.instance.Init(initData);
 
         yield return null;
-        var op = SceneManager.LoadSceneAsync("BattleScene");
+        var op = SceneManager.LoadSceneAsync("03.BattleScene");
         //op.allowSceneActivation = false;
 
         while (op.isDone == false)
@@ -43,7 +43,7 @@ public static class SceneLoader
         PopupManager.CloseAllPopup();
 
         yield return null;
-        var op = SceneManager.LoadSceneAsync("LobbyScene");
+        var op = SceneManager.LoadSceneAsync("02.LobbyScene");
         //op.allowSceneActivation = false;
 
         while (op.isDone == false)

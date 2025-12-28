@@ -37,11 +37,11 @@ public class PopupManager
 
     public static void ShowPopup<T>(string address = "", object data = null, Action<UIPopup> onLoadedCallback = null) where T : UIPopup
     {
-        if (Client.isRunGame == false)
-        {
-            Debug.Log("Wait for the game to run");
-            return;
-        }
+        //if (Client.isRunGame == false)
+        //{
+        //    Debug.Log("Wait for the game to run");
+        //    return;
+        //}
 
         Client.asset.LoadAsset<GameObject>(address, (task) =>
         {

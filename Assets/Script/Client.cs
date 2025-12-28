@@ -4,7 +4,7 @@ public class Client
     public static Storage storage { get; private set; }
     public static User user { get; private set; }
 
-    public static bool isRunGame { get; private set; }
+    //public static bool isRunGame { get; private set; }
 
     public Client()
     {
@@ -12,13 +12,13 @@ public class Client
         storage = new Storage();
         user = new User();
 
-        isRunGame = false;
+        //isRunGame = false;
     }
 
-    public void RunGame()
-    {
-        user.RunGame();
+    //public void RunGame()
+    //{
+    //    user.RunGame();
 
-        isRunGame = true;
-    }
+    //    isRunGame = true;
+    //}
 }

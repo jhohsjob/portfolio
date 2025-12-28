@@ -1,25 +1,19 @@
-using System;
+using System.Threading.Tasks;
 
 
-public class LoadManager
+public static class LoadManager
 {
-    public static void Load(Action callback)
+    public static async Task LoadAsync(System.Action<float> onProgress)
     {
-        LoadData(() => LoadStorage(() => LoadComplete(callback)));
-    }
+        float progress = 0f;
+        float step = 1f / 2f;
 
-    private static void LoadData(Action callback)
-    {
-        DataManager.Load(() => { callback?.Invoke(); });
-    }
+        await DataManager.LoadAsync();
+        progress += step;
+        onProgress?.Invoke(progress);
 
-    private static void LoadStorage(Action callback)
-    {
-        Client.storage.Load(() => { callback?.Invoke(); });
-    }
-
-    private static void LoadComplete(Action callback)
-    {
-        callback?.Invoke();
+        await Client.storage.LoadAsync();
+        progress += step;
+        onProgress?.Invoke(progress);
     }
 }

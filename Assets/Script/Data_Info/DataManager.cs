@@ -1,62 +1,58 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 
 public static class DataManager
 {
-    private static Dictionary<int, SkillData> _skillData = new Dictionary<int, SkillData>();
-    private static Dictionary<int, MapInfoData> _mapInfoDatas = new Dictionary<int, MapInfoData>();
+    private static Dictionary<int, SkillData> _skillData = new();
+    private static Dictionary<int, MapInfoData> _mapInfoDatas = new();
 
-    public static bool IsLoaded { get; private set; }
-
-    private static int _pendingCount = 0;
-    private static Action _onComplete;
-
-    public static void Load(Action callback)
+    public static async Task LoadAsync()
     {
-        Debug.Log("GameTable.Load");
+        var tasks = new List<Task>
+        {
+            LoadTableAsync<MercenaryTable>("MercenaryTable", table => MercenaryHander.instance.Init(table.table)),
 
-        IsLoaded = false;
-        _pendingCount = 0;
-        _onComplete = callback;
+            LoadTableAsync<MonsterTable>("MonsterTable", table => MonsterHander.instance.Init(table.table)),
 
-        Load<MercenaryTable>("MercenaryTable",table => MercenaryHander.instance.Init(table.table));
+            LoadTableAsync<ProjectileTable>("ProjectileTable", table => ProjectileHander.instance.Init(table.table)),
 
-        Load<MonsterTable>("MonsterTable",table => MonsterHander.instance.Init(table.table));
+            LoadTableAsync<DropItemTable>("DropItemTable", table => DropItemHander.instance.Init(table.table)),
 
-        Load<ProjectileTable>("ProjectileTable",table => ProjectileHander.instance.Init(table.table));
+            LoadTableAsync<SkillTable>("SkillTable", table => _skillData = table.table),
 
-        Load<DropItemTable>("DropItemTable",table => DropItemHander.instance.Init(table.table));
+            LoadTableAsync<MapInfoTable>("MapInfoTable", table => _mapInfoDatas = table.table),
+        };
 
-        Load<SkillTable>("SkillTable",table => _skillData = table.table);
-
-        Load<MapInfoTable>("MapInfoTable",table => _mapInfoDatas = table.table);
+        await Task.WhenAll(tasks);
     }
 
-    private static void Load<T>(string address, Action<T> callback) where T : UnityEngine.Object
+    private static Task LoadTableAsync<T>(string address, Action<T> onLoaded) where T : UnityEngine.Object
     {
-        _pendingCount++;
+        var tcs = new TaskCompletionSource<bool>();
 
         Client.asset.LoadAsset<T>(address, task =>
         {
-            var asset = task.GetAsset<T>();
-            if (asset != null)
+            try
             {
-                callback?.Invoke(asset);
-            }
-            else
-            {
-                Debug.LogError("Data Load Failed");
-            }
+                var asset = task.GetAsset<T>();
+                if (asset == null)
+                {
+                    throw new Exception($"Data Load Failed: {address}");
+                }
 
-            _pendingCount--;
-            if (_pendingCount == 0)
+                onLoaded?.Invoke(asset);
+                tcs.SetResult(true);
+            }
+            catch (Exception e)
             {
-                IsLoaded = true;
-                _onComplete?.Invoke();
+                tcs.SetException(e);
             }
         });
+
+        return tcs.Task;
     }
 
     public static List<MapInfoData> GetAllMapInfoData()
@@ -70,8 +66,8 @@ public static class DataManager
         {
             return result;
         }
-        Debug.LogWarning("ProjectileData ID : " + id + " 가 없습니다.");
 
+        Debug.LogWarning($"SkillData ID : {id} 가 없습니다.");
         return null;
     }
 }

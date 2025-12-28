@@ -18,22 +18,26 @@ MonoBehaviour:
   - m_GUID: 0d929c37cc5598548b03751a31f436d5
     m_Address: UIPause
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6b18f6c787a3d22408319be2870e6c9c
     m_Address: UISelectMap
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a165edb54e6d4e8469b401dd4b9d1e45
     m_Address: UISelectMercenary
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b193f3e5d423c854fb562193fcf8bf21
     m_Address: UISelectMapContent
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Preload
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: e1eb3bcf68f81b749a27bb85c521c50e, type: 2}

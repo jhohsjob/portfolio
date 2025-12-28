@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,60 +15,95 @@ public class Storage
     {
     }
 
-    public void Save(GameSaveData data)
+    public async Task SaveAsync(GameSaveData data)
     {
         try
         {
             string json = JsonUtility.ToJson(data, true);
-            string tempPath = _savePath + ".tmp";
-            
-            File.WriteAllText(tempPath, json);
+            string savePath = _savePath; // UnityException: get_persistentDataPath can only be called from the main thread.
+            string tempPath = savePath + ".tmp";
 
-            if (File.Exists(_savePath))
+            await Task.Run(() =>
             {
-                File.Delete(_savePath);
-            }
-            
-            File.Move(tempPath, _savePath);
-            
+                File.WriteAllText(tempPath, json);
+
+                if (File.Exists(savePath))
+                {
+                    File.Delete(savePath);
+                }
+
+                File.Move(tempPath, savePath);
+            });
+
             this.data = data;
         }
-        catch (Exception ex)
+        catch
         {
-            Debug.LogError("Storage Save Failed : " + ex);
+            throw;
         }
     }
 
-    public void Load(Action callback)
+    public async Task LoadAsync()
     {
+        string savePath = _savePath;
+
         try
         {
-            if (File.Exists(_savePath) == false)
+            if (File.Exists(savePath) == false)
             {
-                Client.asset.LoadAsset<UserDefaultData>("UserDefaultData", (task) =>
-                {
-                    var data = new GameSaveData
-                    {
-                        player = new UserData(task.GetAsset<UserDefaultData>())
-                    };
-
-                    Save(data);
-
-                    callback?.Invoke();
-                });
+                await CreateDefaultSaveAsync();
             }
             else
             {
-                string json = File.ReadAllText(_savePath);
-                data = JsonUtility.FromJson<GameSaveData>(json);
-
-                callback?.Invoke();
+                LoadFromDisk();
             }
         }
-        catch (Exception ex)
+        catch
         {
-            Debug.LogError("Storage Load Failed : " + ex);
+            throw;
         }
+    }
+
+    private async Task CreateDefaultSaveAsync()
+    {
+        var defaultData = await LoadDefaultDataAsync();
+
+        data = new GameSaveData
+        {
+            player = new UserData(defaultData)
+        };
+
+        await SaveAsync(data);
+    }
+
+    private void LoadFromDisk()
+    {
+        string json = File.ReadAllText(_savePath);
+        data = JsonUtility.FromJson<GameSaveData>(json);
+
+        if (data == null)
+        {
+            throw new Exception("Save file is corrupted");
+        }
+    }
+
+    private Task<UserDefaultData> LoadDefaultDataAsync()
+    {
+        var tcs = new TaskCompletionSource<UserDefaultData>();
+
+        Client.asset.LoadAsset<UserDefaultData>("UserDefaultData", task =>
+        {
+            var asset = task.GetAsset<UserDefaultData>();
+            if (asset == null)
+            {
+                tcs.SetException(new Exception("UserDefaultData load failed"));
+                return;
+            }
+
+            tcs.SetResult(asset);
+        });
+
+        return tcs.Task;
     }
 
     [MenuItem("CustomMenu/DataDelete")]

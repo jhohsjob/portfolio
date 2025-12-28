@@ -1,63 +1,143 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceLocations;
 
 
 public class Launch : MonoBehaviour
 {
-    private static Launch _instance;
+    private BootController _bootController;
 
-    void Awake()
+    private const float ADDRESSABLE_INIT_WEIGHT = 0.3f;
+    private const float ADDRESSABLE_LOAD_WEIGHT = 0.4f;
+    private const float LOAD_WEIGHT = 0.3f;
+
+    private void Awake()
     {
-        if (_instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        _instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
-    void Start()
+    public void Initialize(BootController controller)
     {
-        var client = new Client();
+        _bootController = controller;
+    }
 
+    public async Task RunAsync()
+    {
+        try
+        {
+            InitializeClient();
+            await InitializeAddressablesAsync();
+            await LoadPreloadAssetsAsync();
+            await InitializeLoadAsync();
+
+            Complete();
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+            throw;
+        }
+    }
+
+    private void InitializeClient()
+    {
+        new Client();
         PopupManager.Initialization();
-
-        InitializeAddressable(() => InitializeLoad(() => InitializeComplete(client)));
     }
 
-    private void InitializeAddressable(Action callback)
+    private async Task InitializeAddressablesAsync()
     {
-        Addressables.InitializeAsync().Completed += (data) =>
-        {
-            Debug.Log("InitializeAddressable Status : " + data.Status + ", OperationException :  " + data.OperationException);
-
-            if (data.Status == AsyncOperationStatus.Succeeded)
-            {
-                Debug.Log("InitializeAddressable Succeeded LocatorId : " + data.Result.LocatorId);
-
-                callback?.Invoke();
-            }
-            else
-            {
-                Debug.Log("InitializeAddressable Failed");
-            }
-        };
+        var handle = Addressables.InitializeAsync();
+        await TrackProgressAsync(handle, 0f, ADDRESSABLE_INIT_WEIGHT);
     }
 
-    private void InitializeLoad(Action callback)
+    private async Task LoadPreloadAssetsAsync()
     {
-        LoadManager.Load(() =>
+        string[] labels = { "Preload" };
+
+        var locations = new List<IResourceLocation>();
+
+        foreach (var label in labels)
         {
-            callback?.Invoke();
+            var handle = Addressables.LoadResourceLocationsAsync(label);
+            await handle.Task;
+
+            if (handle.Status != AsyncOperationStatus.Succeeded)
+            {
+                Debug.LogWarning($"Preload label failed: {label}");
+                continue;
+            }
+
+            locations.AddRange(handle.Result);
+        }
+
+        locations = locations.Distinct().ToList();
+
+        if (locations.Count == 0)
+        {
+            return;
+        }
+
+        var handles = locations.Select(loc => Addressables.LoadAssetAsync<UnityEngine.Object>(loc)).ToList();
+
+        await TrackProgressAsync(handles, ADDRESSABLE_INIT_WEIGHT, ADDRESSABLE_LOAD_WEIGHT);
+    }
+
+    private async Task InitializeLoadAsync()
+    {
+        await LoadManager.LoadAsync(progress =>
+        {
+            _bootController.SetProgress(ADDRESSABLE_INIT_WEIGHT + ADDRESSABLE_LOAD_WEIGHT + progress * LOAD_WEIGHT);
         });
     }
 
-    private void InitializeComplete(Client client)
+    private async Task TrackProgressAsync(AsyncOperationHandle handle, float start, float range)
     {
-        client?.RunGame();
+        while (handle.IsDone == false)
+        {
+            _bootController.SetProgress(start + handle.PercentComplete * range);
+            await Task.Yield();
+        }
+
+        _bootController.SetProgress(start + range);
+    }
+
+    private async Task TrackProgressAsync<T>(List<AsyncOperationHandle<T>> handles, float start, float range)
+    {
+        while (true)
+        {
+            float sum = 0f;
+            bool done = true;
+
+            foreach (var handle in handles)
+            {
+                sum += handle.PercentComplete;
+                if (handle.IsDone == false)
+                {
+                    done = false;
+                }
+            }
+
+            _bootController.SetProgress(start + (sum / handles.Count) * range);
+
+            if (done)
+            {
+                break;
+            }
+
+            await Task.Yield();
+        }
+
+        _bootController.SetProgress(start + range);
+    }
+
+    private void Complete()
+    {
+        Client.user.RunGame();
     }
 }

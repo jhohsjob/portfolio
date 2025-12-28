@@ -56,12 +56,12 @@ public class User
     private void SaveMercenary()
     {
         Client.storage.data.player.mercenaryId = _mercenaryId;
-        Client.storage.Save(Client.storage.data);
+        StorageSaveManager.RequestSave();
     }
 
     private void SaveGold()
     {
         Client.storage.data.player.gold = _currentGold;
-        Client.storage.Save(Client.storage.data);
+        StorageSaveManager.RequestSave();
     }
 }
