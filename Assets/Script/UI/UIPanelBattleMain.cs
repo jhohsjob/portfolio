@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,12 +7,7 @@ public class UIPanelBattleMain : UIPanel
 {
     [SerializeField]
     private TextMeshProUGUI _txtKill;
-    [SerializeField]
-    private TextMeshProUGUI _txtElementWater;
-    [SerializeField]
-    private TextMeshProUGUI _txtElementForest;
-    [SerializeField]
-    private TextMeshProUGUI _txtElementFire;
+    
     [SerializeField]
     private Button _btnDash;
     [SerializeField]
@@ -26,13 +20,11 @@ public class UIPanelBattleMain : UIPanel
         _btnDash.onClick.AddListener(OnButtonDash);
 
         EventHelper.AddEventListener(EventName.EnemyDieEnd, OnEnemyDieEnd);
-        EventHelper.AddEventListener(EventName.AddElement, OnAddElement);
     }
 
     protected override void OnDestroy()
     {
         EventHelper.RemoveEventListener(EventName.EnemyDieEnd, OnEnemyDieEnd);
-        EventHelper.RemoveEventListener(EventName.AddElement, OnAddElement);
     }
 
     private void Update()
@@ -62,31 +54,6 @@ public class UIPanelBattleMain : UIPanel
         _txtKill.text = manager.dieCount.ToString();
     }
 
-    private void OnAddElement(object sender, object data)
-    {
-        if (data is Dictionary<ElementType, int> elements == false)
-        {
-            return;
-        }
-
-        foreach (var element in elements)
-        {
-            switch (element.Key)
-            {
-                case ElementType.Water:
-                    _txtElementWater.text = element.Value.ToString();
-                    break;
-
-                case ElementType.Forest:
-                    _txtElementForest.text = element.Value.ToString();
-                    break;
-
-                case ElementType.Fire:
-                    _txtElementFire.text = element.Value.ToString();
-                    break;
-            }
-        }
-    }
 
     private void OnButtonDash()
     {
