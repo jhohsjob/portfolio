@@ -96,7 +96,6 @@ public class EnemyManager : MonoBehaviour
 
         foreach (var actor in _enemyList)
         {
-            // null 또는 이미 죽은 대상은 무시
             if (actor == null || actor.state.HasState(ActorState.Die))
             {
                 continue;
@@ -105,15 +104,13 @@ public class EnemyManager : MonoBehaviour
             Vector3 dir = actor.transform.position - origin;
             float dist = dir.sqrMagnitude;
 
-            // 거리 제한
             if (dist > searchRadius * searchRadius)
             {
                 continue;
             }
 
-            // 시야각 제한
             float angle = Vector3.Angle(forward, dir);
-            if (angle > searchAngle * 0.5f) // 시야의 절반 각도
+            if (angle > searchAngle * 0.5f)
             {
                 continue;
             }
