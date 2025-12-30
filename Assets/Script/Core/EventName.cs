@@ -14,5 +14,5 @@ public static class EventName
     public static readonly string HpBarConnection = "HpBarConnection";
     public static readonly string HpBarDisconnection = "HpBarDisconnection";
 
-    public static readonly string ClickBtnDash = "ClickBtnDash";
+    public static readonly string ClickDash = "ClickDash";
 }

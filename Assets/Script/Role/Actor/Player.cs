@@ -5,17 +5,13 @@ using UnityEngine.InputSystem;
 
 public class Player : Actor<Mercenary, MercenaryData>
 {
-    private Vector2 _moveDirection = Vector2.zero;
-    private Vector2 _lookDirection = Vector2.right;
+    private PlayerMoveController _move;
 
     private ElementController _element;
     public ElementController element => _element;
 
     private DashController _dash;
     public DashController dash => _dash;
-
-    private float _elementMoveSpeed = 0f;
-    private float _moveSpeed => _role.moveSpeed + _elementMoveSpeed;
 
     // temp
     private List<SkillData> _tempSkillDatas = new();
@@ -28,15 +24,18 @@ public class Player : Actor<Mercenary, MercenaryData>
 
         team = Team.Player;
 
+        _move = new PlayerMoveController();
         _element = new ElementController();
         _dash = new DashController();
 
-        EventHelper.AddEventListener(EventName.ClickBtnDash, OnClickBtnDash);
+        EventHelper.AddEventListener(EventName.ClickDash, OnClickDash);
     }
 
     private void OnDestroy()
     {
-        EventHelper.RemoveEventListener(EventName.ClickBtnDash, OnClickBtnDash);
+        EventHelper.RemoveEventListener(EventName.ClickDash, OnClickDash);
+
+        _element.cbLevelup -= OnElementLevelUp;
     }
 
     void Update()
@@ -65,6 +64,7 @@ public class Player : Actor<Mercenary, MercenaryData>
             skill.Init(this, tempSkillData);
         }
 
+        _move.Init(this);
         _element.Init(this);
         _dash.Init(_role.dashSpeed, _role.dashCount, _role.dashCooldown, _body.sprite);
 
@@ -80,21 +80,7 @@ public class Player : Actor<Mercenary, MercenaryData>
 
     protected override void Move()
     {
-        if (_moveDirection != Vector2.zero)
-        {
-            float angle = Mathf.Atan2(_moveDirection.y, _moveDirection.x) * Mathf.Rad2Deg;
-            _point.rotation = Quaternion.Euler(0f, 0f, angle);
-        }
-
-        transform.Translate(_moveDirection * _moveSpeed * Time.deltaTime);
-
-        var pos = transform.position;
-        var mapBounds = BattleManager.instance.mapBounds;
-
-        pos.x = Mathf.Clamp(pos.x, mapBounds.min.x + 0.5f, mapBounds.max.x - 0.5f);
-        pos.y = Mathf.Clamp(pos.y, mapBounds.min.y + 0.6f, mapBounds.max.y - 0.6f);
-
-        transform.position = pos;
+        _move.Move();
     }
 
     protected override void Die()
@@ -120,6 +106,11 @@ public class Player : Actor<Mercenary, MercenaryData>
         Client.user.ChangeGold(_gainGold);
     }
 
+    public void SetJoystick(Vector2 input)
+    {
+        _move.SetMoveDirection(input);
+    }
+
     // PlayerInput Send Messages
     public void OnMove(InputValue value)
     {
@@ -128,20 +119,7 @@ public class Player : Actor<Mercenary, MercenaryData>
             return;
         }
 
-        _moveDirection = value.Get<Vector2>();
-        if (_moveDirection != Vector2.zero)
-        {
-            _lookDirection = _moveDirection;
-        }
-
-        _animator.SetFloat("Speed", _moveDirection == Vector2.zero ? 0f : 1f);
-
-        if (_moveDirection.x != 0f)
-        {
-            _body.FlipX(_moveDirection.x);
-        }
-
-        _state.SetState(_moveDirection == Vector2.zero ? ActorState.Idle : ActorState.Move);
+        _move.SetMoveDirection(value.Get<Vector2>());
 
         // Debug.Log(_moveDirection);
     }
@@ -149,8 +127,7 @@ public class Player : Actor<Mercenary, MercenaryData>
     // PlayerInput Send Messages
     public void OnDash(InputValue value)
     {
-        if (BattleManager.instance.IsBattleRun() == false ||
-            _dash.canDash == false)
+        if (BattleManager.instance.IsBattleRun() == false || _dash.canDash == false)
         {
             return;
         }
@@ -176,10 +153,10 @@ public class Player : Actor<Mercenary, MercenaryData>
         if (state == ActorState.Dash)
         {
             _collider.enabled = false;
-            _dash.Dash(transform, _lookDirection, () =>
+            _dash.Dash(transform, _move.lookDirection, () =>
             {
                 _collider.enabled = true;
-                _state.SetState(_moveDirection == Vector2.zero ? ActorState.Idle : ActorState.Move);
+                _state.SetState(_move.moveDirection == Vector2.zero ? ActorState.Idle : ActorState.Move);
             });
         }
         else if (state == ActorState.Die)
@@ -207,8 +184,7 @@ public class Player : Actor<Mercenary, MercenaryData>
     }
     private void HandleWaterLevelUp()
     {
-        _elementMoveSpeed += 0.5f;
-
+        _move.OnElementLevelUp();
         _dash.OnElementLevelUp();
     }
 
@@ -222,7 +198,7 @@ public class Player : Actor<Mercenary, MercenaryData>
         // todo : skill update
     }
 
-    private void OnClickBtnDash(object sender, object data)
+    private void OnClickDash(object sender, object data)
     {
         if (_dash.canDash == false)
         {

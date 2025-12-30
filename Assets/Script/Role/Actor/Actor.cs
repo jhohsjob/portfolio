@@ -9,8 +9,10 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
     [SerializeField]
     protected Transform _point;
     protected Body _body;
+    public Body body => _body;
     protected FlashShader _flashShader;
     protected Animator _animator;
+    public Animator animator => _animator;
     protected Collider2D _collider;
 
     public override int ID { get; protected set; }

@@ -62,6 +62,6 @@ public class UIPanelBattleMain : UIPanel
             return;
         }
 
-        EventHelper.Send(EventName.ClickBtnDash);
+        EventHelper.Send(EventName.ClickDash);
     }
 }

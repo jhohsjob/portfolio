@@ -39,6 +39,11 @@ MonoBehaviour:
     m_SerializedLabels:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21c91141d8ccf16409680130b4d4f284
+    m_Address: Assets/PlayerActions.inputactions
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2c940298843c92a4c8ebed2479ec3d3b
     m_Address: 2DMercenary03
     m_ReadOnly: 0

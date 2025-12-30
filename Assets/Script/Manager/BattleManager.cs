@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 public class BattleManagerInitData
@@ -42,7 +43,7 @@ public class BattleManager : MonoSingleton<BattleManager>
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Keyboard.current.pKey.wasPressedThisFrame)
         {
             debugEnemyPause = !debugEnemyPause;
         }
