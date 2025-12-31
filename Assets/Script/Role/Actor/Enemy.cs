@@ -93,7 +93,7 @@ public class Enemy : Actor<Monster, MonsterData>
     {
         if (other.TryGetComponent(out Body body))
         {
-            if (body.actor is Player actor && actor.state.current != ActorState.Die)
+            if (body.actor is Player actor && actor.State.current != ActorState.Die)
             {
                 actor.BeHit(_damage);
                 ResetCollider();

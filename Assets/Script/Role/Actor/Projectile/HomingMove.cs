@@ -19,20 +19,20 @@ public class HomingMove : IProjectileMoveBehaviour
     {
         if (_target == null)
         {
-            _projectile.state.SetState(ActorState.Die);
+            _projectile.State.SetState(ActorState.Die);
             return;
         }
 
         Vector3 dir = (_target.position - _projectile.transform.position).normalized;
         _projectile.dir = Vector3.Lerp(_projectile.dir, dir, Time.deltaTime * 5f);
 
-        _projectile.transform.Translate(_projectile.dir * _projectile.role.moveSpeed * Time.deltaTime);
+        _projectile.transform.Translate(_projectile.dir * _projectile.Role.moveSpeed * Time.deltaTime);
 
         _moveDistance += (_projectile.transform.position - _prevPos).magnitude;
         _prevPos = _projectile.transform.position;
-        if (_moveDistance > _projectile.role.data.distance)
+        if (_moveDistance > _projectile.Role.data.distance)
         {
-            _projectile.state.SetState(ActorState.Die);
+            _projectile.State.SetState(ActorState.Die);
         }
     }
 

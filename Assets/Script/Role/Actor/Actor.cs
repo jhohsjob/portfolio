@@ -9,18 +9,18 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
     [SerializeField]
     protected Transform _point;
     protected Body _body;
-    public Body body => _body;
+    public Body Body => _body;
     protected FlashShader _flashShader;
     protected Animator _animator;
-    public Animator animator => _animator;
+    public Animator Animator => _animator;
     protected Collider2D _collider;
 
     public override int ID { get; protected set; }
 
     protected TRole _role { get; private set; }
-    public TRole role => _role;
+    public TRole Role => _role;
     protected ActorStateController _state;
-    public ActorStateController state => _state;
+    public ActorStateController State => _state;
 
     protected HPController _hp;
     public override HPController hp => _hp;
@@ -55,6 +55,7 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
         _role = role;
 
         var body = Instantiate(role.original, transform);
+        body.transform.localScale = Vector3.one / 2f;
         body.transform.localPosition = role.resourceOffset;
 
         body.AddComponent<RenderCheck>();

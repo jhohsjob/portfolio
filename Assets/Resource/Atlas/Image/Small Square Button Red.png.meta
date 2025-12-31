@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1400457afc1e66744bab497c055e24a4
+guid: da3132c6fe6f30b48b32fe6f341c676e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1003695325810134894
-    second: Slider Background_0
+      213: -1936355827857895663
+    second: Small Square Button Red_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,23 +126,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Slider Background_0
+      name: Small Square Button Red_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 512
-        height: 40
+        width: 138
+        height: 149
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 5, y: 5, z: 5, w: 5}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 290fd524b682212f0800000000000000
-      internalID: -1003695325810134894
+      spriteID: 11fc5c142aea025e0800000000000000
+      internalID: -1936355827857895663
       vertices: []
       indices: 
       edges: []
@@ -151,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 9c7af6d63b5b0c94d8a40a3e33bccf67
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Slider Background_0: -1003695325810134894
+      Small Square Button Red_0: -1936355827857895663
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -16,14 +16,14 @@ public class StraightMove : IProjectileMoveBehaviour
 
     public void UpdateMove()
     {
-        Vector3 moveStep = _projectile.dir * _projectile.role.moveSpeed * Time.deltaTime;
+        Vector3 moveStep = _projectile.dir * _projectile.Role.moveSpeed * Time.deltaTime;
         _projectile.transform.Translate(moveStep);
 
         _moveDistance += (_projectile.transform.position - _prevPos).magnitude;
         _prevPos = _projectile.transform.position;
-        if (_moveDistance > _projectile.role.data.distance)
+        if (_moveDistance > _projectile.Role.data.distance)
         {
-            _projectile.state.SetState(ActorState.Die);
+            _projectile.State.SetState(ActorState.Die);
         }
     }
 

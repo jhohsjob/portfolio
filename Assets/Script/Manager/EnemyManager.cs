@@ -96,7 +96,7 @@ public class EnemyManager : MonoBehaviour
 
         foreach (var actor in _enemyList)
         {
-            if (actor == null || actor.state.HasState(ActorState.Die))
+            if (actor == null || actor.State.HasState(ActorState.Die))
             {
                 continue;
             }

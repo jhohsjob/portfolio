@@ -22,9 +22,9 @@ public class GroundZoneMove : IProjectileMoveBehaviour
     {
         _timer += Time.deltaTime;
 
-        if (_timer >= _projectile.role.distance)
+        if (_timer >= _projectile.Role.distance)
         {
-            _projectile.state.SetState(ActorState.Die);
+            _projectile.State.SetState(ActorState.Die);
         }
 
         _damageTimer += Time.deltaTime;
