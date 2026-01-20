@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
-public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
+public class UILobbyMiddleMercenary_t : UILobbyMiddle
 {
     struct UIElement
     {
@@ -34,7 +34,7 @@ public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
     private Button _btnRight;
 
     private int _currentIndex;
-    private List<UIElement> _uiElements = new List<UIElement>();
+    private List<UIElement> uiElements = new List<UIElement>();
 
     private float _dragThreshold = 150f;
     private Vector2 _startPos;
@@ -47,7 +47,7 @@ public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
         _btnLeft.onClick.AddListener(() => OnClickMove(-1));
         _btnRight.onClick.AddListener(() => OnClickMove(1));
 
-        _uiElements.Clear();
+        uiElements.Clear();
 
         var mercenaryList = MercenaryHander.instance.list;
         foreach (var mercenary in mercenaryList)
@@ -58,33 +58,26 @@ public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
                 data = mercenary,
                 body = Instantiate(mercenary.original, _pivot)
             };
-            _uiElements.Add(uiData);
+            uiElements.Add(uiData);
         }
     }
 
-    public override void OnPopupReady(object data = null)
+    protected override void OnEnter()
     {
-        if (data is not Mercenary _mercenary)
-        {
-            return;
-        }
-
-        _currentIndex = _uiElements.FindIndex(x => x.id == _mercenary.id);
+        _currentIndex = uiElements.FindIndex(x => x.id == Client.user.mercenaryId);
 
         SetMercenary();
-
-        base.OnPopupReady(data);
     }
-    
+
     private void SetMercenary()
     {
-        foreach (var body in _uiElements)
+        foreach (var body in uiElements)
         {
             body.body.SetActive(false);
         }
-        _uiElements[_currentIndex].body.SetActive(true);
+        uiElements[_currentIndex].body.SetActive(true);
 
-        var mercenary = _uiElements[_currentIndex].data;
+        var mercenary = uiElements[_currentIndex].data;
 
         _txtName.text = mercenary.name;
         _txtAtk.text = $"atk : {mercenary.atk}";
@@ -95,9 +88,7 @@ public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
 
     private void OnClickSelect()
     {
-        Client.user.SetMercenary(_uiElements[_currentIndex].id);
-
-        OnClickClose();
+        Client.user.SetMercenary(uiElements[_currentIndex].id);
     }
 
     private void OnClickMove(int direction)

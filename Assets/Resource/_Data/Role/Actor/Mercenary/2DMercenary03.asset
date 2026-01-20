@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc1fe3460dca268498cbdf0189de94d5, type: 3}
   m_Name: 2DMercenary03
   m_EditorClassIdentifier: 
+  roleType: 4000
   id: 101003
   roleName: Mercenary03
   roleDescription: Cube
@@ -20,9 +21,9 @@ MonoBehaviour:
   resourcePath: 
   body: {fileID: 8193831111808689357, guid: 2c940298843c92a4c8ebed2479ec3d3b, type: 3}
   resourceOffset: {x: 0, y: 0, z: 0}
-  moveSpeed: 3
-  roleType: 4000
   maxHP: 10
+  moveSpeed: 3
   skillData: {fileID: 11400000, guid: e4cedd2a4cc7ecc459882075da20a765, type: 2}
   dashCount: 1
   dashCooldown: 4
+  icon: {fileID: -1442216141, guid: 8f7a60065e3984c489b9c4d41bc3dc4e, type: 3}
