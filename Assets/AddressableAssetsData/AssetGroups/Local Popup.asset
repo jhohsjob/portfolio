@@ -21,12 +21,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6b18f6c787a3d22408319be2870e6c9c
-    m_Address: UISelectMap
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Preload
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a165edb54e6d4e8469b401dd4b9d1e45
     m_Address: UISelectMercenary
     m_ReadOnly: 0

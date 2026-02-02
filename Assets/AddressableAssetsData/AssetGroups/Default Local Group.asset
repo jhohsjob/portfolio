@@ -123,7 +123,7 @@ MonoBehaviour:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d04ff550ffb85a6418f7ce07a337c42d
-    m_Address: NormalMap
+    m_Address: EasyMap
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload
