@@ -3,12 +3,18 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class UILobbyMiddleBattle : UILobbyMiddle
+public class UILobbyMiddleBattle : UILobbyMiddle, IScrollDataProvider
 {
     [SerializeField]
     private VerticalLayoutGroup _contentGorup;
 
     private List<UISVPopupContent> _contents = new List<UISVPopupContent>();
+
+    [SerializeField]
+    private HorizontalInfiniteScroll _scroll;
+
+    private List<Mercenary> _mercenaries;
+    private IScrollItemFactory _factory;
 
     protected override void Awake()
     {
@@ -31,6 +37,23 @@ public class UILobbyMiddleBattle : UILobbyMiddle
                 _contents.Add(content);
             }
         });
+
+        _mercenaries = MercenaryHander.instance.list;
+        int listIndex = _mercenaries.FindIndex(x => x.id == Client.user.mercenaryId);
+
+        Client.asset.LoadAsset<GameObject>("BattleMercenaryItem", task =>
+        {
+            var prefab = task.GetAsset<GameObject>();
+
+            _factory = new MercenaryItemFactory(prefab);
+
+            _scroll.Initialize(
+                provider: this,
+                factory: _factory,
+                itemCount: _mercenaries.Count,
+                initPos: listIndex
+            );
+        });
     }
 
     private void OnClickContent(int index)
@@ -46,7 +69,29 @@ public class UILobbyMiddleBattle : UILobbyMiddle
             return;
         }
 
+        int mIndex = _scroll.GetCenteredIndex();
+        if (mIndex < 0 || mIndex >= _mercenaries.Count)
+        {
+            return;
+        }
+
+        Client.user.SetMercenary(_mercenaries[mIndex].id);
+
         var mapContent = content as UISelectMapContent;
         SceneLoader.LoadBattleScene(mapContent.data);
+    }
+
+    public int GetItemCount()
+    {
+        return _mercenaries.Count;
+    }
+
+    public void Bind(int index, InfiniteScrollItem item)
+    {
+        //item.OnRecycle();
+        item.SetData(index, _mercenaries[index]);
+
+        float scale = _scroll.CalculateScaleForItem(item);
+        item.ForceSetScale(scale);
     }
 }

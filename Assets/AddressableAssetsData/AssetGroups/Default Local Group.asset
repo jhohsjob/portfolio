@@ -57,7 +57,13 @@ MonoBehaviour:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 41d6dcdc609059449b6d590aa97974a4
-    m_Address: MercenaryItem
+    m_Address: BarrackMercenaryItem
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c4b2923955283449a049ca95c752b97
+    m_Address: BattleMercenaryItem
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload

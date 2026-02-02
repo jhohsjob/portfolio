@@ -2,25 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class MercenaryItemFactory : IScrollItemFactory
-{
-    private GameObject _prefab;
-
-    public MercenaryItemFactory(GameObject prefab)
-    {
-        _prefab = prefab;
-    }
-
-    public GameObject CreateItem(Transform parent)
-    {
-        return GameObject.Instantiate(_prefab, parent);
-    }
-}
-
-public class UILobbyMiddleMercenary : UILobbyMiddle, IScrollDataProvider
+public class UILobbyMiddleBarrack : UILobbyMiddle, IScrollDataProvider
 {
     [SerializeField]
-    private VirtualGridScroll _scroll;
+    private VerticalInfiniteScroll _scroll;
 
     private List<Mercenary> _mercenaries;
     private IScrollItemFactory _factory;
@@ -31,7 +16,7 @@ public class UILobbyMiddleMercenary : UILobbyMiddle, IScrollDataProvider
 
         _mercenaries = MercenaryHander.instance.list;
 
-        Client.asset.LoadAsset<GameObject>("MercenaryItem", task =>
+        Client.asset.LoadAsset<GameObject>("BarrackMercenaryItem", task =>
         {
             var prefab = task.GetAsset<GameObject>();
 
@@ -50,8 +35,8 @@ public class UILobbyMiddleMercenary : UILobbyMiddle, IScrollDataProvider
         return _mercenaries.Count;
     }
 
-    public void Bind(int index, GameObject item)
+    public void Bind(int index, InfiniteScrollItem item)
     {
-        item.GetComponent<UIMercenaryScrollItem>().Init(_mercenaries[index]);
+        item.SetData(index, _mercenaries[index]);
     }
 }

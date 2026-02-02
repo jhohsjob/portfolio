@@ -27,8 +27,6 @@ public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
     [SerializeField]
     private TextMeshProUGUI _txtDesc;
     [SerializeField]
-    private Button _btnSelect;
-    [SerializeField]
     private Button _btnLeft;
     [SerializeField]
     private Button _btnRight;
@@ -43,7 +41,6 @@ public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
     {
         base.Awake();
 
-        _btnSelect.onClick.AddListener(OnClickSelect);
         _btnLeft.onClick.AddListener(() => OnClickMove(-1));
         _btnRight.onClick.AddListener(() => OnClickMove(1));
 
@@ -91,13 +88,6 @@ public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
         _txtMaxHp.text = $"hp : {mercenary.maxHP}";
         _txtMoveSpeed.text = $"atk : {mercenary.moveSpeed}";
         _txtDesc.text = mercenary.description;
-    }
-
-    private void OnClickSelect()
-    {
-        Client.user.SetMercenary(_uiElements[_currentIndex].id);
-
-        OnClickClose();
     }
 
     private void OnClickMove(int direction)

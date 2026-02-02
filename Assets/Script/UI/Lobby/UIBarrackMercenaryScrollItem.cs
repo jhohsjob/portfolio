@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class UIMercenaryScrollItem : MonoBehaviour
+public class UIBarrackMercenaryScrollItem : InfiniteScrollItem
 {
     [SerializeField]
     private Button _btn;
@@ -19,12 +19,14 @@ public class UIMercenaryScrollItem : MonoBehaviour
         _btn.onClick.AddListener(OnClickItem);
     }
 
-    public void Init(Mercenary mercenary)
+    public override void SetData(int index, object data)
     {
-        _data = mercenary;
+        base.SetData(index, data);
 
-        _name.text = mercenary.name;
-        _icon.sprite = mercenary.icon;
+        _data = (Mercenary)data;
+
+        _name.text = _data.name;
+        _icon.sprite = _data.icon;
     }
 
     public void OnClickItem()
