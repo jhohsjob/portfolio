@@ -84,12 +84,11 @@ public class VerticalInfiniteScroll : InfiniteScrollBase
     protected override float GetNearestSnapPosition()
     {
         float unit = _itemHeight + _spacingY;
-
-        float viewportHeight = _scrollRect.viewport.rect.height;
+        float viewport = _scrollRect.viewport.rect.height;
 
         float currentY = _content.anchoredPosition.y;
 
-        float centerInContent = currentY + viewportHeight * 0.5f;
+        float centerInContent = currentY + viewport * 0.5f;
 
         int index = Mathf.RoundToInt(centerInContent / unit);
 
@@ -97,20 +96,48 @@ public class VerticalInfiniteScroll : InfiniteScrollBase
 
         float itemCenter = index * unit + _itemHeight * 0.5f;
 
-        float targetY = itemCenter - viewportHeight * 0.5f;
+        float targetY = itemCenter - viewport * 0.5f;
 
         return targetY;
     }
 
-    protected override float GetSnapPositionByIndex(int index)
+    protected override float GetPositionByIndex(int index)
     {
         float unit = _itemHeight + _spacingY;
         float viewport = _scrollRect.viewport.rect.height;
 
         index = Mathf.Clamp(index, 0, _itemCount - 1);
 
-        float itemCenter = index * unit + _itemHeight * 0.5f;
+        float contentHeight = _itemCount * unit - _spacingY;
+        float result = 0f;
+        if (_useCenterScale)
+        {
+            float itemPos = index * unit + _itemHeight * 0.5f;
+            float centerPos = itemPos - viewport * 0.5f;
 
-        return itemCenter - viewport * 0.5f;
+            if (_direction == ScrollDirection.Reverse)
+            {
+                result = contentHeight - viewport - centerPos;
+            }
+            else
+            {
+                result = centerPos;
+            }
+        }
+        else
+        {
+            float topPos = index * unit;
+
+            if (_direction == ScrollDirection.Reverse)
+            {
+                result = contentHeight - viewport - topPos;
+            }
+            else
+            {
+                result = topPos;
+            }
+        }
+
+        return result;
     }
 }

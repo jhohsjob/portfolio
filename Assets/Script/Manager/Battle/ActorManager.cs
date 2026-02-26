@@ -65,7 +65,7 @@ public class ActorManager : MonoBehaviour
 
     public void InitEnemy(int id)
     {
-        var role = MonsterHander.instance.GetMonsterById(id);
+        var role = MonsterManager.instance.GetMonsterById(id);
         if (role == null || _pool.ContainsKey(id) == true)
         {
             return;
@@ -76,7 +76,7 @@ public class ActorManager : MonoBehaviour
 
     public void InitProjectile(int id)
     {
-        var role = ProjectileHander.instance.GetProjectileById(id);
+        var role = ProjectileManager.instance.GetProjectileById(id);
         if (role == null || _pool.ContainsKey(id) == true)
         {
             return;
@@ -87,7 +87,7 @@ public class ActorManager : MonoBehaviour
 
     public void InitDropItem(int id)
     {
-        var role = DropItemHander.instance.GetDropItemById(id);
+        var role = DropItemManager.instance.GetDropItemById(id);
         if (role == null || _pool.ContainsKey(id) == true)
         {
             return;

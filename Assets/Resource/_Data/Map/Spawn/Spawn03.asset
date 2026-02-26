@@ -12,21 +12,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5c606c415ee2ba439ec76e299b11f84, type: 3}
   m_Name: Spawn03
   m_EditorClassIdentifier: 
-  spawnInfos:
-  - actorId: 201001
-    dropItemIds: 691e06006a1e06006b1e060051220600
-    dropItemRate: 1e0000001e0000001e0000000a000000
-    dropItemRateSum: 100
-  - actorId: 201002
-    dropItemIds: 691e06006a1e06006b1e060051220600
-    dropItemRate: 1e0000001e0000001e0000000a000000
-    dropItemRateSum: 100
-  - actorId: 201003
-    dropItemIds: 691e06006a1e06006b1e06005122060052220600
-    dropItemRate: 1900000019000000190000000f0000000a000000
-    dropItemRateSum: 100
-  - actorId: 201003
-    dropItemIds: 691e06006a1e06006b1e0600512206005222060053220600
-    dropItemRate: 1900000019000000190000000a0000000a00000005000000
-    dropItemRateSum: 100
-  spawnRate: 3200000032000000
+  _enemyRateSum: 100
+  enemyEntries:
+  - _dropItemRateSum: 100
+    roleId: 201001
+    spawnRate: 25
+    dropItemEntries:
+    - roleId: 401001
+      spawnRate: 30
+    - roleId: 401002
+      spawnRate: 30
+    - roleId: 401003
+      spawnRate: 30
+    - roleId: 402001
+      spawnRate: 10
+  - _dropItemRateSum: 100
+    roleId: 201002
+    spawnRate: 25
+    dropItemEntries:
+    - roleId: 401001
+      spawnRate: 30
+    - roleId: 401002
+      spawnRate: 30
+    - roleId: 401003
+      spawnRate: 30
+    - roleId: 402001
+      spawnRate: 10
+  - _dropItemRateSum: 100
+    roleId: 201003
+    spawnRate: 25
+    dropItemEntries:
+    - roleId: 401001
+      spawnRate: 25
+    - roleId: 401002
+      spawnRate: 25
+    - roleId: 401003
+      spawnRate: 25
+    - roleId: 402001
+      spawnRate: 15
+    - roleId: 402002
+      spawnRate: 10
+  - _dropItemRateSum: 100
+    roleId: 201003
+    spawnRate: 25
+    dropItemEntries:
+    - roleId: 401001
+      spawnRate: 25
+    - roleId: 401002
+      spawnRate: 25
+    - roleId: 401003
+      spawnRate: 25
+    - roleId: 402001
+      spawnRate: 10
+    - roleId: 402002
+      spawnRate: 10
+    - roleId: 402003
+      spawnRate: 5

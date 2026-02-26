@@ -2130,7 +2130,7 @@ GameObject:
   - component: {fileID: 1144700552}
   - component: {fileID: 1144700551}
   m_Layer: 5
-  m_Name: BattleOverPanel
+  m_Name: BattleEndPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2229,7 +2229,7 @@ MonoBehaviour:
   _topUI: {fileID: 7139354785431518441}
   _panelStartDirection: {fileID: 1483899579}
   _panelBattleMain: {fileID: 1827822313}
-  _panelBattleOver: {fileID: 1144700549}
+  _panelBattleEnd: {fileID: 1144700549}
   _txtDirection: {fileID: 952660165}
   _hpBarContainer: {fileID: 48342860}
   _btnLobby: {fileID: 1616140842}

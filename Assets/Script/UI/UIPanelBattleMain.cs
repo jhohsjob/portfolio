@@ -46,7 +46,7 @@ public class UIPanelBattleMain : UIPanel
 
     private void OnEnemyDieEnd(object sender, object data)
     {
-        if (sender is EnemyManager manager == false)
+        if (sender is EnemyActorManager manager == false)
         {
             return;
         }

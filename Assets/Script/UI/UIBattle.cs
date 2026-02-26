@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class UIBattle : MonoBehaviour
 {
-    private enum PanelMode { start, run, over }
+    private enum PanelMode { Start, Main, End }
 
     [SerializeField]
     private RectTransform _topUI;
@@ -15,7 +15,7 @@ public class UIBattle : MonoBehaviour
     [SerializeField]
     private UIPanelBattleMain _panelBattleMain;
     [SerializeField]
-    private GameObject _panelBattleOver;
+    private GameObject _panelBattleEnd;
 
     [SerializeField]
     private TextMeshProUGUI _txtDirection;
@@ -30,7 +30,7 @@ public class UIBattle : MonoBehaviour
     {
         EventHelper.AddEventListener(EventName.BattleStatus, OnBattleStatus);
 
-        PanelChange(PanelMode.start);
+        PanelChange(PanelMode.Start);
 
         _btnLobby.onClick.AddListener(OnClickLobby);
     }
@@ -46,36 +46,43 @@ public class UIBattle : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        PanelChange(PanelMode.run);
+        PanelChange(PanelMode.Main);
     }
 
-    private void BattleOverDirection()
+    private void BattleWinDirection()
+    {
+        _txtDirection.text = "YOU Win";
+
+        PanelChange(PanelMode.End);
+    }
+
+    private void BattleLoseDirection()
     {
         _txtDirection.text = "YOU DIE";
 
-        PanelChange(PanelMode.over);
+        PanelChange(PanelMode.End);
     }
 
     private void PanelChange(PanelMode mode)
     {
         switch (mode)
         {
-            case PanelMode.start:
+            case PanelMode.Start:
                 _panelStartDirection.SetActive(true);
                 _panelBattleMain.Hide();
-                _panelBattleOver.SetActive(false);
+                _panelBattleEnd.SetActive(false);
                 break;
 
-            case PanelMode.run:
+            case PanelMode.Main:
                 _panelStartDirection.SetActive(false);
                 _panelBattleMain.Show();
-                _panelBattleOver.SetActive(false);
+                _panelBattleEnd.SetActive(false);
                 break;
 
-            case PanelMode.over:
+            case PanelMode.End:
                 _panelStartDirection.SetActive(true);
                 _panelBattleMain.Hide();
-                _panelBattleOver.SetActive(true);
+                _panelBattleEnd.SetActive(true);
                 break;
         }
     }
@@ -104,12 +111,16 @@ public class UIBattle : MonoBehaviour
 
         switch ((BattleStatus)data)
         {
-            case BattleStatus.Run:
+            case BattleStatus.Running:
                 StartCoroutine(StartDirection());
                 break;
 
-            case BattleStatus.BattleOver:
-                BattleOverDirection();
+            case BattleStatus.Win:
+                BattleWinDirection();
+                break;
+
+            case BattleStatus.Lose:
+                BattleLoseDirection();
                 break;
         }
     }

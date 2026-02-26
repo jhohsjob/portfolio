@@ -36,7 +36,7 @@ public class UIBattleTop : MonoBehaviour
 
     private void OnClickPause()
     {
-        BattleManager.instance.SetBattleStatus(BattleStatus.Pause);
+        BattleManager.instance.SetBattleStatus(BattleStatus.Paused);
 
         PopupManager.ShowPopup<UIPause>(PopupName.UIPause);
     }

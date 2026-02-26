@@ -91,7 +91,7 @@ public class Player : Actor<Mercenary, MercenaryData>
 
         _animator.SetBool("Dead", true);
 
-        BattleManager.instance.SetBattleStatus(BattleStatus.BattleOver);
+        BattleManager.instance.SetBattleStatus(BattleStatus.Lose);
     }
 
     public void AddGold(int gold)
@@ -163,8 +163,6 @@ public class Player : Actor<Mercenary, MercenaryData>
         {
             Die();
         }
-
-        Debug.Log("state change : " + state);
     }
 
     private void OnElementLevelUp(ElementType type)

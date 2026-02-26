@@ -60,7 +60,7 @@ public class Skill : MonoBehaviour
     {
         for (int i = 0; i < _shotCount; i++)
         {
-            var role = ProjectileHander.instance.GetProjectileById(_projectileData[0].id);
+            var role = ProjectileManager.instance.GetProjectileById(_projectileData[0].id);
             var parent = BattleManager.instance.battleScene.actorContainer;
             var position = _actor.point.GetChild(0).transform.position;
             var projectile = BattleManager.instance.actorManager.GetActor(role, parent, position) as ActorProjectile;

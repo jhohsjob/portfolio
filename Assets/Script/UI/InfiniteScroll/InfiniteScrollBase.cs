@@ -6,6 +6,12 @@ using UnityEngine.UI;
 
 public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
+    protected enum ScrollDirection
+    {
+        Normal,
+        Reverse
+    }
+
     [SerializeField]
     protected ScrollRect _scrollRect;
     [SerializeField]
@@ -19,6 +25,9 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
     protected float _spacingX = 20f;
     [SerializeField]
     protected float _spacingY = 20f;
+
+    [SerializeField]
+    protected ScrollDirection _direction = ScrollDirection.Normal;
 
     [Header("Snap")]
     [SerializeField]
@@ -136,10 +145,7 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
         _options = new ScrollOptions(_useCenterScale);
 
         Build();
-        if (_useCenterScale)
-        {
-            SetInitialPosition(initPos);
-        }
+        SetInitialPosition(initPos);
 
         _initializeEnd = true;
     }
@@ -200,7 +206,10 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
         _scrollRect.StopMovement();
         _scrollRect.velocity = Vector2.zero;
 
-        _targetPos = GetNearestSnapPosition();
+        if (_useCenterScale)
+        {
+            _targetPos = GetNearestSnapPosition();
+        }
     }
 
     protected void UpdateSnap()
@@ -315,19 +324,19 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
 
     #region index & position
 
-    protected void SetInitialPosition(int index)
+    public void SetInitialPosition(int index)
     {
-        float target = GetSnapPositionByIndex(index);
+        _targetPos = GetPositionByIndex(index);
 
         Vector2 pos = _content.anchoredPosition;
 
         if (IsVertical())
         {
-            pos.y = target;
+            pos.y = _targetPos;
         }
         else
         {
-            pos.x = target;
+            pos.x = _targetPos;
         }
 
         _content.anchoredPosition = pos;
@@ -335,7 +344,7 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
 
     public void MoveToIndex(int index, bool smooth = true)
     {
-        float target = GetSnapPositionByIndex(index);
+        float target = GetPositionByIndex(index);
 
         if (smooth)
         {
@@ -424,5 +433,5 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
     protected abstract void UpdateItems();
 
     protected abstract float GetNearestSnapPosition();
-    protected abstract float GetSnapPositionByIndex(int index);
+    protected abstract float GetPositionByIndex(int index);
 }

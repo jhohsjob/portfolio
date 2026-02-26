@@ -5,20 +5,18 @@ using UnityEngine.SceneManagement;
 
 public static class SceneLoader
 {
-    public static void LoadBattleScene(MapInfoData mapInfoData)
+    public static void LoadBattleScene()
     {
-        IEnumeratorTool.instance.StartCoroutine(coLoadBattleScene(mapInfoData));
+        IEnumeratorTool.instance.StartCoroutine(coLoadBattleScene());
     }
 
-    private static IEnumerator coLoadBattleScene(MapInfoData mapInfoData)
+    private static IEnumerator coLoadBattleScene()
     {
         yield return null;
         PopupManager.CloseAllPopup();
 
-        yield return null;
-        var initData = new BattleManagerInitData();
-        initData.mapInfoData = mapInfoData;
-        BattleManager.instance.Init(initData);
+        //yield return null;
+        //BattleManager.instance.Init();
 
         yield return null;
         var op = SceneManager.LoadSceneAsync("03.BattleScene");

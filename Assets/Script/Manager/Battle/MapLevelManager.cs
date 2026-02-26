@@ -38,18 +38,20 @@ public class MapLevelManager : MonoBehaviour
         }
     }
 
-    public void Init(BattleManager gameManager, MapInfoData mapInfoData)
+    public void Init(BattleManager gameManager)
     {
         _gameManager = gameManager;
 
-        var datas = mapInfoData.levelDatas;
+        MapDefinition map = GameSession.instance.currentStage.mapDefinition;
+
+        var datas = map.levelDefinitions;
         for (int i = 0; i < datas.Count; i++)
         {
             var nextData = i < datas.Count - 1 ? datas[i + 1] : null;
             mapLevels.Add(datas[i].level, new MapLevel(datas[i], nextData));
         }
 
-        _mapOriginal = mapInfoData.map;
+        _mapOriginal = map.map;
 
         SetCurrentMap(mapLevels.First().Value);
     }

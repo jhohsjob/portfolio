@@ -13,7 +13,7 @@ public class BootScene : MonoBehaviour
     private void Awake()
     {
         _bootController = new BootController();
-        _bootController.onProgressChanged += _uiBoot.SetProgress;
+        _bootController.cbProgressChanged += _uiBoot.SetProgress;
 
         _launch.Initialize(_bootController);
     }

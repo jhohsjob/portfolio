@@ -8,37 +8,54 @@ public class MapLevel
     public int spawnCount;
     public float respawnTime;
 
-    public SpawnData spawnData;
+    public SpawnDefinition spawnDefinition;
 
-    public List<int> spawnActorId = new List<int>();
-    public List<int> spawnActorRate = new List<int>();
+    public List<SpawnRuntimeInfo> spawnInfos = new();
 
     public int nextLevel;
 
-    public MapLevel(MapLevelData data, MapLevelData nextData)
+    public MapLevel(MapLevelDefinition data, MapLevelDefinition nextData)
     {
         level = data.level;
         levelupCount = data.levelupCount;
         spawnCount = data.spawnCount;
         respawnTime = data.respawnTime;
-        spawnData = data.spawnData;
+        spawnDefinition = data.spawnDefinition;
 
         nextLevel = nextData == null ? -1 : nextData.level;
 
-        spawnActorId.Clear();
-        foreach (var info in spawnData.spawnInfos)
+        BuildRuntimeSpawnInfos();
+        PreloadActors();
+    }
+
+    private void BuildRuntimeSpawnInfos()
+    {
+        spawnInfos.Clear();
+
+        if (spawnDefinition == null)
         {
-            spawnActorId.Add(info.actorId);
-
-            BattleManager.instance.actorManager.InitEnemy(info.actorId);
-
-            foreach (var dropItemId in info.dropItemIds)
-            {
-                BattleManager.instance.actorManager.InitDropItem(dropItemId);
-            }
+            return;
         }
 
-        spawnActorRate.Clear();
-        spawnActorRate.AddRange(spawnData.spawnRate);
+        foreach (var enemyEntry in spawnDefinition.enemyEntries)
+        {
+            var runtimeInfo = new SpawnRuntimeInfo(enemyEntry);
+            spawnInfos.Add(runtimeInfo);
+        }
+    }
+
+    private void PreloadActors()
+    {
+        var actorManager = BattleManager.instance.actorManager;
+
+        foreach (var spawnInfo in spawnInfos)
+        {
+            actorManager.InitEnemy(spawnInfo.roleId);
+
+            foreach (var dropItemRoleId in spawnInfo.dropItemRoleIds)
+            {
+                actorManager.InitDropItem(dropItemRoleId);
+            }
+        }
     }
 }

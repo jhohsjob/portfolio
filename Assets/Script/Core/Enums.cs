@@ -1,9 +1,10 @@
 public enum BattleStatus
 {
     None,
-    Run,
-    Pause,
-    BattleOver
+    Running,
+    Paused,
+    Win,
+    Lose
 }
 
 public enum RoleType

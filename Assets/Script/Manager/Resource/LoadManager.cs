@@ -8,7 +8,7 @@ public static class LoadManager
         float progress = 0f;
         float step = 1f / 2f;
 
-        await DataManager.LoadAsync();
+        await GameDataManager.LoadAsync();
         progress += step;
         onProgress?.Invoke(progress);
 

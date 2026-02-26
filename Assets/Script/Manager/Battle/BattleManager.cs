@@ -3,19 +3,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 
-public class BattleManagerInitData
-{
-    public MapInfoData mapInfoData;
-}
-
 public class BattleManager : MonoSingleton<BattleManager>
 {
     [NonSerialized]
     public BattleScene battleScene;
 
     public ActorManager actorManager;
-    public EnemyManager enemyManager;
-    public DropItemManager dropItemManager;
+    public EnemyActorManager enemyManager;
+    public DropItemActorManager dropItemManager;
     public MapLevelManager mapLevelManager;
 
     private BattleStatus _battleStatus { get; set; } = BattleStatus.None;
@@ -27,8 +22,8 @@ public class BattleManager : MonoSingleton<BattleManager>
     protected override void OnAwake()
     {
         actorManager = new GameObject("ActorManager").AddComponent<ActorManager>();
-        enemyManager = new GameObject("EnemyManager").AddComponent<EnemyManager>();
-        dropItemManager = new GameObject("DropItemManager").AddComponent<DropItemManager>();
+        enemyManager = new GameObject("EnemyManager").AddComponent<EnemyActorManager>();
+        dropItemManager = new GameObject("DropItemManager").AddComponent<DropItemActorManager>();
         mapLevelManager = new GameObject("MapLevelManager").AddComponent<MapLevelManager>();
 
         actorManager.transform.SetParent(transform);
@@ -47,6 +42,10 @@ public class BattleManager : MonoSingleton<BattleManager>
         {
             debugEnemyPause = !debugEnemyPause;
         }
+        if (Keyboard.current.oKey.wasPressedThisFrame)
+        {
+            EventHelper.Send(EventName.DebugStageClear, this);
+        }
     }
 
     protected override void OnCallDestroy()
@@ -56,18 +55,28 @@ public class BattleManager : MonoSingleton<BattleManager>
         StopAllCoroutines();
     }
 
-    public void Init(BattleManagerInitData data)
+    public void Init(BattleScene battleScene)
     {
+        this.battleScene = battleScene;
+
         actorManager.Init(this);
         enemyManager.Init(this);
         dropItemManager.Init(this);
-        mapLevelManager.Init(this, data.mapInfoData);
+        mapLevelManager.Init(this);
+        InitStage();
     }
 
-    public void SetBattleScene(BattleScene battleScene)
+    private void InitStage()
     {
-        this.battleScene = battleScene;
+        Stage stage = GameSession.instance.currentStage;
+        stage.Init();
+        stage.cbStageCleared += OnStageCleared;
     }
+
+    //public void SetBattleScene(BattleScene battleScene)
+    //{
+    //    this.battleScene = battleScene;
+    //}
 
     public void SetBattleStatus(BattleStatus status)
     {
@@ -75,15 +84,18 @@ public class BattleManager : MonoSingleton<BattleManager>
 
         switch (_battleStatus)
         {
-            case BattleStatus.Run:
+            case BattleStatus.Running:
                 Time.timeScale = 1f;
                 break;
 
-            case BattleStatus.Pause:
+            case BattleStatus.Paused:
                 Time.timeScale = 0f;
                 break;
 
-            case BattleStatus.BattleOver:
+            case BattleStatus.Win:
+                break;
+
+            case BattleStatus.Lose:
                 break;
         }
 
@@ -92,7 +104,7 @@ public class BattleManager : MonoSingleton<BattleManager>
 
     public bool IsBattleRun()
     {
-        return _battleStatus == BattleStatus.Run;
+        return _battleStatus == BattleStatus.Running;
     }
 
     private void OnChangeMapSize(object sender, object data)
@@ -103,5 +115,10 @@ public class BattleManager : MonoSingleton<BattleManager>
         }
 
         mapBounds = bounds;
+    }
+
+    private void OnStageCleared()
+    {
+        SetBattleStatus(BattleStatus.Win);
     }
 }

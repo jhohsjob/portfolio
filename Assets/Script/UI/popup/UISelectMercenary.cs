@@ -46,7 +46,7 @@ public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
 
         _uiElements.Clear();
 
-        var mercenaryList = MercenaryHander.instance.list;
+        var mercenaryList = MercenaryManager.instance.list;
         foreach (var mercenary in mercenaryList)
         {
             var uiData = new UIElement
@@ -92,7 +92,7 @@ public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
 
     private void OnClickMove(int direction)
     {
-        _currentIndex = MercenaryHander.instance.CaclIndex(_currentIndex + direction);
+        _currentIndex = MercenaryManager.instance.CalcIndex(_currentIndex + direction);
 
         SetMercenary();
     }

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 
 public class UILobby : MonoBehaviour
@@ -8,9 +7,6 @@ public class UILobby : MonoBehaviour
     private UIHorizontalMenuFitter _bottom;
     [SerializeField]
     private RectTransform _middle;
-
-    [SerializeField]
-    private Button _btnSelectMercenary;
 
     private UILobbyMiddle[] _middles;
     private int _menuCount;
@@ -21,10 +17,6 @@ public class UILobby : MonoBehaviour
 
         _bottom.cbInitialized += (count) => { _menuCount = count; };
         _bottom.cbMenuChange += OnClickBottomMenu;
-    }
-
-    private void OnDestroy()
-    {
     }
 
     private void OnClickBottomMenu(int index)
@@ -41,11 +33,6 @@ public class UILobby : MonoBehaviour
         }
 
         _middles[index].Show();
-    }
-
-    private void OnSelectMercenary()
-    {
-        PopupManager.ShowPopup<UISelectMercenary>(PopupName.UISelectMercenary);
     }
 
     private void OnClickExit()

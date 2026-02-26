@@ -7,14 +7,14 @@ public class UILobbyMiddleBarrack : UILobbyMiddle, IScrollDataProvider
     [SerializeField]
     private VerticalInfiniteScroll _scroll;
 
-    private List<Mercenary> _mercenaries;
+    private IReadOnlyList<Mercenary> _mercenaries;
     private IScrollItemFactory _factory;
 
     protected override void Awake()
     {
         base.Awake();
 
-        _mercenaries = MercenaryHander.instance.list;
+        _mercenaries = MercenaryManager.instance.list;
 
         Client.asset.LoadAsset<GameObject>("BarrackMercenaryItem", task =>
         {

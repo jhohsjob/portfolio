@@ -84,12 +84,11 @@ public class HorizontalInfiniteScroll : InfiniteScrollBase
     protected override float GetNearestSnapPosition()
     {
         float unit = _itemWidth + _spacingX;
-
-        float viewportWidth = _scrollRect.viewport.rect.width;
+        float viewport = _scrollRect.viewport.rect.width;
 
         float currentX = _content.anchoredPosition.x;
 
-        float centerInContent = -currentX + viewportWidth * 0.5f;
+        float centerInContent = -currentX + viewport * 0.5f;
 
         int index = Mathf.RoundToInt(centerInContent / unit);
 
@@ -97,20 +96,48 @@ public class HorizontalInfiniteScroll : InfiniteScrollBase
 
         float itemCenter = index * unit + _itemWidth * 0.5f;
 
-        float targetX = -(itemCenter - viewportWidth * 0.5f);
+        float targetX = -(itemCenter - viewport * 0.5f);
 
         return targetX;
     }
 
-    protected override float GetSnapPositionByIndex(int index)
+    protected override float GetPositionByIndex(int index)
     {
         float unit = _itemWidth + _spacingX;
         float viewport = _scrollRect.viewport.rect.width;
 
         index = Mathf.Clamp(index, 0, _itemCount - 1);
 
-        float itemCenter = index * unit + _itemWidth * 0.5f;
+        float contentWidth = _itemCount * unit - _spacingX;
+        float result = 0f;
+        if (_useCenterScale)
+        {
+            float itemPos = index * unit + _itemWidth * 0.5f;
+            float centerPos = -(itemPos - viewport * 0.5f);
 
-        return -(itemCenter - viewport * 0.5f);
+            if (_direction == ScrollDirection.Reverse)
+            {
+                result = contentWidth - viewport - centerPos;
+            }
+            else
+            {
+                result = centerPos;
+            }
+        }
+        else
+        {
+            float leftPos = index * unit;
+            
+            if (_direction == ScrollDirection.Reverse)
+            {
+                result = contentWidth - viewport - leftPos;
+            }
+            else
+            {
+                result = -leftPos;
+            }
+        }
+
+        return result;
     }
 }

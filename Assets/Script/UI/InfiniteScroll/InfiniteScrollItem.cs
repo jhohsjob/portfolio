@@ -17,6 +17,7 @@ public abstract class InfiniteScrollItem : MonoBehaviour
     [SerializeField]
     float _scaleSmooth = 12f;
 
+    [field: SerializeField]
     public int index { get; private set; }
     
     protected bool _useCenterScale = false;

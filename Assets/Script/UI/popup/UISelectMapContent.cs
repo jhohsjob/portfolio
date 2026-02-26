@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class UISelectMapConetntData : UISVPopupContentData
 {
     public int index;
-    public MapInfoData data;
+    public MapDefinition data;
     public UnityAction<int> action;
 }
 
@@ -20,7 +20,7 @@ public class UISelectMapContent : UISVPopupContent
     private Button _btn;
 
     [NonSerialized]
-    public MapInfoData data;
+    public MapDefinition data;
 
     public override void Init(UISVPopupContentData data)
     {

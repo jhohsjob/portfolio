@@ -34,8 +34,8 @@ public class BattleScene : MonoBehaviour
     
     private void Init()
     {
-        BattleManager.instance.SetBattleScene(this);
-        var mercenary = Client.user.GetMercenary();
+        BattleManager.instance.Init(this);
+        var mercenary = GameSession.instance.currentMercenary;
         _player.Init(mercenary);
         _player.Enter();
 
@@ -50,7 +50,7 @@ public class BattleScene : MonoBehaviour
     {
         yield return new WaitForSeconds(GAME_START_TIME);
 
-        BattleManager.instance.SetBattleStatus(BattleStatus.Run);
+        BattleManager.instance.SetBattleStatus(BattleStatus.Running);
     }
 
     public Vector3 GetRandomPos()

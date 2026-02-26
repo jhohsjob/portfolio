@@ -17,4 +17,4 @@ MonoBehaviour:
   levelupCount: 5
   spawnCount: 1
   respawnTime: 2
-  spawnData: {fileID: 11400000, guid: 6c4016e2275a63b4487c1519caec2b4c, type: 2}
+  spawnDefinition: {fileID: 11400000, guid: 587465282467b344fa188a9ce07c6a8a, type: 2}

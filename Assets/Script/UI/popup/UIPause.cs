@@ -30,7 +30,7 @@ public class UIPause : UIPopup
 
     protected override void OnClickClose()
     {
-        BattleManager.instance.SetBattleStatus(BattleStatus.Run);
+        BattleManager.instance.SetBattleStatus(BattleStatus.Running);
 
         base.OnClickClose();
     }

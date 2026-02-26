@@ -9,7 +9,7 @@ public class BootController
     private float _current;
     private float _target;
 
-    public event Action<float> onProgressChanged;
+    public event Action<float> cbProgressChanged;
 
     public void SetProgress(float value)
     {
@@ -30,7 +30,7 @@ public class BootController
             _current = _target;
         }
 
-        onProgressChanged?.Invoke(_current);
+        cbProgressChanged?.Invoke(_current);
     }
 
     public void Complete()
