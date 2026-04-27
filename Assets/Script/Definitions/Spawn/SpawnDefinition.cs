@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[CreateAssetMenu(menuName = "GameDefinition/SpawnData")]
+[CreateAssetMenu(menuName = "GameDefinition/SpawnDefinition")]
 public class SpawnDefinition : ScriptableObject
 {
     [Serializable]

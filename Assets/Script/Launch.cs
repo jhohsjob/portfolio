@@ -139,5 +139,6 @@ public class Launch : MonoBehaviour
     private void Complete()
     {
         Client.user.RunGame();
+        Client.currencyService.Init();
     }
 }

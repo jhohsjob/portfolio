@@ -421,6 +421,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIBattleMercenaryScrollItem
   _root: {fileID: 968217156551005002}
   _scaleSmooth: 12
+  <index>k__BackingField: 0
   _btn: {fileID: 4872861677815218784}
   _name: {fileID: 1326150000951354484}
   _icon: {fileID: 7494404413823302936}
+  _lock: {fileID: 0}

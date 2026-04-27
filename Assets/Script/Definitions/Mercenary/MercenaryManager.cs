@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 
 public class MercenaryManager : Singleton<MercenaryManager>
@@ -20,6 +21,17 @@ public class MercenaryManager : Singleton<MercenaryManager>
         _list.AddRange(_dic.Values);
     }
 
+    public void ApplySaveData(Dictionary<int, MercenarySaveData> saveDatas)
+    {
+        foreach (var mercenary in _dic.Values)
+        {
+            if (saveDatas.TryGetValue(mercenary.id, out var saveData))
+            {
+                mercenary.ApplySaveData(saveData);
+            }
+        }
+    }
+
     public Mercenary GetMercenaryByIndex(int index)
     {
         if (index < 0 || index >= _list.Count)
@@ -32,12 +44,36 @@ public class MercenaryManager : Singleton<MercenaryManager>
 
     public Mercenary GetMercenaryById(int id)
     {
-        if (_dic.ContainsKey(id) == false)
+        _dic.TryGetValue(id, out var mercenary);
+        return mercenary;
+    }
+
+    public bool Has(int id)
+    {
+        if (_dic.TryGetValue(id, out var mercenary))
         {
-            return null;
+            return mercenary.isOwned;
+        }
+        return false;
+    }
+
+    public async Task<bool> Acquire(int id)
+    {
+        if (_dic.TryGetValue(id, out var mercenary))
+        {
+            if (mercenary.Acquire() == false)
+            {
+                return false;
+            }
+
+            var runtimeData = mercenary.GetSaveData();
+
+            await Client.mercenaryStorage.Update(runtimeData);
+
+            return true;
         }
 
-        return _dic[id];
+        return false;
     }
 
     public int CalcIndex(int index)

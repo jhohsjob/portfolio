@@ -30,6 +30,13 @@ public class UILobbyMiddleBarrack : UILobbyMiddle, IScrollDataProvider
         });
     }
 
+    protected override void OnShow()
+    {
+        base.OnShow();
+
+        _scroll.UpdateItems();
+    }
+
     public int GetItemCount()
     {
         return _mercenaries.Count;

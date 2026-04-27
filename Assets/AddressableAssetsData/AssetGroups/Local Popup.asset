@@ -22,7 +22,13 @@ MonoBehaviour:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a165edb54e6d4e8469b401dd4b9d1e45
-    m_Address: UISelectMercenary
+    m_Address: UIMercenaryDetail
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6e398aa8e8b8d94db80180758db6636
+    m_Address: UIProductResult
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload

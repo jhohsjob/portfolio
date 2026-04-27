@@ -5,13 +5,13 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
-public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
+public class UIMercenaryDetail : UIPopup, IDragHandler, IEndDragHandler
 {
-    struct UIElement
+    class UIElement
     {
         public int id;
         public Mercenary data;
-        public GameObject body;
+        public MercenaryView view;
     }
 
     [SerializeField]
@@ -32,7 +32,9 @@ public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
     private Button _btnRight;
 
     private int _currentIndex;
-    private List<UIElement> _uiElements = new List<UIElement>();
+    private List<UIElement> _uiElements = new();
+
+    private Dictionary<GameObject, MercenaryViewPool> _pools = new();
 
     private float _dragThreshold = 150f;
     private Vector2 _startPos;
@@ -43,51 +45,96 @@ public class UISelectMercenary : UIPopup, IDragHandler, IEndDragHandler
 
         _btnLeft.onClick.AddListener(() => OnClickMove(-1));
         _btnRight.onClick.AddListener(() => OnClickMove(1));
+    }
 
-        _uiElements.Clear();
-
-        var mercenaryList = MercenaryManager.instance.list;
-        foreach (var mercenary in mercenaryList)
-        {
-            var uiData = new UIElement
-            {
-                id = mercenary.id,
-                data = mercenary,
-                body = Instantiate(mercenary.original, _pivot)
-            };
-            _uiElements.Add(uiData);
-        }
+    private void Start()
+    {
+        SetMercenary();
     }
 
     public override void OnPopupReady(object data = null)
     {
-        if (data is not Mercenary _mercenary)
+        if (data is not Mercenary mercenary)
         {
             return;
         }
 
-        _currentIndex = _uiElements.FindIndex(x => x.id == _mercenary.id);
+        InitElements();
 
-        SetMercenary();
+        _currentIndex = _uiElements.FindIndex(x => x.id == mercenary.id);
 
         base.OnPopupReady(data);
     }
+
+    public override void Hide()
+    {
+        foreach (var element in _uiElements)
+        {
+            var prefab = element.data.original;
+            var pool = GetPool(prefab);
+            pool.Release(element.view);
+        }
+
+        _uiElements.Clear();
+
+        base.Hide();
+    }
+
+    private void InitElements()
+    {
+        _uiElements.Clear();
+
+        var mercenaryList = MercenaryManager.instance.list;
+
+        foreach (var mercenary in mercenaryList)
+        {
+            var pool = GetPool(mercenary.original);
+            var view = pool.Get();
+
+            view.SetActive(false);
+
+            var element = new UIElement
+            {
+                id = mercenary.id,
+                data = mercenary,
+                view = view
+            };
+
+            _uiElements.Add(element);
+        }
+    }
     
+    private MercenaryViewPool GetPool(GameObject prefab)
+    {
+        if (_pools.TryGetValue(prefab, out var pool))
+        {
+            return pool;
+        }
+
+        pool = new MercenaryViewPool(prefab, _pivot);
+        _pools[prefab] = pool;
+        return pool;
+    }
+
     private void SetMercenary()
     {
-        foreach (var body in _uiElements)
+        foreach (var element in _uiElements)
         {
-            body.body.SetActive(false);
+            element.view.ResetView();
         }
-        _uiElements[_currentIndex].body.SetActive(true);
 
-        var mercenary = _uiElements[_currentIndex].data;
+        var current = _uiElements[_currentIndex];
+        var data = current.data;
+        var view = current.view;
 
-        _txtName.text = mercenary.name;
-        _txtAtk.text = $"atk : {mercenary.atk}";
-        _txtMaxHp.text = $"hp : {mercenary.maxHP}";
-        _txtMoveSpeed.text = $"atk : {mercenary.moveSpeed}";
-        _txtDesc.text = mercenary.description;
+        view.SetActive(true);
+        view.SetLocked(data.isOwned == false);
+
+        _txtName.text = data.name;
+        _txtAtk.text = $"atk : {data.atk}";
+        _txtMaxHp.text = $"hp : {data.maxHP}";
+        _txtMoveSpeed.text = $"speed : {data.moveSpeed}";
+        _txtDesc.text = data.description;
     }
 
     private void OnClickMove(int direction)

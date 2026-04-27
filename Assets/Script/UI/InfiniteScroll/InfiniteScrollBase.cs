@@ -50,7 +50,7 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
     protected IScrollDataProvider _provider;
     protected IScrollItemFactory _itemFactory;
 
-    protected readonly List<InfiniteScrollItem> _items = new List<InfiniteScrollItem>();
+    protected readonly List<InfiniteScrollItem> _items = new();
     protected int _itemCount;
 
     private bool _isSnapping;
@@ -430,7 +430,7 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
     protected abstract void CalculateLayout();
     protected abstract int GetPoolSize();
     protected abstract void UpdateContentSize();
-    protected abstract void UpdateItems();
+    public abstract void UpdateItems();
 
     protected abstract float GetNearestSnapPosition();
     protected abstract float GetPositionByIndex(int index);

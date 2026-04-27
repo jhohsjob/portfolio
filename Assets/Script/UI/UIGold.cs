@@ -9,21 +9,26 @@ public class UIGold : MonoBehaviour
 
     private void Awake()
     {
-        EventHelper.AddEventListener(EventName.ChangeGold, OnChangeGold);
+        Client.currencyService.onChanged += OnChangeGold;
+    }
+
+    private void Start()
+    {
+        _txtGold.text = Client.currencyService.Get(CurrencyType.Gold).ToString();
     }
 
     private void OnDestroy()
     {
-        EventHelper.RemoveEventListener(EventName.ChangeGold, OnChangeGold);
+        Client.currencyService.onChanged -= OnChangeGold;
     }
 
-    private void OnChangeGold(object sender, object data)
+    private void OnChangeGold(CurrencyType type, int result)
     {
-        if (Client.user == null)
+        if (type != CurrencyType.Gold)
         {
             return;
         }
 
-        _txtGold.text = Client.user.gold.ToString();
+        _txtGold.text = result.ToString();
     }
 }

@@ -97,59 +97,26 @@ public class UILobbyMiddleBattle : UILobbyMiddle
         });
     }
 
+    protected override void OnShow()
+    {
+        base.OnShow();
+
+        _mercenaryScroll.UpdateItems();
+    }
+
     private void StartStage(Stage stage)
     {
-        GameSession.instance.SetStage(stage);
-
         int mercenaryIndex = _mercenaryScroll.GetCenteredIndex();
         var mercenary = _mercenaries[mercenaryIndex];
+
+        if (mercenary.isOwned == false)
+        {
+            return;
+        }
+
         GameSession.instance.SetMercenary(mercenary);
+        GameSession.instance.SetStage(stage);
 
         SceneLoader.LoadBattleScene();
     }
 }
-
-//[SerializeField]
-//private VerticalLayoutGroup _contentGorup;
-
-//private List<UISVPopupContent> _contents = new List<UISVPopupContent>();
-
-//var mapInfoList = GameDataManager.GetAllMapInfoData();
-//for (int i = 0; i < mapInfoList.Count; i++)
-//{
-//    var contentData = new UISelectMapConetntData();
-//    contentData.index = i;
-//    contentData.data = mapInfoList[i];
-//    contentData.action = OnClickContent;
-
-//    var go = Instantiate(task.GetAsset<GameObject>(), _contentGorup.transform);
-//    var content = go.GetComponent<UISelectMapContent>();
-//    content.Init(contentData);
-
-//    _contents.Add(content);
-//}
-
-//private void OnClickContent(int index)
-//{
-//    if (_contents.Count <= index)
-//    {
-//        return;
-//    }
-
-//    var content = _contents[index];
-//    if (content is UISelectMapContent == false)
-//    {
-//        return;
-//    }
-
-//    int mIndex = _mercenaryScroll.GetCenteredIndex();
-//    if (mIndex < 0 || mIndex >= _mercenaries.Count)
-//    {
-//        return;
-//    }
-
-//    Client.user.SetMercenary(_mercenaries[mIndex].id);
-
-//    var mapContent = content as UISelectMapContent;
-//    SceneLoader.LoadBattleScene(mapContent.data);
-//}

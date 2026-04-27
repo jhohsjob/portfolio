@@ -54,3 +54,32 @@ public enum ProjectileMoveType
     Homing,
     GroundZone
 }
+
+public enum CurrencyType
+{
+    None,
+    Free,
+    Gold
+}
+
+public enum RewardType
+{
+    Gold,
+    Mercenary,
+}
+
+public enum ShopLimitType
+{
+    Daily,
+    Lifetime
+}
+
+public enum PurchaseFailReason
+{
+    None = 0,
+    NotEnoughCurrency,
+    PurchaseLimitExceeded,
+    InvalidProduct,
+    AlreadyOwned,
+    ServerError,
+}

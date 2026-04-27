@@ -15,7 +15,7 @@ MonoBehaviour:
   roleType: 4000
   id: 101001
   roleName: Mercenary01
-  roleDescription: Cube
+  roleDescription: Mercenary01
   behaviourScript: {fileID: 0}
   behaviourTypeName: 
   resourcePath: 

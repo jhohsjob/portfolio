@@ -27,6 +27,8 @@ public class UIBattleMercenaryScrollItem : InfiniteScrollItem
 
         _name.text = _data.name;
         _icon.sprite = _data.icon;
+        _icon.color = _data.isOwned ? Color.wheat: Color.black;
+        // _lock.gameObject.SetActive(!_data.isOwned);
     }
 
     public void OnClickItem()

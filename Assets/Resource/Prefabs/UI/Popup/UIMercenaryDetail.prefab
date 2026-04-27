@@ -407,7 +407,7 @@ GameObject:
   - component: {fileID: 3345393423577013770}
   - component: {fileID: 100989697955282570}
   m_Layer: 5
-  m_Name: UISelectMercenary
+  m_Name: UIMercenaryDetail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

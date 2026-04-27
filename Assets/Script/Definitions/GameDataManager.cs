@@ -23,6 +23,10 @@ public static class GameDataManager
             LoadTableAsync<SkillTable>("SkillTable", table => _skillData = table.table),
 
             LoadTableAsync<StageDefinitionTable>("StageDefinitionTable", table => StageManager.instance.Init(table.table)),
+
+            // LoadTableAsync<ProductDefinitionTable>("ProductDefinitionTable", table => ShopManager.instance.InitProduct(table.table)),
+            
+            LoadTableAsync<ShopItemDefinitionTable>("ShopItemDefinitionTable", table => ShopManager.instance.InitShopItem(table.table)),
         };
 
         await Task.WhenAll(tasks);

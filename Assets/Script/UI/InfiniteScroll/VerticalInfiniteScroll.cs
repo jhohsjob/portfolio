@@ -44,7 +44,7 @@ public class VerticalInfiniteScroll : InfiniteScrollBase
         _content.sizeDelta = new Vector2(_content.sizeDelta.x, height);
     }
 
-    protected override void UpdateItems()
+    public override void UpdateItems()
     {
         float scrollY = _content.anchoredPosition.y;
         int firstRow = Mathf.FloorToInt(scrollY / (_itemHeight + _spacingY));

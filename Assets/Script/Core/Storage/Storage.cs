@@ -17,30 +17,34 @@ public class Storage
 
     public async Task SaveAsync(GameSaveData data)
     {
+        string json = JsonUtility.ToJson(data, true);
+        string savePath = _savePath; // UnityException: get_persistentDataPath can only be called from the main thread.
+        string tempPath = savePath + ".tmp";
+
         try
         {
-            string json = JsonUtility.ToJson(data, true);
-            string savePath = _savePath; // UnityException: get_persistentDataPath can only be called from the main thread.
-            string tempPath = savePath + ".tmp";
-
-            await Task.Run(() =>
+            await using (var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true))
+            await using (var writer = new StreamWriter(fs))
             {
-                File.WriteAllText(tempPath, json);
+                await writer.WriteAsync(json);
+            }
 
-                if (File.Exists(savePath))
-                {
-                    File.Delete(savePath);
-                }
-
+            if (File.Exists(savePath))
+            {
+                File.Replace(tempPath, savePath, null);
+            }
+            else
+            {
                 File.Move(tempPath, savePath);
-            });
-
-            this.data = data;
+            }
         }
-        catch
+        catch (Exception e)
         {
+            Debug.LogError($"Save failed: {e}");
             throw;
         }
+
+        this.data = JsonUtility.FromJson<GameSaveData>(json);
     }
 
     public async Task LoadAsync()
@@ -106,6 +110,7 @@ public class Storage
         return tcs.Task;
     }
 
+#if UNITY_EDITOR
     [MenuItem("CustomMenu/DataDelete")]
     public static void Delete()
     {
@@ -116,4 +121,5 @@ public class Storage
 
         Debug.Log("delete complete");
     }
+#endif
 }

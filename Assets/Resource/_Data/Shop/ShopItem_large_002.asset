@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ec6d1b4710271b489f57fcad0f54814, type: 3}
+  m_Name: ShopItem_large_002
+  m_EditorClassIdentifier: Assembly-CSharp::ShopItemDefinition
+  id: 801002
+  shopItemName: mercenary 002
+  productItems:
+  - {fileID: 11400000, guid: e39c818314c6f114e9316c1e67413d39, type: 2}
+  prefab: {fileID: 1150722125875363277, guid: ec47c9a7496e58546ad94df1f5468198, type: 3}
