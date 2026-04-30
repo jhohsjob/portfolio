@@ -13,12 +13,11 @@ MonoBehaviour:
   m_Name: ShopItem_products_001
   m_EditorClassIdentifier: Assembly-CSharp::ShopItemDefinition
   id: 803001
-  shopItemName: products 001
   productItems:
   - {fileID: 11400000, guid: 834a15add046c364ca3f23ba5d7eaaaf, type: 2}
-  - {fileID: 11400000, guid: 834a15add046c364ca3f23ba5d7eaaaf, type: 2}
-  - {fileID: 11400000, guid: 834a15add046c364ca3f23ba5d7eaaaf, type: 2}
-  - {fileID: 11400000, guid: 834a15add046c364ca3f23ba5d7eaaaf, type: 2}
-  - {fileID: 11400000, guid: 834a15add046c364ca3f23ba5d7eaaaf, type: 2}
-  - {fileID: 11400000, guid: 834a15add046c364ca3f23ba5d7eaaaf, type: 2}
+  - {fileID: 11400000, guid: 1324dff069602aa4a91d994da644274d, type: 2}
+  - {fileID: 11400000, guid: 563da4148190cc54091ae305b19cf018, type: 2}
+  - {fileID: 11400000, guid: 334d35d64276a9b419af68a5aa9604b3, type: 2}
+  - {fileID: 11400000, guid: d9efd28ffc971ca4e86a3d3840cca271, type: 2}
+  - {fileID: 11400000, guid: 4be222528ba5ba44fabf5c264a7b05f4, type: 2}
   prefab: {fileID: 1153845190014345596, guid: dbd90b33c479d334088576acf89672d3, type: 3}

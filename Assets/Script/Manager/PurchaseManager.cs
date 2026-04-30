@@ -1,21 +1,27 @@
 ﻿using System;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 
 
 public static class PurchaseFailReasonExtensions
 {
-    public static string ToMessage(this PurchaseFailReason reason)
+    public static string ToKey(this PurchaseFailReason reason)
     {
         return reason switch
         {
-            PurchaseFailReason.NotEnoughCurrency => "재화가 부족합니다.",
-            PurchaseFailReason.PurchaseLimitExceeded => "구매 횟수를 초과했습니다.",
-            PurchaseFailReason.InvalidProduct => "유효하지 않은 상품입니다.",
-            PurchaseFailReason.AlreadyOwned => "이미 보유한 상품입니다.",
-            PurchaseFailReason.ServerError => "서버 오류로 인해 구매에 실패했습니다.",
-            _ => "구매에 실패했습니다."
+            PurchaseFailReason.NotEnoughCurrency => "failed_not_enough_currency",
+            PurchaseFailReason.PurchaseLimitExceeded => "failed_purchase_limit_exceeded",
+            PurchaseFailReason.InvalidProduct => "failed_invalid_product",
+            PurchaseFailReason.AlreadyOwned => "failed_already_owned",
+            PurchaseFailReason.ServerError => "failed_server_error",
+            _ => "failed_unknown_error"
         };
+    }
+
+    public static string ToMessage(this PurchaseFailReason reason)
+    {
+        return LocalizationSettings.StringDatabase.GetLocalizedString(LocalTable.ShopTable, reason.ToKey());
     }
 }
 

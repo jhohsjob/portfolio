@@ -2,6 +2,7 @@
 public class GameSaveData
 {
     public UserData player;
+    public string locale;
 }
 
 [System.Serializable]

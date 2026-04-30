@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Mercenary : Role<MercenaryData>
 {
+    public override string localTable => LocalTable.MercenaryTable;
+
     public SkillData skillData => _data.skillData;
 
     public float dashSpeed => 0.2f;

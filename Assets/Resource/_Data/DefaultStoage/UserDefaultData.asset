@@ -17,3 +17,4 @@ MonoBehaviour:
   gold: 0
   mercenaryId: 101001
   currentStageId: 601001
+  locale: ko

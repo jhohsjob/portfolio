@@ -48,12 +48,14 @@ MonoBehaviour:
   - m_GUID: 78c1e11b03de1a247bd2d42a97ab1a12
     m_Address: ShopItemDefinitionTable
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 81b40e39e94ee86469ee2fcb4a16e8be
     m_Address: Monster
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 83ba86fa44d40c24390d6081fff584c9
     m_Address: SkillTable
@@ -100,7 +102,8 @@ MonoBehaviour:
   - m_GUID: c68ae498da39380419a72d8f581a66ad
     m_Address: Shop
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c84c8b7e57042ae4d8d2a2634f463db6
     m_Address: MapInfo01
@@ -117,17 +120,20 @@ MonoBehaviour:
   - m_GUID: d059b9104512b994c8b8602d4e565d0a
     m_Address: Stage
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d7a83e3573cdaac47a100654c25909e7
     m_Address: Mercenary
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f38dc39830cc6b940a1c7aa0c4ff40ba
     m_Address: ProductDefinitionTable
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f3c582b2eb3fc9648985c922a742fe12
     m_Address: Projectile

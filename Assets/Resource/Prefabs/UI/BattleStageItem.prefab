@@ -214,6 +214,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIBattleStageScrollItem
   _root: {fileID: 0}
   _scaleSmooth: 12
+  <index>k__BackingField: 0
   _btn: {fileID: 2606448382003863621}
   _name: {fileID: 4615467219821204674}
   _imgLock: {fileID: 4538714422974512320}

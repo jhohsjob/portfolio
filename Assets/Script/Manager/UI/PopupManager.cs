@@ -52,7 +52,8 @@ public class PopupManager
                 return;
             }
 
-            GameObject go = UnityEngine.Object.Instantiate(prefab, _container);
+            GameObject go = UnityEngine.Object.Instantiate(prefab);
+            go.transform.SetParent(_container, false);
             go.name = address;
 
             T popup = go.GetComponent<T>();
@@ -72,9 +73,6 @@ public class PopupManager
 
     private static void SetupPopup(UIPopup popup, object data, Action<UIPopup> onLoadedCallback)
     {
-        var rect = popup.GetComponent<RectTransform>();
-        rect.sizeDelta = _container.GetComponent<RectTransform>().sizeDelta;
-
         popup.Hide();
 
         // Alpha mask setting

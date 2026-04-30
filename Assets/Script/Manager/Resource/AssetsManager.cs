@@ -229,7 +229,7 @@ public class AssetLoadingTask
     }
 }
 
-public class AssetsManager
+public class AssetsManager : IDisposable
 {
     private List<AssetLoadingTask> taskList;
     private Dictionary<AsyncOperationHandle, Action<AsyncOperationHandle>> asyncOpDict;
@@ -244,7 +244,7 @@ public class AssetsManager
         checkAddressOpDict = new Dictionary<AsyncOperationHandle<long>, Action<AsyncOperationHandle<long>>>();
     }
 
-    public void Destroy()
+    public void Dispose()
     {
         ReleaseAllTask();
 

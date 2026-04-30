@@ -136,6 +136,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIProduct
   _btn: {fileID: 0}
+  _desc: {fileID: 0}
 --- !u!1 &1191174068002717092
 GameObject:
   m_ObjectHideFlags: 0
@@ -769,7 +770,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6045235674028870251, guid: 77975c68d4b63f0498bb8cc747d6bc7c,
+  m_Sprite: {fileID: -6045235674028870251, guid: 76e952803a271a24f937a1e85f260881,
     type: 3}
   m_Type: 1
   m_PreserveAspect: 0
@@ -792,6 +793,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab88aaee4426a454abaa53adb58057b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
+  _txtTitle: {fileID: 7769641073429072202}
   _items:
   - {fileID: 1478904073208225237}
   - {fileID: 8906314133752853616}
@@ -935,6 +937,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIProduct
   _btn: {fileID: 0}
+  _desc: {fileID: 0}
 --- !u!1 &6800404446444348492
 GameObject:
   m_ObjectHideFlags: 0
@@ -1071,6 +1074,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIProduct
   _btn: {fileID: 0}
+  _desc: {fileID: 0}
 --- !u!1 &6920314168068942184
 GameObject:
   m_ObjectHideFlags: 0
@@ -1363,7 +1367,7 @@ GameObject:
   - component: {fileID: 4466515780310646947}
   - component: {fileID: 7769641073429072202}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: txtTitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1386,7 +1390,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 200}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 600, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4466515780310646947
 CanvasRenderer:
@@ -1625,6 +1629,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIProduct
   _btn: {fileID: 0}
+  _desc: {fileID: 0}
 --- !u!1 &8866697872250854992
 GameObject:
   m_ObjectHideFlags: 0
@@ -1761,6 +1766,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIProduct
   _btn: {fileID: 0}
+  _desc: {fileID: 0}
 --- !u!1 &8931952057704889943
 GameObject:
   m_ObjectHideFlags: 0
@@ -1788,7 +1794,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8931952057704889943}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1829,7 +1835,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6045235674028870251, guid: 77975c68d4b63f0498bb8cc747d6bc7c,
+  m_Sprite: {fileID: -6045235674028870251, guid: 76e952803a271a24f937a1e85f260881,
     type: 3}
   m_Type: 1
   m_PreserveAspect: 0
@@ -1897,3 +1903,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIProduct
   _btn: {fileID: 0}
+  _desc: {fileID: 0}

@@ -1,0 +1,113 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: ShopTable Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: ShopTable
+  m_TableCollectionNameGuidString: 0c9b564573629db4eadde58ce730724f
+  m_Entries:
+  - m_Id: 193667596288
+    m_Key: product_name_701001
+    m_Metadata:
+      m_Items: []
+  - m_Id: 457917136896
+    m_Key: product_name_701002
+    m_Metadata:
+      m_Items: []
+  - m_Id: 481526874112
+    m_Key: product_name_701003
+    m_Metadata:
+      m_Items: []
+  - m_Id: 493711327232
+    m_Key: product_name_702001
+    m_Metadata:
+      m_Items: []
+  - m_Id: 511889440768
+    m_Key: product_name_702002
+    m_Metadata:
+      m_Items: []
+  - m_Id: 620794544128
+    m_Key: product_name_702003
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632584732672
+    m_Key: product_name_702004
+    m_Metadata:
+      m_Items: []
+  - m_Id: 643242459136
+    m_Key: product_name_702005
+    m_Metadata:
+      m_Items: []
+  - m_Id: 655259140096
+    m_Key: product_name_702006
+    m_Metadata:
+      m_Items: []
+  - m_Id: 665791037440
+    m_Key: product_name_703001
+    m_Metadata:
+      m_Items: []
+  - m_Id: 207966741266432
+    m_Key: success_result_tile
+    m_Metadata:
+      m_Items: []
+  - m_Id: 208140297371648
+    m_Key: failed_result_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 166911543148544
+    m_Key: success_result_message
+    m_Metadata:
+      m_Items: []
+  - m_Id: 178434260926464
+    m_Key: failed_result_message
+    m_Metadata:
+      m_Items: []
+  - m_Id: 215824526540800
+    m_Key: failed_not_enough_currency
+    m_Metadata:
+      m_Items: []
+  - m_Id: 215838543904768
+    m_Key: failed_purchase_limit_exceeded
+    m_Metadata:
+      m_Items: []
+  - m_Id: 215851164565504
+    m_Key: failed_invalid_product
+    m_Metadata:
+      m_Items: []
+  - m_Id: 215861709045760
+    m_Key: failed_already_owned
+    m_Metadata:
+      m_Items: []
+  - m_Id: 215872035422208
+    m_Key: failed_server_error
+    m_Metadata:
+      m_Items: []
+  - m_Id: 221633847296000
+    m_Key: failed_unknown_error
+    m_Metadata:
+      m_Items: []
+  - m_Id: 566153063497728
+    m_Key: shop_item_title_803001
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 3694898478365016274
+  references:
+    version: 2
+    RefIds:
+    - rid: 3694898478365016274
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables,
+        asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1777388628607

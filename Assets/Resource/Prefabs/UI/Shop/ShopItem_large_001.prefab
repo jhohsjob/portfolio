@@ -151,6 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIProduct
   _btn: {fileID: 0}
+  _desc: {fileID: 0}
 --- !u!1 &7814745699323626292
 GameObject:
   m_ObjectHideFlags: 0

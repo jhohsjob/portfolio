@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class UIPause : UIPopup
+public class UIPausePopup : UIPopup
 {
     [SerializeField]
     protected Button _btnOption;

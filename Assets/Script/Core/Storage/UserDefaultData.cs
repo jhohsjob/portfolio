@@ -8,4 +8,5 @@ public class UserDefaultData : ScriptableObject
     public int gold;
     public int mercenaryId;
     public int currentStageId;
+    public string locale;
 }

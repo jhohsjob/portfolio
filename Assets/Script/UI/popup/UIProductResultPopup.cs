@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 
 
 public class UIProductResultData
@@ -13,7 +14,7 @@ public class UIProductResultData
     }
 }
 
-public class UIProductResult : UIPopup
+public class UIProductResultPopup : UIPopup
 {
     [SerializeField]
     private TextMeshProUGUI _txtResult;
@@ -32,7 +33,8 @@ public class UIProductResult : UIPopup
             return;
         }
 
-        _txtResult.text = popupData.success ? "Purchase Successful!" : "Purchase Failed!";
+        string key = popupData.success ? "success_result_tile" : "failed_result_title";
+        _txtResult.text = LocalizationSettings.StringDatabase.GetLocalizedString(LocalTable.ShopTable, key);
         _txtMessage.text = popupData.message;
 
         base.OnPopupReady(data);

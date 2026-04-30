@@ -16,5 +16,7 @@ public static class EventName
 
     public static readonly string ClickDash = "ClickDash";
 
+    public static readonly string LocaleChanged = "LocaleChanged";
+
     public static readonly string DebugStageClear = "DebugStageClear";
 }

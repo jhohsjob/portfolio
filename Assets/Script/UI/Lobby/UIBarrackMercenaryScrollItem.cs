@@ -19,12 +19,24 @@ public class UIBarrackMercenaryScrollItem : InfiniteScrollItem
         _btn.onClick.AddListener(OnClickItem);
     }
 
+    private void OnDestroy()
+    {
+        EventHelper.RemoveEventListener(EventName.LocaleChanged, (sender, data) => UpdateUI());
+    }
+
     public override void SetData(int index, object data)
     {
         base.SetData(index, data);
 
         _data = (Mercenary)data;
 
+        UpdateUI();
+
+        EventHelper.AddEventListener(EventName.LocaleChanged, (sender, data) => UpdateUI());
+    }
+
+    private void UpdateUI()
+    {
         _name.text = _data.name;
         _icon.sprite = _data.icon;
         _icon.color = _data.isOwned ? Color.wheat : Color.black;
@@ -33,6 +45,6 @@ public class UIBarrackMercenaryScrollItem : InfiniteScrollItem
 
     public void OnClickItem()
     {
-        PopupManager.ShowPopup<UIMercenaryDetail>(PopupName.UIMercenaryDetail, _data);
+        PopupManager.ShowPopup<UIMercenaryDetailPopup>(PopupName.UIMercenaryDetail, _data);
     }
 }

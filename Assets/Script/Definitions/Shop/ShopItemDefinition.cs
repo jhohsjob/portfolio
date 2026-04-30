@@ -6,7 +6,13 @@ using UnityEngine;
 public class ShopItemDefinition : ScriptableObject
 {
     public int id;
-    public string shopItemName;
     public List<ProductDefinition> productItems;
     public Transform prefab;
+
+    private string LocalKey(string prefix) => $"{prefix}_{id}";
+
+    public string GetTitleKey()
+    {
+        return LocalKey("shop_item_title");
+    }
 }

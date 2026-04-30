@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: CommonTable Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: CommonTable
+  m_TableCollectionNameGuidString: 551eda651ff3ba7438610d910f2d7074
+  m_Entries:
+  - m_Id: 594764646645760
+    m_Key: ok
+    m_Metadata:
+      m_Items: []
+  - m_Id: 594805775990784
+    m_Key: close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 680572355411968
+    m_Key: setting
+    m_Metadata:
+      m_Items: []
+  - m_Id: 945438135746560
+    m_Key: pause_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 945440199344128
+    m_Key: pause_settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 945442036449280
+    m_Key: pause_exit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 945443949051904
+    m_Key: pause_resume
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 3694898448193552786
+  references:
+    version: 2
+    RefIds:
+    - rid: 3694898448193552786
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables,
+        asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1777300012485

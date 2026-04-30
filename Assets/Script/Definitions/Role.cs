@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 
 
 public abstract class Role<TData> : RoleBase where TData : RoleData
@@ -9,8 +10,9 @@ public abstract class Role<TData> : RoleBase where TData : RoleData
 
     public RoleType roleType => _data.roleType;
     public int id => _data.id;
-    public string name => _data.roleName;
-    public string description => _data.roleDescription;
+    public virtual string localTable => LocalTable.None;
+    public string name => LocalizationSettings.StringDatabase.GetLocalizedString(localTable, _data.GetNameKey());
+    public string description => LocalizationSettings.StringDatabase.GetLocalizedString(localTable, _data.GetDescKey());
 
     public Type behaviourType => _data.behaviourType;
 

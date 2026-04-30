@@ -6,8 +6,7 @@ public class Client
     public static ProductStorage productStorage { get; private set; }
     public static User user { get; private set; }
     public static CurrencyService currencyService { get; private set; }
-
-    //public static bool isRunGame { get; private set; }
+    public static LocaleManager locale { get; private set; }
 
     public Client()
     {
@@ -17,14 +16,17 @@ public class Client
         productStorage = new ProductStorage();
         user = new User();
         currencyService = new CurrencyService();
-
-        //isRunGame = false;
+        locale = new LocaleManager();
     }
 
-    //public void RunGame()
-    //{
-    //    user.RunGame();
-
-    //    isRunGame = true;
-    //}
+    public static void Dispose()
+    {
+        asset.Dispose();
+        //storage.Destroy();
+        //mercenaryStorage.Destroy();
+        //productStorage.Destroy();
+        //user.Destroy();
+        //currencyService.Destroy();
+        locale.Dispose();
+    }
 }

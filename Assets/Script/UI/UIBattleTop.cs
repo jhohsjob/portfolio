@@ -38,7 +38,7 @@ public class UIBattleTop : MonoBehaviour
     {
         BattleManager.instance.SetBattleStatus(BattleStatus.Paused);
 
-        PopupManager.ShowPopup<UIPause>(PopupName.UIPause);
+        PopupManager.ShowPopup<UIPausePopup>(PopupName.UIPause);
     }
 
 

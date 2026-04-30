@@ -9,9 +9,15 @@ public class UILobbyTop : MonoBehaviour
     
     private void Awake()
     {
+        _btnSetting.onClick.AddListener(OnClickSetting);
     }
 
     private void OnDestroy()
     {
+    }
+
+    private void OnClickSetting()
+    {
+        PopupManager.ShowPopup<UISettingPopup>(PopupName.UISetting);
     }
 }

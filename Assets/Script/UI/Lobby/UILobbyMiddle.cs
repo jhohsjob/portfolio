@@ -5,7 +5,12 @@ public class UILobbyMiddle : MonoBehaviour
 {
     protected virtual void Awake()
     {
+        EventHelper.AddEventListener(EventName.LocaleChanged, OnLocaleChanged);
+    }
 
+    private void OnDestroy()
+    {
+        EventHelper.RemoveEventListener(EventName.LocaleChanged, OnLocaleChanged);
     }
 
     public void Show()
@@ -28,6 +33,11 @@ public class UILobbyMiddle : MonoBehaviour
     }
 
     protected virtual void OnShow()
+    {
+
+    }
+
+    protected virtual void OnLocaleChanged(object sender, object data)
     {
 
     }

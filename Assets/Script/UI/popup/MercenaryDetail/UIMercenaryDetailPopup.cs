@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
-public class UIMercenaryDetail : UIPopup, IDragHandler, IEndDragHandler
+public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
 {
     class UIElement
     {

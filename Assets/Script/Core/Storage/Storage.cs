@@ -74,7 +74,8 @@ public class Storage
 
         data = new GameSaveData
         {
-            player = new UserData(defaultData)
+            player = new UserData(defaultData),
+            locale = defaultData.locale
         };
 
         await SaveAsync(data);

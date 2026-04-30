@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Localization.Settings;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
 
@@ -11,14 +12,21 @@ using UnityEngine.ResourceManagement.ResourceLocations;
 public class Launch : MonoBehaviour
 {
     private BootController _bootController;
+    private Client client;
 
-    private const float ADDRESSABLE_INIT_WEIGHT = 0.3f;
-    private const float ADDRESSABLE_LOAD_WEIGHT = 0.4f;
+    private const float ADDRESSABLE_INIT_WEIGHT = 0.25f;
+    private const float LOCALIZATION_INIT_WEIGHT = 0.1f;
+    private const float ADDRESSABLE_LOAD_WEIGHT = 0.35f;
     private const float LOAD_WEIGHT = 0.3f;
 
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        Client.Dispose();
     }
 
     public void Initialize(BootController controller)
@@ -32,6 +40,7 @@ public class Launch : MonoBehaviour
         {
             InitializeClient();
             await InitializeAddressablesAsync();
+            await InitializeLocalizationAsync();
             await LoadPreloadAssetsAsync();
             await InitializeLoadAsync();
 
@@ -46,7 +55,7 @@ public class Launch : MonoBehaviour
 
     private void InitializeClient()
     {
-        new Client();
+        client = new Client();
         PopupManager.Initialization();
     }
 
@@ -54,6 +63,13 @@ public class Launch : MonoBehaviour
     {
         var handle = Addressables.InitializeAsync();
         await TrackProgressAsync(handle, 0f, ADDRESSABLE_INIT_WEIGHT);
+    }
+
+    private async Task InitializeLocalizationAsync()
+    {
+        var handle = LocalizationSettings.InitializationOperation;
+
+        await TrackProgressAsync(handle, ADDRESSABLE_INIT_WEIGHT, LOCALIZATION_INIT_WEIGHT);
     }
 
     private async Task LoadPreloadAssetsAsync()
@@ -85,14 +101,14 @@ public class Launch : MonoBehaviour
 
         var handles = locations.Select(loc => Addressables.LoadAssetAsync<UnityEngine.Object>(loc)).ToList();
 
-        await TrackProgressAsync(handles, ADDRESSABLE_INIT_WEIGHT, ADDRESSABLE_LOAD_WEIGHT);
+        await TrackProgressAsync(handles, ADDRESSABLE_INIT_WEIGHT + LOCALIZATION_INIT_WEIGHT, ADDRESSABLE_LOAD_WEIGHT);
     }
 
     private async Task InitializeLoadAsync()
     {
         await LoadManager.LoadAsync(progress =>
         {
-            _bootController.SetProgress(ADDRESSABLE_INIT_WEIGHT + ADDRESSABLE_LOAD_WEIGHT + progress * LOAD_WEIGHT);
+            _bootController.SetProgress(ADDRESSABLE_INIT_WEIGHT + LOCALIZATION_INIT_WEIGHT + ADDRESSABLE_LOAD_WEIGHT + progress * LOAD_WEIGHT);
         });
     }
 
@@ -138,7 +154,8 @@ public class Launch : MonoBehaviour
 
     private void Complete()
     {
-        Client.user.RunGame();
+        Client.locale.Init();
         Client.currencyService.Init();
+        Client.user.RunGame();
     }
 }

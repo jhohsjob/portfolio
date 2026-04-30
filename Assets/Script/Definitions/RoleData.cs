@@ -49,4 +49,9 @@ public class RoleData : ScriptableObject
             return type;
         }
     }
+
+    private string LocalKey(string prefix) => $"{prefix}_{id}";
+
+    public string GetNameKey() => LocalKey("name");
+    public string GetDescKey() => LocalKey("desc");
 }
