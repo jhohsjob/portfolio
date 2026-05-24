@@ -9,8 +9,6 @@ public class ActorDropItem
 
     public DropItemType type { get; protected set; }
 
-    public Body body;
-
     public void Init(ActorBase actor, DropItemType type)
     {
         this._actor = actor;
@@ -19,6 +17,6 @@ public class ActorDropItem
 
     public void Die()
     {
-        BattleManager.instance.actorManager.Return(_actor);
+        // BattleManager.instance.actorManager.Return(_actor);
     }
 }

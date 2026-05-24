@@ -23,6 +23,7 @@ MonoBehaviour:
   resourceOffset: {x: 0, y: 0, z: 0}
   maxHP: 10
   moveSpeed: 3
+  moveType: 6
   skillData: {fileID: 11400000, guid: 051e11c9df4d0b346a177527540b40b3, type: 2}
   dashCount: 2
   dashCooldown: 7

@@ -25,7 +25,6 @@ public class MapLevel
         nextLevel = nextData == null ? -1 : nextData.level;
 
         BuildRuntimeSpawnInfos();
-        PreloadActors();
     }
 
     private void BuildRuntimeSpawnInfos()
@@ -44,18 +43,18 @@ public class MapLevel
         }
     }
 
-    private void PreloadActors()
-    {
-        var actorManager = BattleManager.instance.actorManager;
+    //private void PreloadActors()
+    //{
+    //    var actorManager = BattleManager.instance.actorManager;
 
-        foreach (var spawnInfo in spawnInfos)
-        {
-            actorManager.InitEnemy(spawnInfo.roleId);
+    //    foreach (var spawnInfo in spawnInfos)
+    //    {
+    //        actorManager.InitEnemy(spawnInfo.roleId);
 
-            foreach (var dropItemRoleId in spawnInfo.dropItemRoleIds)
-            {
-                actorManager.InitDropItem(dropItemRoleId);
-            }
-        }
-    }
+    //        foreach (var dropItemRoleId in spawnInfo.dropItemRoleIds)
+    //        {
+    //            actorManager.InitDropItem(dropItemRoleId);
+    //        }
+    //    }
+    //}
 }

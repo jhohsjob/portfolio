@@ -1,16 +1,25 @@
 using System.Collections.Generic;
 
+
 public class MonsterManager : Singleton<MonsterManager>
 {
+    private RoleFactory _factory;
+
     private Dictionary<int, Monster> _dic = new();
     private List<Monster> _list = new();
     public IReadOnlyList<Monster> list => _list;
 
-    public void Init(Dictionary<int, MonsterData> MonsterDatas)
+    public void Init(RoleFactory factory)
     {
-        foreach (var data in MonsterDatas)
+        _factory = factory;
+    }
+
+    public void Setup(Dictionary<int, MonsterDefinition> MonsterDefinitions)
+    {
+        foreach (var data in MonsterDefinitions)
         {
-            _dic.Add(data.Key, new Monster(data.Value));
+            var monster = (Monster)_factory.Create(data.Value);
+            _dic.Add(data.Key, monster);
         }
         _list.AddRange(_dic.Values);
     }

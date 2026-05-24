@@ -7,6 +7,6 @@ using UnityEngine;
 public class MercenaryTable : ScriptableObject
 {
     [SerializeField]
-    private SerializableDictionary<int, MercenaryData> _table;
-    public Dictionary<int, MercenaryData> table => _table.Dictionary;
+    private SerializableDictionary<int, MercenaryDefinition> _table;
+    public Dictionary<int, MercenaryDefinition> table => _table.Dictionary;
 }

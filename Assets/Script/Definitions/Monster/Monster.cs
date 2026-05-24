@@ -1,6 +1,6 @@
-public class Monster : Role<MonsterData>
+public class Monster : Role<MonsterDefinition>
 {
-    public float maxHP => _data.maxHP;
+    public override string localTable => LocalTable.MonsterTable;
 
-    public Monster(MonsterData data) : base(data) { }
+    public Monster(MonsterDefinition data) : base(data) { }
 }

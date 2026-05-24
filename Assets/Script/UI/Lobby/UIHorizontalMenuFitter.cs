@@ -17,19 +17,8 @@ public class UIHorizontalMenuFitter : MonoBehaviour
     private float _normalWidth;
     private float _bigWidth;
 
-    private Action<int> _cbInitialized;
-    public event Action<int> cbInitialized
-    {
-        add { _cbInitialized -= value; _cbInitialized += value; }
-        remove { _cbInitialized -= value; }
-    }
-
-    private Action<int> _cbMenuChange;
-    public event Action<int> cbMenuChange
-    {
-        add { _cbMenuChange -= value; _cbMenuChange += value; }
-        remove { _cbMenuChange -= value; }
-    }
+    public int menuCount => buttons.Length;
+    public event Action<int> onMenuChange;
 
     private void Awake()
     {
@@ -47,8 +36,7 @@ public class UIHorizontalMenuFitter : MonoBehaviour
         PreCalculateWidths();
         RefreshLayout(_initialIndex);
 
-        _cbInitialized?.Invoke(buttons.Length);
-        _cbMenuChange?.Invoke(_initialIndex);
+        onMenuChange?.Invoke(_initialIndex);
     }
 
     private void PreCalculateWidths()
@@ -84,7 +72,7 @@ public class UIHorizontalMenuFitter : MonoBehaviour
     {
         RefreshLayout(index);
 
-        _cbMenuChange?.Invoke(index);
+        onMenuChange?.Invoke(index);
     }
 
     [ContextMenu("Refresh Layout")]

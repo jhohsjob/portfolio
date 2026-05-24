@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 285dc909dde19254e9514a8980775945, type: 3}
   m_Name: 2DMonster02
   m_EditorClassIdentifier: 
+  roleType: 3000
   id: 201002
   roleName: Monster02
   roleDescription: Cube
@@ -20,6 +21,6 @@ MonoBehaviour:
   resourcePath: 
   body: {fileID: 8193831111808689357, guid: b2e801113300f0c4d936550d1d179c1e, type: 3}
   resourceOffset: {x: 0, y: 0, z: 0}
-  moveSpeed: 0.5
-  roleType: 3000
   maxHP: 4
+  moveSpeed: 0.5
+  moveType: 5

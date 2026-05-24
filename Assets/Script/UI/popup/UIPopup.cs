@@ -1,14 +1,19 @@
 using DG.Tweening;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 
 public class UIPopup : MonoBehaviour
 {
+    protected IPopupService _popupService;
+
     [SerializeField]
     protected Button _btnClose;
 
     protected bool _isEnableClick;
+
+    public Action onDestroyAction;
 
     protected virtual void Awake()
     {
@@ -20,6 +25,7 @@ public class UIPopup : MonoBehaviour
 
     public virtual void OnDestroy()
     {
+        onDestroyAction?.Invoke();
     }
 
     public virtual void Show(object data = null)
@@ -43,6 +49,11 @@ public class UIPopup : MonoBehaviour
 
     protected virtual void OnClickClose()
     {
-        PopupManager.ClosePopup(this);
+        _popupService.ClosePopup(this);
+    }
+
+    public void InitDependencies(IPopupService popupService)
+    {
+        _popupService = popupService;
     }
 }

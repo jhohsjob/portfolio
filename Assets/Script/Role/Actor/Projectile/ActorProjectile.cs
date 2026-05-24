@@ -1,58 +1,26 @@
 using UnityEngine;
 
 
-public class ActorProjectile : Actor<Projectile, ProjectileData>
+public class ActorProjectile : Actor<Projectile, ProjectileDefinition>
 {
     private ActorBase _owner;
-    public Vector3 dir { get; set; }
+    private Vector3 _dir;
+    public override Vector3 dir { get { return _dir; } set { _dir = value; } }
+    public override float distance => _role.distance;
     
-    private IProjectileMoveBehaviour _moveBehaviour;
-
     public override void Init(Projectile role)
     {
         base.Init(role);
 
-        _body.cbTriggerEnter += OnBodyTriggerEnter;
+        _body.OnTriggerEntered += OnBodyTriggerEnter;
     }
 
-    public override void Enter(object data = null)
-    {
-        base.Enter(data);
-
-        _moveBehaviour = CreateMoveBehaviour(_role.data.moveType, data);
-        _moveBehaviour.Init(this);
-    }
-
-    void Update()
-    {
-        if (_state.HasState(ActorState.Move) == false)
-        {
-            return;
-        }
-
-        _moveBehaviour?.UpdateMove();
-    }
-
-    protected override void Die()
-    {
-        DieAfter();
-
-        _moveBehaviour?.Clear();
-        _moveBehaviour = null;
-
-        BattleManager.instance.actorManager.Return(this);
-
-        base.Die();
-    }
-
-    public void Shot(ActorBase owner, object data = null)
+    public void Shot(ActorBase owner)
     {
         _owner = owner;
         team = owner.team;
-        dir = owner.point.right;
-
-        Enter(data);
-
+        _dir = owner.point.right;
+        
         _state.SetState(ActorState.Move);
     }
 
@@ -73,18 +41,4 @@ public class ActorProjectile : Actor<Projectile, ProjectileData>
             }
         }
     }
-
-    private IProjectileMoveBehaviour CreateMoveBehaviour(ProjectileMoveType type, object data = null)
-    {
-        return type switch
-        {
-            ProjectileMoveType.Straight => new StraightMove(),
-            ProjectileMoveType.Orbit when data is OrbitMoveData moveData => new OrbitMove(_owner.transform, moveData),
-            ProjectileMoveType.Homing => new HomingMove(),
-            ProjectileMoveType.GroundZone => new GroundZoneMove(),
-
-            _ => new StraightMove()
-        };
-    }
-
 }

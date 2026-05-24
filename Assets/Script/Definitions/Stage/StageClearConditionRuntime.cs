@@ -5,7 +5,7 @@ public abstract class StageClearConditionRuntime
 {
     public event Action OnCleared;
 
-    protected void RaiseCleared()
+    protected virtual void RaiseCleared()
     {
         OnCleared?.Invoke();
     }

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-public class Mercenary : Role<MercenaryData>
+public class Mercenary : Role<MercenaryDefinition>
 {
     public override string localTable => LocalTable.MercenaryTable;
 
@@ -16,7 +16,7 @@ public class Mercenary : Role<MercenaryData>
 
     private MercenarySaveData saveData;
 
-    public Mercenary(MercenaryData data) : base(data) { }
+    public Mercenary(MercenaryDefinition data) : base(data) { }
 
     public void ApplySaveData(MercenarySaveData saveData)
     {

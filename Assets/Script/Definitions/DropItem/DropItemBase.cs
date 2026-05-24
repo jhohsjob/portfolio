@@ -3,23 +3,23 @@ public interface IDropItemData
     DropItemType type { get; }
 }
 
-public abstract class DropItemBase<TData> : Role<TData> where TData : RoleData, IDropItemData
+public abstract class DropItemBase<TData> : Role<TData> where TData : RoleDefinition, IDropItemData
 {
     public DropItemType type => _data.type;
 
     protected DropItemBase(TData data) : base(data) { }
 }
 
-public class DIElement : DropItemBase<DIElementData>
+public class DIElement : DropItemBase<DIElementDefinition>
 {
     public ElementType elementType => _data.elementType;
 
-    public DIElement(DIElementData data) : base(data) { }
+    public DIElement(DIElementDefinition data) : base(data) { }
 }
 
-public class DIGold : DropItemBase<DIGoldData>
+public class DIGold : DropItemBase<DIGoldDefinition>
 {
     public int gold => _data.gold;
 
-    public DIGold(DIGoldData data) : base(data) { }
+    public DIGold(DIGoldDefinition data) : base(data) { }
 }

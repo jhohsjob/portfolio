@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Threading.Tasks;
 
 
 [CreateAssetMenu(menuName = "Reward/Mercenary")]
@@ -25,10 +24,5 @@ public class MercenaryReward : RewardBase
                 id: mercenaryId,
                 message: $"Mercenary {mercenaryId} acquired"
             );
-    }
-
-    public override async Task Apply()
-    {
-        await MercenaryManager.instance.Acquire(mercenaryId);
     }
 }

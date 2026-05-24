@@ -5,12 +5,12 @@ public static class DropItemFactory
 {
     public static RoleBase Create(IDropItemData data)
     {
-        if (data is DIElementData diElementData)
+        if (data is DIElementDefinition diElementData)
         {
             return new DIElement(diElementData);
         }
 
-        if (data is DIGoldData diGoldData)
+        if (data is DIGoldDefinition diGoldData)
         {
             return new DIGold(diGoldData);
         }
@@ -22,47 +22,34 @@ public static class DropItemFactory
 
 public class DropItemManager : Singleton<DropItemManager>
 {
+    private RoleFactory _factory;
+
     private readonly Dictionary<int, RoleBase> _dic = new();
     private readonly List<RoleBase> _list = new();
     public List<RoleBase> list => _list;
 
-    public void Init(Dictionary<int, DropItemData> DropItemDatas)
+    public void Init(RoleFactory factory)
     {
-        foreach (var data in DropItemDatas)
+        _factory = factory;
+    }
+
+    public void Setup(Dictionary<int, DropItemDefinition> DropItemDefinitions)
+    {
+        foreach (var data in DropItemDefinitions)
         {
-            _dic.Add(data.Key, DropItemFactory.Create(data.Value));
+            _dic.Add(data.Key, _factory.Create(data.Value));
         }
         _list.AddRange(_dic.Values);
     }
 
-    public T GetDropItemByIndex<T>(int index) where T : RoleBase
-    {
-        if (index < 0 || index >= _list.Count)
-        {
-            return null;
-        }
-
-        return _list[index] as T;
-    }
-
-    public T GetDropItemById<T>(int id) where T : RoleBase
-    {
-        if (_dic.ContainsKey(id) == false)
-        {
-            return null;
-        }
-
-        return _dic[id] as T;
-    }
-    
     public RoleBase GetDropItemById(int id)
     {
-        if (_dic.ContainsKey(id) == false)
+        if (_dic.TryGetValue(id, out var role) == false)
         {
             return null;
         }
 
-        return _dic[id];
+        return role;
     }
 
     public int CaclIndex(int index)

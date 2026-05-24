@@ -27,6 +27,18 @@ MonoBehaviour:
     m_SerializedLabels:
     - Locale-ko
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9390ebf183954d94aaa3e43260acaef9
+    m_Address: ProjectileTable_ko
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ko
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b52f8c8a85397b0468b641f96f0077c9
+    m_Address: MonsterTable_ko
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ko
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: db47006211b7675479e48f8d0f3e948e
     m_Address: MercenaryTable_ko
     m_ReadOnly: 1

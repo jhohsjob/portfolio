@@ -8,12 +8,11 @@ public class Skill03 : Skill
     {
         for (int i = 0; i < _shotCount; i++)
         {
-            var role = ProjectileManager.instance.GetProjectileById(_projectileData[0].id);
-            var parent = BattleManager.instance.battleScene.actorContainer;
+            var role = _context.GetProjectile(_projectileData[0].id);
             var position = _actor.point.GetChild(0).transform.position;
-            var projectile = BattleManager.instance.actorManager.GetActor(role, parent, position) as ActorProjectile;
+            var projectile = _context.actorSpawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
             projectile.Shot(_actor);
-            projectile.cbDie += OnDie;
+            projectile.onDied += HnadleDied;
 
             yield return new WaitForSeconds(_shotDelay);
         }
@@ -21,12 +20,11 @@ public class Skill03 : Skill
         yield return null;
     }
 
-    private void OnDie(ActorBase actor)
+    private void HnadleDied(ActorBase actor)
     {
-        var role = ProjectileManager.instance.GetProjectileById(_projectileData[1].id);
-        var parent = BattleManager.instance.battleScene.actorContainer;
+        var role = _context.GetProjectile(_projectileData[1].id);
         var position = actor.transform.position;
-        var projectile = BattleManager.instance.actorManager.GetActor(role, parent, position) as ActorProjectile;
+        var projectile = _context.actorSpawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
         projectile.Shot(_actor);
     }
 }

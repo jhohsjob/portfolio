@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
 
@@ -21,7 +22,7 @@ public class UIBattleMercenaryScrollItem : InfiniteScrollItem
 
     private void OnDestroy()
     {
-        EventHelper.RemoveEventListener(EventName.LocaleChanged, (sender, data) => UpdateUI());
+        LocalizationSettings.SelectedLocaleChanged -= locale => { UpdateUI(); };
     }
 
     public override void SetData(int index, object data)
@@ -32,7 +33,7 @@ public class UIBattleMercenaryScrollItem : InfiniteScrollItem
 
         UpdateUI();
 
-        EventHelper.AddEventListener(EventName.LocaleChanged, (sender, data) => UpdateUI());
+        LocalizationSettings.SelectedLocaleChanged += locale => { UpdateUI(); };
     }
 
     private void UpdateUI()

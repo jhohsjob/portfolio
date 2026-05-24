@@ -1,11 +1,13 @@
-public class Projectile : Role<ProjectileData>
+public class Projectile : Role<ProjectileDefinition>
 {
+    public override string localTable => LocalTable.ProjectileTable;
+
     public float power => _data.power;
     public float distance => _data.distance;
     public bool beHitDie => _data.beHitDie;
-    public ProjectileMoveType moveType => _data.moveType;
+    public ActorMoveType moveType => _data.moveType;
 
     public Skill skill;
 
-    public Projectile(ProjectileData data) : base(data) { }
+    public Projectile(ProjectileDefinition data) : base(data) { }
 }

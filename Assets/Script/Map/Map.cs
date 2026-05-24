@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 public class Map : MonoBehaviour
 {
     private Tilemap _plane;
-
+    
     private void Awake()
     {
     }
@@ -14,22 +14,20 @@ public class Map : MonoBehaviour
     {
     }
 
-    public void Init()
+    public void Init(Transform mapOriginal)
     {
-        var map = Instantiate(BattleManager.instance.mapLevelManager.mapOriginal, transform);
+        var map = Instantiate(mapOriginal, transform);
         
         _plane = map.GetChild(0).GetComponent<Tilemap>();
         _plane.CompressBounds();
-
-        SetMapSize();
     }
 
-    private void SetMapSize()
+    public Bounds GetBounds()
     {
-        EventHelper.Send(EventName.ChangeMapSize, this, _plane.localBounds);
+        return _plane.localBounds;
     }
 
-    public Vector3 GetRandomPos(Vector3 player)
+    public Vector3 GetRandomPositionAwayFromTarget(Vector3 target)
     {
         Vector3 pos;
         int maxAttempts = 100;
@@ -42,7 +40,7 @@ public class Map : MonoBehaviour
             pos = new Vector3(x, y, 0f);
 
             attempts++;
-        } while (Vector3.Distance(pos, player) < 3f && attempts < maxAttempts);
+        } while (Vector3.Distance(pos, target) < 3f && attempts < maxAttempts);
 
         return pos;
     }

@@ -1,49 +1,53 @@
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 
-public class UILobbyMiddleBarrack : UILobbyMiddle, IScrollDataProvider
+public class UILobbyMiddleBarrack : UILobbyMiddleBase, IScrollDataProvider
 {
     [SerializeField]
     private VerticalInfiniteScroll _scroll;
 
-    private IReadOnlyList<Mercenary> _mercenaries;
-    private IScrollItemFactory _factory;
+    public event Action onClickShow;
+    public Func<int, Mercenary> onGetMercenary;
+    public Func<int> onGetItemCount;
+    public Action<Mercenary> onItemClick;
 
-    protected override void Awake()
+    public void SetupScroll(GameObject prefab)
     {
-        base.Awake();
-
-        _mercenaries = MercenaryManager.instance.list;
-
-        Client.asset.LoadAsset<GameObject>("BarrackMercenaryItem", task =>
-        {
-            var prefab = task.GetAsset<GameObject>();
-
-            _factory = new MercenaryItemFactory(prefab);
-
-            _scroll.Initialize(
-                provider: this,
-                factory: _factory,
-                itemCount: _mercenaries.Count
-            );
-        });
+        var factory = new MercenaryItemFactory(prefab);
+        _scroll.Initialize(this, factory, onGetItemCount?.Invoke() ?? 0);
     }
 
     protected override void OnShow()
     {
         base.OnShow();
 
+        onClickShow?.Invoke();
+    }
+
+    public void RefreshScroll()
+    {
         _scroll.UpdateItems();
     }
 
     public int GetItemCount()
     {
-        return _mercenaries.Count;
+        return onGetItemCount?.Invoke() ?? 0;
     }
 
     public void Bind(int index, InfiniteScrollItem item)
     {
-        item.SetData(index, _mercenaries[index]);
+        if (item is not UIBarrackMercenaryScrollItem mercenaryItem)
+        {
+            return;
+        }
+        var mercenary = onGetMercenary?.Invoke(index);
+        if (mercenary == null)
+        {
+            return;
+        }
+
+        mercenaryItem.SetData(index, mercenary);
+        mercenaryItem.SetOnClick(mercenary => onItemClick?.Invoke(mercenary));
     }
 }

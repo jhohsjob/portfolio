@@ -1,26 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 
 public class ElementController
 {
-    private Player _player;
-
     private Dictionary<ElementType, int> _elements = new();
     private Dictionary<ElementType, int> _elementLevels = new();
     private readonly int _levelupThreshold = 10;
 
-    protected Action<ElementType> _cbLevelup;
-    public event Action<ElementType> cbLevelup
-    {
-        add { _cbLevelup -= value; _cbLevelup += value; }
-        remove { _cbLevelup -= value; }
-    }
+    public Action<ElementType> onLevelup;
 
-    public void Init(Player player)
+    public void Init()
     {
-        _player = player;
-
         _elements.Clear();
     }
 
@@ -43,7 +35,6 @@ public class ElementController
         if (CheckLevelUp(out ElementType leveledElement))
         {
             LevelUp(leveledElement);
-            return;
         }
 
         EventHelper.Send(EventName.AddElement, this, _elements);
@@ -66,8 +57,11 @@ public class ElementController
 
     private void LevelUp(ElementType elementType)
     {
-        _elements.Clear();
+        foreach (var key in _elements.Keys.ToList())
+        {
+            _elements[key] = 0;
+        }
 
-        _cbLevelup?.Invoke(elementType);
+        onLevelup?.Invoke(elementType);
     }
 }

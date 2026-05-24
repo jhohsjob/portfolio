@@ -1,46 +1,48 @@
+using System;
 using UnityEngine;
 
 
 public class UILobby : MonoBehaviour
 {
     [SerializeField]
-    private UIHorizontalMenuFitter _bottom;
+    private UILobbyTop _top;
     [SerializeField]
     private RectTransform _middle;
+    [SerializeField]
+    private UIHorizontalMenuFitter _bottom;
 
-    private UILobbyMiddle[] _middles;
-    private int _menuCount;
+    private UILobbyMiddleBase[] _middles;
+    public int menuCount => _bottom.menuCount;
+    public event Action<int> onClickBottomMenu;
+
+    public UILobbyTop TopView =>_top;
+    public UILobbyMiddleBase[] MiddleViews => _middles;
 
     private void Awake()
     {
-        _middles = _middle.GetComponentsInChildren<UILobbyMiddle>();
+        _middles = _middle.GetComponentsInChildren<UILobbyMiddleBase>();
 
-        _bottom.cbInitialized += (count) => { _menuCount = count; };
-        _bottom.cbMenuChange += OnClickBottomMenu;
+        _bottom.onMenuChange += index =>
+        {
+            onClickBottomMenu?.Invoke(index);
+        };
     }
 
-    private void OnClickBottomMenu(int index)
+    public int GetMiddleCount()
     {
-        if (index >= _menuCount || index >= _middles.Length)
-        {
-            Debug.Log("menu miss match");
-            return;
-        }
+        return _middles.Length;
+    }
 
+    public void HideAllMiddle()
+    {
         foreach (var middle in _middles)
         {
             middle.Hide();
         }
-
-        _middles[index].Show();
     }
 
-    private void OnClickExit()
+    public void ShowMiddle(int index)
     {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-		Application.Quit();
-#endif
+        _middles[index].Show();
     }
 }

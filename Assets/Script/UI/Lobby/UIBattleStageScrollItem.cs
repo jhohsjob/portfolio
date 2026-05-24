@@ -4,6 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
+public class UIBattleStageScrollItemData
+{
+    public Stage stage;
+    public StageService.StageState state;
+}
+
 public class UIBattleStageScrollItem : InfiniteScrollItem
 {
     [SerializeField]
@@ -25,24 +31,28 @@ public class UIBattleStageScrollItem : InfiniteScrollItem
     {
         base.SetData(index, data);
 
-        _data = (Stage)data;
+        if (data is not UIBattleStageScrollItemData itemData)
+        {
+            return;
+        }
+        _data = itemData.stage;
 
         _name.text = _data.name;
 
-        var state = StageManager.instance.IsStageStateByIndex(index);
+        var state = itemData.state;
         switch (state)
         {
-            case StageManager.StageState.Lock:
+            case StageService.StageState.Lock:
                 _imgLock.gameObject.SetActive(true);
                 _btn.enabled = false;
                 break;
 
-            case StageManager.StageState.Current:
+            case StageService.StageState.Current:
                 _imgLock.gameObject.SetActive(false);
                 _btn.enabled = true;
                 break;
 
-            case StageManager.StageState.Clear:
+            case StageService.StageState.Clear:
                 _imgLock.gameObject.SetActive(false);
                 _btn.enabled = false;
                 break;

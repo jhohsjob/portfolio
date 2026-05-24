@@ -1,5 +1,7 @@
+using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
 
@@ -13,6 +15,7 @@ public class UIBarrackMercenaryScrollItem : InfiniteScrollItem
     private Image _icon;
 
     private Mercenary _data;
+    private Action<Mercenary> _onClick;
 
     private void Awake()
     {
@@ -21,7 +24,7 @@ public class UIBarrackMercenaryScrollItem : InfiniteScrollItem
 
     private void OnDestroy()
     {
-        EventHelper.RemoveEventListener(EventName.LocaleChanged, (sender, data) => UpdateUI());
+        LocalizationSettings.SelectedLocaleChanged -= locale => { UpdateUI(); };
     }
 
     public override void SetData(int index, object data)
@@ -32,7 +35,7 @@ public class UIBarrackMercenaryScrollItem : InfiniteScrollItem
 
         UpdateUI();
 
-        EventHelper.AddEventListener(EventName.LocaleChanged, (sender, data) => UpdateUI());
+        LocalizationSettings.SelectedLocaleChanged += locale => { UpdateUI(); };
     }
 
     private void UpdateUI()
@@ -43,8 +46,13 @@ public class UIBarrackMercenaryScrollItem : InfiniteScrollItem
         // _lock.gameObject.SetActive(!_data.isOwned);
     }
 
+    public void SetOnClick(Action<Mercenary> onClick)
+    {
+        _onClick = onClick;
+    }
+
     public void OnClickItem()
     {
-        PopupManager.ShowPopup<UIMercenaryDetailPopup>(PopupName.UIMercenaryDetail, _data);
+        _onClick?.Invoke(_data);
     }
 }

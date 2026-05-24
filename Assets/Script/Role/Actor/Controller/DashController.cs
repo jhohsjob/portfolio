@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class DashController
 {
+    private ActorBase _actor;
+    private IAssetLoader _assetLoader;
+
     private Tween _dashTween;
     private float _distance = 1f;
     private float _speed;
@@ -17,11 +20,16 @@ public class DashController
     private SpriteRenderer _sprite;
     private Material _dashMaterial;
 
-    public float cooldownDuration => _cooldown;
-    public float cooldownTimer => _cooldownTimer;
+    private bool _isOnCooldown => _cooldownTimer > 0f;
+    private bool _isDashAvailable => _currentCount > 0 && !_isOnCooldown;
 
-    public bool isOnCooldown => _cooldownTimer > 0f;
-    public bool canDash => _currentCount > 0 && !isOnCooldown;
+    public Action<float, float> onCooldownChanged;
+
+    public void InitDependencies(ActorBase actor, IAssetLoader assetLoader)
+    {
+        _actor = actor;
+        _assetLoader = assetLoader;
+    }
 
     public void Init(float speed, int count, float cooldown, SpriteRenderer sprite)
     {
@@ -32,15 +40,10 @@ public class DashController
         _cooldownTimer = 0f;
 
         _sprite = sprite;
-        Client.asset.LoadAsset<Material>("DashMat", task =>
+        _assetLoader.LoadMaterial("DashMat", mat =>
         {
-            _dashMaterial = task.GetAsset<Material>();
+            _dashMaterial = mat;
         });
-    }
-
-    public void LoadAsset(Material mat)
-    {
-        _dashMaterial = mat;
     }
 
     public void Update(float deltaTime)
@@ -53,12 +56,24 @@ public class DashController
                 _currentCount = _maxCount;
                 _cooldownTimer = 0f;
             }
+
+            onCooldownChanged?.Invoke(_cooldownTimer, _cooldown);
         }
+    }
+
+    public void TryDash()
+    {
+        if (_isDashAvailable == false)
+        {
+            return;
+        }
+
+        _actor.state.SetState(ActorState.Dash);
     }
 
     public void Dash(Transform transform, Vector2 lookDirection, Action callback)
     {
-        if (canDash == false)
+        if (_isDashAvailable == false)
         {
             return;
         }

@@ -165,7 +165,7 @@ GameObject:
   - component: {fileID: 48342859}
   - component: {fileID: 48342860}
   m_Layer: 5
-  m_Name: HPBarContainer
+  m_Name: HPBarController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -977,6 +977,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -1145,7 +1146,7 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
   m_Enabled: 1
-  serializedVersion: 12
+  serializedVersion: 13
   m_Type: 1
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
   m_Intensity: 1
@@ -1197,7 +1198,7 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ForceVisible: 0
-  m_ShadowRadius: 0
+  m_ShapeRadius: 0
   m_ShadowAngle: 0
   m_LightUnit: 1
   m_LuxAtDistance: 1
@@ -1418,6 +1419,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -1733,6 +1735,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -1771,7 +1774,7 @@ MonoBehaviour:
   _map: {fileID: 680268905}
   _player: {fileID: 6292950942589880889}
   _playerCamera: {fileID: 963194229}
-  actorContainer: {fileID: 2047074817}
+  _actorContainer: {fileID: 2047074817}
 --- !u!4 &909519616
 Transform:
   m_ObjectHideFlags: 0
@@ -2226,12 +2229,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be7a40ab2f4b3fe4eb441bd6610e9b7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _topUI: {fileID: 7139354785431518441}
+  _uitop: {fileID: 7139354785431518442}
+  _topRect: {fileID: 7139354785431518441}
   _panelStartDirection: {fileID: 1483899579}
-  _panelBattleMain: {fileID: 1827822313}
+  _panelBattleMain: {fileID: 1827822309}
   _panelBattleEnd: {fileID: 1144700549}
   _txtDirection: {fileID: 952660165}
-  _hpBarContainer: {fileID: 48342860}
+  _hpBarController: {fileID: 48342860}
+  _uiJoystick: {fileID: 636395414}
+  _uiDash: {fileID: 1868123617}
   _btnLobby: {fileID: 1616140842}
 --- !u!114 &1266678679
 MonoBehaviour:
@@ -2291,6 +2297,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -2760,8 +2767,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _txtKill: {fileID: 244060257}
-  _btnDash: {fileID: 1868123614}
-  _dashCooldown: {fileID: 1898590630}
 --- !u!1 &1868123612
 GameObject:
   m_ObjectHideFlags: 0
@@ -2774,8 +2779,9 @@ GameObject:
   - component: {fileID: 1868123616}
   - component: {fileID: 1868123615}
   - component: {fileID: 1868123614}
+  - component: {fileID: 1868123617}
   m_Layer: 5
-  m_Name: btnDash
+  m_Name: dash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2884,6 +2890,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1868123612}
   m_CullTransparentMesh: 1
+--- !u!114 &1868123617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1868123612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0d5d49cbf4d7de4eb4149ff0de61a14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIDash
+  _btnDash: {fileID: 1868123614}
+  _dashCooldown: {fileID: 1898590630}
 --- !u!1 &1895999896
 GameObject:
   m_ObjectHideFlags: 0

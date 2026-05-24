@@ -15,6 +15,11 @@ public class UISettingPopup : UIPopup
         base.Awake();
 
         _toggles = _tgLocale.GetComponentsInChildren<LocaleToggle>();
+    }
+
+    public override void OnPopupReady(object data = null)
+    {
+        base.OnPopupReady(data);
 
         foreach (var t in _toggles)
         {
@@ -23,9 +28,6 @@ public class UISettingPopup : UIPopup
                 if (isOn)
                 {
                     ChangeLocale(t.localeCode);
-
-                    Client.storage.data.locale = t.localeCode;
-                    StorageSaveManager.RequestSave();
                 }
             });
         }

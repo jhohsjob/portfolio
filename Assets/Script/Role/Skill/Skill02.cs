@@ -7,9 +7,9 @@ public class Skill02 : Skill
     private ActorProjectile[] _slot;
     private float[] _slotAngles;
 
-    public override void Init(ActorBase actor, SkillData data)
+    public override void Init(ActorBase actor, SkillData data, SkillContext context)
     {
-        base.Init(actor, data);
+        base.Init(actor, data, context);
 
         _slot = new ActorProjectile[_shotCount];
 
@@ -23,7 +23,7 @@ public class Skill02 : Skill
 
     public override void Update()
     {
-        if (BattleManager.instance.IsBattleRun() == false)
+        if (_context.battleState.IsRunning() == false)
         {
             return;
         }
@@ -52,19 +52,15 @@ public class Skill02 : Skill
             yield break;
         }
 
-        var moveData = new OrbitMoveData
-        {
-            radius = 1f,
-            startAngle = _slotAngles[index],
-            angularSpeed = 1f
-        };
-
-        var role = ProjectileManager.instance.GetProjectileById(_projectileData[0].id);
-        var parent = BattleManager.instance.battleScene.actorContainer;
+        var role = _context.GetProjectile(_projectileData[0].id);
         var position = _actor.point.GetChild(0).transform.position;
-        var projectile = BattleManager.instance.actorManager.GetActor(role, parent, position) as ActorProjectile;
-        projectile.Shot(_actor, moveData);
-        projectile.State.cbStateChanged += (state) =>
+        var projectile = _context.actorSpawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
+        if (projectile.moveBehaviour is OrbitMove orbit)
+        {
+            orbit.Setup(_actor.transform, 1f, _slotAngles[index], 1f);
+        }
+        projectile.Shot(_actor);
+        projectile.state.cbStateChanged += (state) =>
         {
             if (state.HasFlag(ActorState.Die))
             {

@@ -7,6 +7,6 @@ using UnityEngine;
 public class MonsterTable : ScriptableObject
 {
     [SerializeField]
-    private SerializableDictionary<int, MonsterData> _table;
-    public Dictionary<int, MonsterData> table => _table.Dictionary;
+    private SerializableDictionary<int, MonsterDefinition> _table;
+    public Dictionary<int, MonsterDefinition> table => _table.Dictionary;
 }

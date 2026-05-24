@@ -16,31 +16,31 @@ MonoBehaviour:
   m_GUID: fcf8b9ba9b75ab146831541ec32ddc5f
   m_SerializeEntries:
   - m_GUID: 0d929c37cc5598548b03751a31f436d5
-    m_Address: UIPause
+    m_Address: UIPausePopup
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a165edb54e6d4e8469b401dd4b9d1e45
-    m_Address: UIMercenaryDetail
+    m_Address: UIMercenaryDetailPopup
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a6e398aa8e8b8d94db80180758db6636
-    m_Address: UIProductResult
+    m_Address: UIProductResultPopup
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b193f3e5d423c854fb562193fcf8bf21
-    m_Address: UISelectMapContent
+  - m_GUID: bcba30bf973212e4d8addebe4f2f4a34
+    m_Address: UICommonPopup
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fb509683547b6384dab5d8839aa3faf1
-    m_Address: UISetting
+    m_Address: UISettingPopup
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload

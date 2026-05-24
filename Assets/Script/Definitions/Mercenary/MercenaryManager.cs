@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 public class MercenaryManager : Singleton<MercenaryManager>
 {
+    private RoleFactory _factory;
+    private MercenaryStorage _storage;
+
     /// <summary>
     /// key : mercenary Id
     /// value : mercenary data
@@ -11,12 +14,19 @@ public class MercenaryManager : Singleton<MercenaryManager>
     private Dictionary<int, Mercenary> _dic = new();
     private List<Mercenary> _list = new();
     public IReadOnlyList<Mercenary> list => _list;
+    
+    public void Init(RoleFactory factory, MercenaryStorage storage)
+    {
+        _factory = factory;
+        _storage = storage;
+    }
 
-    public void Init(Dictionary<int, MercenaryData> mercenaryDatas)
+    public void Setup(Dictionary<int, MercenaryDefinition> mercenaryDatas)
     {
         foreach (var data in mercenaryDatas)
         {
-            _dic.Add(data.Key, new Mercenary(data.Value));
+            var mercenary = (Mercenary)_factory.Create(data.Value);
+            _dic.Add(data.Key, mercenary);
         }
         _list.AddRange(_dic.Values);
     }
@@ -68,7 +78,7 @@ public class MercenaryManager : Singleton<MercenaryManager>
 
             var runtimeData = mercenary.GetSaveData();
 
-            await Client.mercenaryStorage.Update(runtimeData);
+            await _storage.Update(runtimeData);
 
             return true;
         }

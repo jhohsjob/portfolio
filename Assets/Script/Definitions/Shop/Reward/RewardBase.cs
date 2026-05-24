@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using UnityEngine;
 
 
@@ -36,5 +35,4 @@ public struct RewardResult
 public abstract class RewardBase : ScriptableObject
 {
     public abstract RewardResult CanGive();
-    public abstract Task Apply();
 }

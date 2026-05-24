@@ -7,6 +7,6 @@ using UnityEngine;
 public class DropItemTable : ScriptableObject
 {
     [SerializeField]
-    private SerializableDictionary<int, DropItemData> _table;
-    public Dictionary<int, DropItemData> table => _table.Dictionary;
+    private SerializableDictionary<int, DropItemDefinition> _table;
+    public Dictionary<int, DropItemDefinition> table => _table.Dictionary;
 }

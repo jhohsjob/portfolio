@@ -15,7 +15,7 @@ public class SkillData : ScriptableObject
     // [HideInInspector]
     public string behaviourTypeName;
 
-    public ProjectileData[] projectileData;
+    public ProjectileDefinition[] projectileData;
 
     public int shotCount;
     public float shotDelay;

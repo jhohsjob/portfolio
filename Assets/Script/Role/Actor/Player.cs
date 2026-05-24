@@ -1,22 +1,37 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 
-public class Player : Actor<Mercenary, MercenaryData>
+public class PlayerContext
 {
-    private PlayerMoveController _move;
+    public IBattleState battleState;
+    public IAssetLoader assetLoader;
+    public IActorSpawner actorSpawner;
+    public Func<Vector3, Vector3, float, float, Transform> GetNearestEnemy;
+}
+
+public class Player : Actor<Mercenary, MercenaryDefinition>
+{
+    private PlayerContext _context;
 
     private ElementController _element;
     public ElementController element => _element;
 
+    private IInputSource _inputSource;
+    public IInputSource inputSource => _inputSource;
+
     private DashController _dash;
     public DashController dash => _dash;
+
+    public override float moveSpeed => _role.moveSpeed + _additionalMoveSpeed;
+    private float _additionalMoveSpeed;
 
     // temp
     private List<SkillData> _tempSkillDatas = new();
 
-    private int _gainGold;
+    public event Action<int> onGoldCollected;
 
     protected override void Awake()
     {
@@ -24,115 +39,116 @@ public class Player : Actor<Mercenary, MercenaryData>
 
         team = Team.Player;
 
-        _move = new PlayerMoveController();
         _element = new ElementController();
         _dash = new DashController();
-
-        EventHelper.AddEventListener(EventName.ClickDash, OnClickDash);
+        _inputSource = new PlayerInputSource();
     }
 
     private void OnDestroy()
     {
-        EventHelper.RemoveEventListener(EventName.ClickDash, OnClickDash);
-
-        _element.cbLevelup -= OnElementLevelUp;
+        _element.onLevelup -= OnElementLevelUp;
     }
 
-    void Update()
+    protected override void Update()
     {
-        _dash.Update(Time.deltaTime);
+        _dash?.Update(Time.deltaTime);
 
-        if (_state.HasState(ActorState.Move))
-        {
-            Move();
-        }
+        _inputSource?.UpdateInput();
+
+        base.Update();
+    }
+
+    public void InitDependencies(PlayerContext context)
+    {
+        _context = context;
+        _dash.InitDependencies(this, context.assetLoader);
     }
 
     public override void Init(Mercenary role)
     {
         base.Init(role);
 
-        _body.cbTriggerEnter += OnBodyTriggerEnter;
-
         // temp
+        CreateSkill();
+
+        _element.Init();
+        _dash.Init(_role.dashSpeed, _role.dashCount, _role.dashCooldown, _body.sprite);
+
+        Bind();
+    }
+
+    protected override void Die()
+    {
+        _animator.SetBool("Dead", true);
+
+        base.Die();
+    }
+
+    private void Bind()
+    {
+        _body.OnTriggerEntered += OnBodyTriggerEnter;
+        _element.onLevelup += OnElementLevelUp;
+    }
+
+    private void CreateSkill()
+    {
         _tempSkillDatas.Add(role.skillData);
 
         foreach (var tempSkillData in _tempSkillDatas)
         {
             var skill = (new GameObject(tempSkillData.skillName)).AddComponent(tempSkillData.behaviourType) as Skill;
             skill.transform.SetParent(transform, false);
-            skill.Init(this, tempSkillData);
+            skill.Init(this, tempSkillData, new SkillContext
+            {
+                battleState = _context.battleState,
+                actorSpawner = _context.actorSpawner,
+                GetProjectile = id => ProjectileManager.instance.GetProjectileById(id),
+                GetNearestEnemy = _context.GetNearestEnemy
+            });
         }
-
-        _move.Init(this);
-        _element.Init(this);
-        _dash.Init(_role.dashSpeed, _role.dashCount, _role.dashCooldown, _body.sprite);
-
-        _gainGold = 0;
-    }
-
-    public override void Enter(object data = null)
-    {
-        base.Enter();
-
-        _element.cbLevelup += OnElementLevelUp;
-    }
-
-    protected override void Move()
-    {
-        _move.Move();
-    }
-
-    protected override void Die()
-    {
-        Debug.Log("game over");
-
-        BattleOver();
-
-        _animator.SetBool("Dead", true);
-
-        BattleManager.instance.SetBattleStatus(BattleStatus.Lose);
     }
 
     public void AddGold(int gold)
     {
-        _gainGold += gold;
-
-        EventHelper.Send(EventName.AddGold, this, _gainGold.ToString());
+        onGoldCollected?.Invoke(gold);
     }
 
-    private void BattleOver()
+    public void HandleJoystickAction(Vector2 value)
     {
-        Client.user.ChangeGold(_gainGold);
+        if (_inputSource is PlayerInputSource input)
+        {
+            input.OnMove(value);
+        }
+
+        _state.SetState(_inputSource.MoveDirection == Vector2.zero ? ActorState.Idle : ActorState.Move);
     }
 
-    public void SetJoystick(Vector2 input)
+    public void HandleDashAction()
     {
-        _move.SetMoveDirection(input);
+        _dash.TryDash();
     }
 
     // PlayerInput Send Messages
     public void OnMove(InputValue value)
     {
-        if (BattleManager.instance.IsBattleRun() == false)
+        if (_context.battleState.IsRunning() == false)
         {
             return;
         }
 
-        _move.SetMoveDirection(value.Get<Vector2>());
+        if (_inputSource is PlayerInputSource input)
+        {
+            input.OnMove(value.Get<Vector2>());
+        }
 
-        // Debug.Log(_moveDirection);
+        _state.SetState(_inputSource.MoveDirection == Vector2.zero ? ActorState.Idle : ActorState.Move);
+        //Debug.Log(_state.current);
     }
 
     // PlayerInput Send Messages
     public void OnDash(InputValue value)
     {
-        if (BattleManager.instance.IsBattleRun() == false || _dash.canDash == false)
-        {
-            return;
-        }
-
-        _state.SetState(ActorState.Dash);
+        _dash.TryDash();
     }
 
     private void OnBodyTriggerEnter(Body other)
@@ -153,10 +169,10 @@ public class Player : Actor<Mercenary, MercenaryData>
         if (state == ActorState.Dash)
         {
             _collider.enabled = false;
-            _dash.Dash(transform, _move.lookDirection, () =>
+            _dash.Dash(transform, _inputSource.LookDirection, () =>
             {
                 _collider.enabled = true;
-                _state.SetState(_move.moveDirection == Vector2.zero ? ActorState.Idle : ActorState.Move);
+                _state.SetState(_inputSource.MoveDirection == Vector2.zero ? ActorState.Idle : ActorState.Move);
             });
         }
         else if (state == ActorState.Die)
@@ -182,7 +198,7 @@ public class Player : Actor<Mercenary, MercenaryData>
     }
     private void HandleWaterLevelUp()
     {
-        _move.OnElementLevelUp();
+        _additionalMoveSpeed += 0.5f;
         _dash.OnElementLevelUp();
     }
 
@@ -194,15 +210,5 @@ public class Player : Actor<Mercenary, MercenaryData>
     private void HandleFireLevelUp()
     {
         // todo : skill update
-    }
-
-    private void OnClickDash(object sender, object data)
-    {
-        if (_dash.canDash == false)
-        {
-            return;
-        }
-
-        _state.SetState(ActorState.Dash);
     }
 }

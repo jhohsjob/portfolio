@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cca1a56654c773f47850467d9ed3d779, type: 3}
   m_Name: 2DProjectile05
   m_EditorClassIdentifier: 
+  roleType: 1000
   id: 301005
   roleName: Projectile05
   roleDescription: 
@@ -20,9 +21,9 @@ MonoBehaviour:
   resourcePath: 
   body: {fileID: 8193831111808689357, guid: 194268c86eecf06459e76e3d9b280876, type: 3}
   resourceOffset: {x: 0, y: 0, z: 0}
+  maxHP: 0
   moveSpeed: 0
-  roleType: 1000
+  moveType: 4
   power: 1
   distance: 3
   beHitDie: 0
-  moveType: 3

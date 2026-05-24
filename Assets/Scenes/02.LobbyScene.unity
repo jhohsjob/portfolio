@@ -377,6 +377,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8efc93ff367be184ba82f6eb71cba359, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _uiLobby: {fileID: 1410465782}
 --- !u!4 &61286910
 Transform:
   m_ObjectHideFlags: 0
@@ -1457,9 +1458,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 699478496}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fafb1c89e60c4342b777fdf374c41af, type: 3}
+  m_Script: {fileID: 11500000, guid: 105d767d778eb634f91ae32ab22d535e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UILobbyMiddle
+  m_EditorClassIdentifier: Assembly-CSharp::UILobbyMiddleTemp
 --- !u!1 &717542996
 GameObject:
   m_ObjectHideFlags: 0
@@ -2561,9 +2562,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1232890656}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fafb1c89e60c4342b777fdf374c41af, type: 3}
+  m_Script: {fileID: 11500000, guid: 105d767d778eb634f91ae32ab22d535e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UILobbyMiddle
+  m_EditorClassIdentifier: Assembly-CSharp::UILobbyMiddleTemp
 --- !u!1 &1233511108
 GameObject:
   m_ObjectHideFlags: 0
@@ -2890,8 +2891,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23974f0813af57a41b90e5ca9fc6d312, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bottom: {fileID: 1679013383}
+  _top: {fileID: 7240055133754508966}
   _middle: {fileID: 667546045}
+  _bottom: {fileID: 1679013383}
 --- !u!1 &1450350162
 GameObject:
   m_ObjectHideFlags: 0
@@ -4932,6 +4934,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b250ed818aba9f4448c280a742923abd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UITop
+  _uiGold: {fileID: 6131291549174002590}
   _btnSetting: {fileID: 8617358641995292246}
 --- !u!114 &7300305458747108115
 MonoBehaviour:

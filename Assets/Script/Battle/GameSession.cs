@@ -15,7 +15,5 @@ public class GameSession : MonoSingleton<GameSession>
     public void SetMercenary(Mercenary mercenary)
     {
         currentMercenary = mercenary;
-
-        Client.user.SetMercenary(mercenary.id);
     }
 }

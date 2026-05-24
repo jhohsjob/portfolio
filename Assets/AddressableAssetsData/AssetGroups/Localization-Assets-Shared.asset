@@ -30,6 +30,16 @@ MonoBehaviour:
     m_ReadOnly: 1
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 890470f997e08fd49a7f0c933d629e3b
+    m_Address: Assets/Localization/Text/MonsterTable Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8af2f3b53a90caf4e84e4351f8226ded
+    m_Address: Assets/Localization/Text/ProjectileTable Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: e1eb3bcf68f81b749a27bb85c521c50e, type: 2}
   m_SchemaSet:

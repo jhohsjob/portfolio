@@ -10,7 +10,7 @@ public class Stage
     public MapDefinition mapDefinition => _definition.mapDefinition;
     private StageClearConditionRuntime _clearCondition;
 
-    public event Action cbStageCleared;
+    public event Action<int> onStageCleared;
 
     public Stage(StageDefinition definition)
     {
@@ -27,9 +27,7 @@ public class Stage
 
     private void OnStageCleared()
     {
-        int nextStageId = StageManager.instance.NextStageID(id);
-        Client.user.SetStage(nextStageId);
-
-        cbStageCleared?.Invoke();
+        onStageCleared?.Invoke(id);
+        onStageCleared = null;
     }
 }

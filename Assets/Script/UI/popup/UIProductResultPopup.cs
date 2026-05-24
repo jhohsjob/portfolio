@@ -7,11 +7,6 @@ public class UIProductResultData
 {
     public bool success;
     public string message;
-    public UIProductResultData(bool success, string message)
-    {
-        this.success = success;
-        this.message = message;
-    }
 }
 
 public class UIProductResultPopup : UIPopup

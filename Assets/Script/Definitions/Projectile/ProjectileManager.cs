@@ -1,16 +1,25 @@
 using System.Collections.Generic;
 
+
 public class ProjectileManager : Singleton<ProjectileManager>
 {
+    private RoleFactory _factory;
+
     private Dictionary<int, Projectile> _dic = new();
     private List<Projectile> _list = new();
     public IReadOnlyList<Projectile> list => _list;
 
-    public void Init(Dictionary<int, ProjectileData> ProjectileDatas)
+    public void Init(RoleFactory factory)
+    {
+        _factory = factory;
+    }
+
+    public void Setup(Dictionary<int, ProjectileDefinition> ProjectileDatas)
     {
         foreach (var data in ProjectileDatas)
         {
-            _dic.Add(data.Key, new Projectile(data.Value));
+            var projectile = (Projectile)_factory.Create(data.Value);
+            _dic.Add(data.Key, projectile);
         }
         _list.AddRange(_dic.Values);
     }

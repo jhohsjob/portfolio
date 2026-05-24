@@ -1,6 +1,7 @@
 public enum BattleStatus
 {
     None,
+    Ready,
     Running,
     Paused,
     Win,
@@ -9,6 +10,7 @@ public enum BattleStatus
 
 public enum RoleType
 {
+    None = 0,
     Projectile = 1000,
     Item = 2000,
     Enemy = 3000,
@@ -47,12 +49,15 @@ public enum ActorState
     Die = 1 << 3,
 }
 
-public enum ProjectileMoveType
+public enum ActorMoveType
 {
+    None = 0,
     Straight,
     Orbit,
     Homing,
-    GroundZone
+    GroundZone,
+    ChaseTarget,
+    Direction
 }
 
 public enum CurrencyType
@@ -82,4 +87,13 @@ public enum PurchaseFailReason
     InvalidProduct,
     AlreadyOwned,
     ServerError,
+}
+
+public enum LobbyMenu
+{
+    Shop,
+    Barrack,
+    Battle,
+    Temp01,
+    Temp02,
 }

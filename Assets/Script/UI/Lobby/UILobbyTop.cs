@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,19 +6,23 @@ using UnityEngine.UI;
 public class UILobbyTop : MonoBehaviour
 {
     [SerializeField]
+    private UIGold _uiGold;
+    [SerializeField]
     private Button _btnSetting;
-    
+
+    public event Action onClickSetting;
+    public Action onDestroyAction;
+
+    public UIGold goldView => _uiGold;
+
     private void Awake()
     {
-        _btnSetting.onClick.AddListener(OnClickSetting);
+        _btnSetting.onClick.AddListener(() => onClickSetting?.Invoke());
     }
 
     private void OnDestroy()
     {
-    }
-
-    private void OnClickSetting()
-    {
-        PopupManager.ShowPopup<UISettingPopup>(PopupName.UISetting);
+        onDestroyAction?.Invoke();
+        onDestroyAction = null;
     }
 }

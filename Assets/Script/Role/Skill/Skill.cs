@@ -1,9 +1,20 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 
+public class SkillContext
+{
+    public IBattleState battleState;
+    public IActorSpawner actorSpawner;
+    public Func<int, Projectile> GetProjectile;
+    public Func<Vector3, Vector3, float, float, Transform> GetNearestEnemy;
+}
+
 public class Skill : MonoBehaviour
 {
+    protected SkillContext _context;
+
     protected ActorBase _actor;
 
     public int ID { get; private set; }
@@ -12,13 +23,13 @@ public class Skill : MonoBehaviour
     protected int _shotCount { get; private set; }
     protected float _shotDelay { get; private set; }
     protected float _reloadTime { get; private set; }
-    protected ProjectileData[] _projectileData { get; private set; }
+    protected ProjectileDefinition[] _projectileData { get; private set; }
 
     protected float _shotTimer = 0f;
 
     public virtual void Update()
     {
-        if (BattleManager.instance.IsBattleRun())
+        if (_context.battleState.IsRunning() == true)
         {
             _shotTimer += Time.deltaTime;
 
@@ -31,9 +42,10 @@ public class Skill : MonoBehaviour
         }
     }
 
-    public virtual void Init(ActorBase actor, SkillData data)
+    public virtual void Init(ActorBase actor, SkillData data, SkillContext context)
     {
         _actor = actor;
+        _context = context;
 
         transform.SetParent(_actor.transform, false);
         transform.localPosition = Vector3.zero;
@@ -47,7 +59,8 @@ public class Skill : MonoBehaviour
 
         foreach (var item in _projectileData)
         {
-            BattleManager.instance.actorManager.InitProjectile(item.id);
+            var role = ProjectileManager.instance.GetProjectileById(item.id);
+            _context.actorSpawner.InitPool(role);
         }
     }
 
@@ -60,10 +73,9 @@ public class Skill : MonoBehaviour
     {
         for (int i = 0; i < _shotCount; i++)
         {
-            var role = ProjectileManager.instance.GetProjectileById(_projectileData[0].id);
-            var parent = BattleManager.instance.battleScene.actorContainer;
+            var role = _context.GetProjectile(_projectileData[0].id);
             var position = _actor.point.GetChild(0).transform.position;
-            var projectile = BattleManager.instance.actorManager.GetActor(role, parent, position) as ActorProjectile;
+            var projectile = _context.actorSpawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
             projectile.Shot(_actor);
 
             yield return new WaitForSeconds(_shotDelay);

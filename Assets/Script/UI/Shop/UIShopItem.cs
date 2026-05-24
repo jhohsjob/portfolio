@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -13,26 +14,41 @@ public class UIShopItem : MonoBehaviour
 
     private ShopItemDefinition _definition;
 
-    public void Awake()
+    public event Action<ShopItemDefinition, ProductDefinition, UIProduct> onProductClick;
+
+    private void Awake()
     {
-        EventHelper.AddEventListener(EventName.LocaleChanged, (sender, data) => UpdateUI());
+        LocalizationSettings.SelectedLocaleChanged += locale => { UpdateUI(); };
     }
 
     private void OnDestroy()
     {
-        EventHelper.RemoveEventListener(EventName.LocaleChanged, (sender, data) => UpdateUI());
+        LocalizationSettings.SelectedLocaleChanged -= locale => { UpdateUI(); };
     }
 
-    public void Bind(ShopItemDefinition definition)
+    public void Bind(ShopItemDefinition definition, Func<int, int> getPurchaseCountFunc)
     {
         _definition = definition;
+        if (_definition == null)
+        {
+            return;
+        }
 
         int count = Mathf.Min(_items.Count, definition.productItems.Count);
 
         for (int i = 0; i < count; i++)
         {
-            _items[i].Bind(definition.productItems[i]);
+            var productDefinition = definition.productItems[i];
+            int currentCount = getPurchaseCountFunc?.Invoke(productDefinition.id) ?? 0;
+
+            _items[i].Bind(productDefinition, currentCount);
             _items[i].gameObject.SetActive(true);
+
+            var currentProductUi = _items[i];
+            currentProductUi.onClickProduct += (def) =>
+            {
+                onProductClick?.Invoke(_definition, def, currentProductUi);
+            };
         }
 
         for (int i = count; i < _items.Count; i++)
@@ -40,17 +56,12 @@ public class UIShopItem : MonoBehaviour
             _items[i].gameObject.SetActive(false);
         }
 
-        if (definition.productItems.Count > _items.Count)
-        {
-            Debug.LogWarning($"[{name}] UIProduct ºÎÁ·: {definition.productItems.Count} > {_items.Count}");
-        }
-
         UpdateUI();
     }
 
     private void UpdateUI()
     {
-        if (_txtTitle != null)
+        if (_txtTitle != null && _definition != null)
         {
             _txtTitle.text = LocalizationSettings.StringDatabase.GetLocalizedString(LocalTable.ShopTable, _definition.GetTitleKey()) ?? string.Empty;
         }
