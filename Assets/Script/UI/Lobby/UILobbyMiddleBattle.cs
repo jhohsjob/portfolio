@@ -72,7 +72,6 @@ public class UILobbyMiddleBattle : UILobbyMiddleBase
     [SerializeField]
     private HorizontalInfiniteScroll _mercenaryScroll;
 
-    public event Action onShowPanel;
     public event Action<Stage, int> onStartStageRequest;
 
     public Func<int> onGetStageCount;
@@ -100,16 +99,6 @@ public class UILobbyMiddleBattle : UILobbyMiddleBase
             itemCount: onGetMercenaryCount?.Invoke() ?? 0,
             initPos: initIndex
         );
-    }
-
-    protected override void OnShow()
-    {
-        base.OnShow();
-        onShowPanel?.Invoke();
-    }
-
-    public void RefreshMercenaryScroll()
-    {
         _mercenaryScroll.UpdateItems();
     }
 

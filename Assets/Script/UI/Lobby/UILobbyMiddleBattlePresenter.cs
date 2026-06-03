@@ -16,7 +16,6 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
 
     protected override void Bind()
     {
-        _view.onShowPanel += OnShowPanel;
         _view.onStageClick += OnStageClick;
 
         _view.onGetStageCount = () => _stages.Count;
@@ -43,18 +42,12 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
     
     protected override void Unbind()
     {
-        _view.onShowPanel -= OnShowPanel;
         _view.onStageClick -= OnStageClick;
 
         _view.onGetStageCount = null;
         _view.onGetStageItemData = null;
         _view.onGetMercenaryCount = null;
         _view.onGetMercenaryData = null;
-    }
-
-    private void OnShowPanel()
-    {
-        _view.RefreshMercenaryScroll();
     }
 
     private UIBattleStageScrollItemData GetStageItemData(int index)
