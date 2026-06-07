@@ -40,6 +40,11 @@ MonoBehaviour:
     m_ReadOnly: 1
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd204da4d4fab7d40b5d37881a1a1b66
+    m_Address: Assets/Localization/Text/DropItemTable Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: e1eb3bcf68f81b749a27bb85c521c50e, type: 2}
   m_SchemaSet:

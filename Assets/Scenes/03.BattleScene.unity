@@ -2094,7 +2094,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1143860018}
   m_Layer: 5
-  m_Name: ElementForest
+  m_Name: ElementNature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28179,7 +28179,7 @@ MonoBehaviour:
   _btnPause: {fileID: 5493205753099565089}
   _txtGold: {fileID: 708510381917995035}
   _txtElementWater: {fileID: 849852394}
-  _txtElementForest: {fileID: 570023364}
+  _txtElementNature: {fileID: 570023364}
   _txtElementFire: {fileID: 763064574}
 --- !u!198 &7158348981691119376
 ParticleSystem:

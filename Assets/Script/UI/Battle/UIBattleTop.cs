@@ -15,7 +15,7 @@ public class UIBattleTop : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _txtElementWater;
     [SerializeField]
-    private TextMeshProUGUI _txtElementForest;
+    private TextMeshProUGUI _txtElementNature;
     [SerializeField]
     private TextMeshProUGUI _txtElementFire;
 
@@ -42,8 +42,8 @@ public class UIBattleTop : MonoBehaviour
                 _txtElementWater.text = value.ToString();
                 break;
 
-            case ElementType.Forest:
-                _txtElementForest.text = value.ToString();
+            case ElementType.Nature:
+                _txtElementNature.text = value.ToString();
                 break;
 
             case ElementType.Fire:

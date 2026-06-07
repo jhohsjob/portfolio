@@ -5,6 +5,8 @@ public interface IDropItemData
 
 public abstract class DropItemBase<TData> : Role<TData> where TData : RoleDefinition, IDropItemData
 {
+    public override string localTable => LocalTable.DropItemTable;
+
     public DropItemType type => _data.type;
 
     protected DropItemBase(TData data) : base(data) { }

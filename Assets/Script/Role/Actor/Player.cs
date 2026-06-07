@@ -188,8 +188,8 @@ public class Player : Actor<Mercenary, MercenaryDefinition>
             case ElementType.Water:
                 HandleWaterLevelUp();
                 break;
-            case ElementType.Forest:
-                HandleForestLevelUp();
+            case ElementType.Nature:
+                HandleNatureLevelUp();
                 break;
             case ElementType.Fire:
                 HandleFireLevelUp();
@@ -202,7 +202,7 @@ public class Player : Actor<Mercenary, MercenaryDefinition>
         _dash.OnElementLevelUp();
     }
 
-    private void HandleForestLevelUp()
+    private void HandleNatureLevelUp()
     {
         _hp.OnElementLevelUp();
     }
