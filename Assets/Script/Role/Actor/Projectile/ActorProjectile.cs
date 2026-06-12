@@ -7,24 +7,17 @@ public class ActorProjectile : Actor<Projectile, ProjectileDefinition>
     private Vector3 _dir;
     public override Vector3 dir { get { return _dir; } set { _dir = value; } }
     public override float distance => _role.distance;
-    
-    public override void Init(Projectile role)
-    {
-        base.Init(role);
-
-        _body.OnTriggerEntered += OnBodyTriggerEnter;
-    }
 
     public void Shot(ActorBase owner)
     {
         _owner = owner;
         team = owner.team;
-        _dir = owner.point.right;
+        _dir = owner.muzzleDir;
         
         _state.SetState(ActorState.Move);
     }
 
-    private void OnBodyTriggerEnter(Body other)
+    protected override void OnBodyTriggerEnter(Body other)
     {
         if (other.TryGetComponent(out Body body))
         {

@@ -26,12 +26,12 @@ public class Enemy : Actor<Monster, MonsterDefinition>
         base.Update();
     }
 
-    public override void Init(Monster role)
-    {
-        base.Init(role);
+    //public override void Init(Monster role)
+    //{
+    //    base.Init(role);
 
-        _body.OnTriggerEntered += OnBodyTriggerEnter;
-    }
+    //    Bind();
+    //}
 
     public override void Enter(int id, int sortingOrder, Action<ActorBase> onDied)
     {
@@ -49,7 +49,7 @@ public class Enemy : Actor<Monster, MonsterDefinition>
         base.Die();
     }
 
-    private void OnBodyTriggerEnter(Body other)
+    protected override void OnBodyTriggerEnter(Body other)
     {
         if (other.TryGetComponent(out Body body))
         {

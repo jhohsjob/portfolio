@@ -53,14 +53,14 @@ public class Skill02 : Skill
         }
 
         var role = _context.GetProjectile(_projectileData[0].id);
-        var position = _actor.point.GetChild(0).transform.position;
+        var position = _actor.muzzlePos;
         var projectile = _context.actorSpawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
         if (projectile.moveBehaviour is OrbitMove orbit)
         {
             orbit.Setup(_actor.transform, 1f, _slotAngles[index], 1f);
         }
         projectile.Shot(_actor);
-        projectile.state.cbStateChanged += (state) =>
+        projectile.state.onStateChanged += (state) =>
         {
             if (state.HasFlag(ActorState.Die))
             {

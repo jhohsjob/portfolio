@@ -1,13 +1,11 @@
 using DG.Tweening;
 using System;
-using System.Collections;
 using UnityEngine;
 
 
 public class DashController
 {
     private ActorBase _actor;
-    private IAssetLoader _assetLoader;
 
     private Tween _dashTween;
     private float _distance = 1f;
@@ -17,33 +15,23 @@ public class DashController
     private float _cooldown;
     private float _cooldownTimer;
 
-    private SpriteRenderer _sprite;
-    private Material _dashMaterial;
-
     private bool _isOnCooldown => _cooldownTimer > 0f;
     private bool _isDashAvailable => _currentCount > 0 && !_isOnCooldown;
 
     public Action<float, float> onCooldownChanged;
 
-    public void InitDependencies(ActorBase actor, IAssetLoader assetLoader)
+    public void InitDependencies(ActorBase actor)
     {
         _actor = actor;
-        _assetLoader = assetLoader;
     }
 
-    public void Init(float speed, int count, float cooldown, SpriteRenderer sprite)
+    public void Init(float speed, int count, float cooldown)
     {
         _speed = speed;
         _maxCount = count;
         _currentCount = count;
         _cooldown = cooldown;
         _cooldownTimer = 0f;
-
-        _sprite = sprite;
-        _assetLoader.LoadMaterial("DashMat", mat =>
-        {
-            _dashMaterial = mat;
-        });
     }
 
     public void Update(float deltaTime)
@@ -71,25 +59,16 @@ public class DashController
         _actor.state.SetState(ActorState.Dash);
     }
 
-    public void Dash(Transform transform, Vector2 lookDirection, Action callback)
+    public bool Dash(Transform transform, Vector2 lookDirection, Action callback)
     {
         if (_isDashAvailable == false)
         {
-            return;
+            return false;
         }
 
         Vector3 targetPos = transform.position + (Vector3)lookDirection * _distance;
 
         _dashTween?.Kill();
-
-        Material prev = _sprite.material;
-        _sprite.material = _dashMaterial;
-
-        _dashMaterial.SetVector("_Direction", new Vector4(lookDirection.x, lookDirection.y, 0f, 0f));
-        _dashMaterial.SetFloat("_BlurStrength", 1f);
-        _dashMaterial.SetFloat("_Alpha", 1f);
-
-        IEnumeratorTool.instance.StartCoroutine(FadeOut(prev));
 
         _dashTween = transform.DOMove(targetPos, _speed).SetEase(Ease.Linear).OnComplete(() =>
         {
@@ -101,20 +80,8 @@ public class DashController
 
             callback?.Invoke();
         });
-    }
 
-    private IEnumerator FadeOut(Material prev)
-    {
-        float t = 0f;
-        while (t < _speed)
-        {
-            t += Time.deltaTime;
-            _dashMaterial.SetFloat("_BlurStrength", Mathf.Lerp(1f, 0f, t));
-            _dashMaterial.SetFloat("_Alpha", Mathf.Lerp(1f, 0f, t));
-            yield return null;
-        }
-
-        _sprite.material = prev;
+        return true;
     }
 
     public void OnElementLevelUp()

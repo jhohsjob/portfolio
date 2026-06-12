@@ -29,6 +29,8 @@ public class PlayerCamera : MonoBehaviour
 
     private void LateUpdate()
     {
+        CameraFrustum.Update(_camera);
+
         if (_mapBounds.size == Vector3.zero)
         {
             return;

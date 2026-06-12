@@ -26,6 +26,7 @@ public class Player : Actor<Mercenary, MercenaryDefinition>
     public DashController dash => _dash;
 
     public override float moveSpeed => _role.moveSpeed + _additionalMoveSpeed;
+
     private float _additionalMoveSpeed;
 
     // temp
@@ -42,6 +43,9 @@ public class Player : Actor<Mercenary, MercenaryDefinition>
         _element = new ElementController();
         _dash = new DashController();
         _inputSource = new PlayerInputSource();
+
+        var dashView = gameObject.AddComponent<ActorDashView>();
+        _view.AddView(dashView);
     }
 
     private void OnDestroy()
@@ -61,33 +65,45 @@ public class Player : Actor<Mercenary, MercenaryDefinition>
     public void InitDependencies(PlayerContext context)
     {
         _context = context;
-        _dash.InitDependencies(this, context.assetLoader);
+        _dash.InitDependencies(this);
     }
 
     public override void Init(Mercenary role)
     {
         base.Init(role);
 
+        _context.assetLoader.LoadMaterial("DashMat", mat =>
+        {
+            var dashView = _view.GetView<ActorDashView>();
+            dashView.SetMaterial(mat);
+        });
+
         // temp
         CreateSkill();
 
         _element.Init();
-        _dash.Init(_role.dashSpeed, _role.dashCount, _role.dashCooldown, _body.sprite);
-
-        Bind();
+        _dash.Init(_role.dashSpeed, _role.dashCount, _role.dashCooldown);
     }
 
     protected override void Die()
     {
-        _animator.SetBool("Dead", true);
+        _view.DeadAnimation();
 
         base.Die();
     }
 
-    private void Bind()
+    protected override void Bind()
     {
-        _body.OnTriggerEntered += OnBodyTriggerEnter;
+        base.Bind();
+
         _element.onLevelup += OnElementLevelUp;
+    }
+
+    protected override void Unbind()
+    {
+        base.Unbind();
+
+        _element.onLevelup -= OnElementLevelUp;
     }
 
     private void CreateSkill()
@@ -151,7 +167,7 @@ public class Player : Actor<Mercenary, MercenaryDefinition>
         _dash.TryDash();
     }
 
-    private void OnBodyTriggerEnter(Body other)
+    protected override void OnBodyTriggerEnter(Body other)
     {
         // Debug.Log("OnTriggerEnter player : " + other);
 
@@ -168,12 +184,16 @@ public class Player : Actor<Mercenary, MercenaryDefinition>
     {
         if (state == ActorState.Dash)
         {
-            _collider.enabled = false;
-            _dash.Dash(transform, _inputSource.LookDirection, () =>
+            var result = _dash.Dash(transform, _inputSource.LookDirection, () =>
             {
-                _collider.enabled = true;
+                _view.SetCollider(true);
                 _state.SetState(_inputSource.MoveDirection == Vector2.zero ? ActorState.Idle : ActorState.Move);
             });
+            if (result == true)
+            {
+                _view.SetCollider(false);
+                _view.GetView<ActorDashView>().PlayDashEffect(_inputSource.LookDirection, _role.dashSpeed);
+            }
         }
         else if (state == ActorState.Die)
         {

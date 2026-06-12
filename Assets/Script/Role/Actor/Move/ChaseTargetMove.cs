@@ -43,7 +43,8 @@ public class ChaseTargetMove : IMoveBehaviour
 
         _moveDirection = dir.normalized;
 
-        _actor.body.FlipX(_moveDirection.x);
+        //_actor.body.FlipX(_moveDirection.x);
+        _actor.SetFlip(_moveDirection);
     }
 
     private void Move()

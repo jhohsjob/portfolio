@@ -1,73 +1,38 @@
+using System;
 using UnityEngine;
 
 
 public class RenderCheck : MonoBehaviour
 {
-    [SerializeField]
-    private MeshRenderer _mesh;
-    [SerializeField]
-    private ParticleSystem[] _particle;
+    private Renderer _renderer;
+    private bool _isVisible;
 
-    private void Awake()
+    public event Action<bool> onVisibleChanged;
+
+    private void LateUpdate()
     {
-        _mesh = gameObject.GetComponent<MeshRenderer>();
-        _particle = gameObject.GetComponentsInChildren<ParticleSystem>();
+        bool visible = false;
+        if (_renderer != null)
+        {
+            visible = GeometryUtility.TestPlanesAABB(CameraFrustum.planes, _renderer.bounds);
+        }
+        SetVisible(visible);
     }
 
-    private void Update()
+    public void SetRenderer(Renderer renderer)
     {
-        Vector3 viewport = Camera.main.WorldToViewportPoint(transform.position);
-        if (viewport.x >= -0.05f && viewport.x <= 1.05 && viewport.y >= -0.05f && viewport.y <= 1.05f)
-        {
-            Visible();
-        }
-        else
-        {
-            Invisible();
-        }
+        _renderer = renderer;
     }
 
-    private void Visible()
+    private void SetVisible(bool visible)
     {
-        if (_mesh != null)
+        if (_isVisible == visible)
         {
-            if (_mesh.enabled == false)
-            {
-                _mesh.enabled = true;
-            }
+            return;
         }
-        if (_particle.Length > 0)
-        {
-            foreach (var particle in _particle)
-            {
-                var emission = particle.emission;
-                if (emission.enabled == false)
-                {
-                    emission.enabled = true;
-                }
-            }
-        }
-    }
 
-    private void Invisible()
-    {
-        if (_mesh != null)
-        {
-            if (_mesh.enabled == true)
-            {
-                _mesh.enabled = false;
-            }
-        }
-        if (_particle.Length > 0)
-        {
-            foreach (var particle in _particle)
-            {
-                var emission = particle.emission;
-                if (emission.enabled == true)
-                {
-                    emission.enabled = false;
-                }
-            }
-        }
+        _isVisible = visible;
+
+        onVisibleChanged?.Invoke(visible);
     }
 }

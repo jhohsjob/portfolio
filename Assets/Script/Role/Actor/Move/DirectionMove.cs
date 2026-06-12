@@ -1,4 +1,5 @@
 using System;
+using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 
 
@@ -19,7 +20,7 @@ public class DirectionMove : IMoveBehaviour
     {
         _actor = actor;
 
-        _extents = _actor.body.sprite.bounds.extents;
+        _extents = _actor.extents;
     }
 
     public void Setup(IInputSource input, Func<Bounds> getMapBounds)
@@ -34,7 +35,8 @@ public class DirectionMove : IMoveBehaviour
 
         if (moveDirection == Vector2.zero)
         {
-            _actor.animator.SetFloat("Speed", 0f);
+            // _actor.animator.SetFloat("Speed", 0f);
+            _actor.SetMoving(false);
             return;
         }
 
@@ -46,14 +48,15 @@ public class DirectionMove : IMoveBehaviour
 
         Flip(moveDirection);
 
-        _actor.animator.SetFloat("Speed", 1f);
+        // _actor.animator.SetFloat("Speed", 1f);
+        _actor.SetMoving(true);
     }
 
     private void Rotate(Vector2 dir)
     {
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-
-        _actor.point.rotation = Quaternion.Euler(0f, 0f, angle);
+        var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        var lookDirection = Quaternion.Euler(0f, 0f, angle);
+        _actor.SetLookDirection(lookDirection);
     }
 
     private void Move(Vector2 dir)
@@ -76,7 +79,7 @@ public class DirectionMove : IMoveBehaviour
     {
         if (dir.x != 0f)
         {
-            _actor.body.FlipX(dir.x);
+            _actor.SetFlip(dir);
         }
     }
 

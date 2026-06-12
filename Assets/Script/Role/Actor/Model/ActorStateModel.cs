@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-public class ActorStateController
+public class ActorStateModel
 {
     private ActorState _state = ActorState.None;
     public ActorState current => _state;
@@ -17,12 +17,7 @@ public class ActorStateController
         { ActorState.Die,    Array.Empty<ActorState>() },
     };
 
-    private Action<ActorState> _cbStateChanged;
-    public event Action<ActorState> cbStateChanged
-    {
-        add { _cbStateChanged -= value; _cbStateChanged += value; }
-        remove { _cbStateChanged -= value; }
-    }
+    public event Action<ActorState> onStateChanged;
 
     public void SetState(ActorState next)
     {
@@ -38,7 +33,7 @@ public class ActorStateController
 
         // _state |= next;
         _state = next;
-        _cbStateChanged?.Invoke(_state);
+        onStateChanged?.Invoke(_state);
     }
 
     private bool CanTransitionTo(ActorState next)
@@ -59,7 +54,7 @@ public class ActorStateController
     public void Clear()
     {
         _state = ActorState.None;
-        _cbStateChanged = null;
+        onStateChanged = null;
     }
 
     public bool HasState(ActorState state) => (_state & state) == state;
