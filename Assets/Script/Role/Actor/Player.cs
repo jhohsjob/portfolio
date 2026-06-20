@@ -158,7 +158,6 @@ public class Player : Actor<Mercenary, MercenaryDefinition>
         }
 
         _state.SetState(_inputSource.MoveDirection == Vector2.zero ? ActorState.Idle : ActorState.Move);
-        //Debug.Log(_state.current);
     }
 
     // PlayerInput Send Messages
@@ -169,14 +168,9 @@ public class Player : Actor<Mercenary, MercenaryDefinition>
 
     protected override void OnBodyTriggerEnter(Body other)
     {
-        // Debug.Log("OnTriggerEnter player : " + other);
-
-        if (other.TryGetComponent(out Body body))
+        if (other.actor is ICollectableDropItem collectableDropItem)
         {
-            if (body.actor is ICollectableDropItem collectableDropItem)
-            {
-                collectableDropItem.OnCollectedByPlayer(this);
-            }
+            collectableDropItem.OnCollectedByPlayer(this);
         }
     }
 

@@ -25,15 +25,10 @@ public class HPController
 {
     private float _roleMaxHP;
     private float _elementMaxHP;
-    public float maxHP => _roleMaxHP + _elementMaxHP;
-    public float currentHP { get; private set; }
+    private float maxHP => _roleMaxHP + _elementMaxHP;
+    private float currentHP { get; set; }
 
-    protected Action<ChangeHPData> _cbChange;
-    public event Action<ChangeHPData> cbChange
-    {
-        add { _cbChange -= value; _cbChange += value; }
-        remove { _cbChange -= value; }
-    }
+    public event Action<ChangeHPData> onChanged;
 
     public void Enter(float maxHP)
     {
@@ -52,6 +47,11 @@ public class HPController
         Adjust(amount);
     }
 
+    public ChangeHPData GetCurrentData()
+    {
+        return new ChangeHPData(maxHP, currentHP, 0f, currentHP);
+    }
+
     private void Adjust(float amount)
     {
         float beforeHP = currentHP;
@@ -60,12 +60,13 @@ public class HPController
 
         var changeData = new ChangeHPData(maxHP, beforeHP, amount, currentHP);
 
-        _cbChange?.Invoke(changeData);
+        onChanged?.Invoke(changeData);
     }
+
 
     public void Clear()
     {
-        _cbChange = null;
+        onChanged = null;
         _roleMaxHP = 0f;
         _elementMaxHP = 0f;
         currentHP = 0f;

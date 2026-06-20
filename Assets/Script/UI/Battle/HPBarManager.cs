@@ -2,24 +2,28 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class HPBarController : MonoBehaviour
+public class HPBarManager : MonoBehaviour
 {
     private IAssetLoader _assetLoader;
 
+    private Camera _mainCamera;
     [SerializeField]
     private Camera _uiCamera;
     [SerializeField]
     private Transform _poolContianer;
     [SerializeField]
     private Transform _activeContianer;
+    [SerializeField]
     private RectTransform _rt;
+    [SerializeField]
+    private int _expandCount = 10;
 
     private HPBar _original;
 
     private Queue<HPBar> _pool = new();
-    private Dictionary<int, HPBar> _activeList = new();
+    private Dictionary<ActorView, HPBar> _activeList = new();
 
-    private Queue<ActorBase> _waitList = new();
+    private Queue<ActorView> _waitList = new();
 
     private bool _isLoadEnd = false;
 
@@ -27,8 +31,6 @@ public class HPBarController : MonoBehaviour
     {
         _isLoadEnd = false;
         
-        _rt = GetComponent<RectTransform>();
-
         EventHelper.AddEventListener(EventName.HpBarConnection, OnHpBarConnection);
         EventHelper.AddEventListener(EventName.HpBarDisconnection, OnHpBarDisconnection);
     }
@@ -39,8 +41,27 @@ public class HPBarController : MonoBehaviour
         EventHelper.RemoveEventListener(EventName.HpBarDisconnection, OnHpBarDisconnection);
     }
 
-    public void InitDependencies(IAssetLoader assetLoader)
+    private void LateUpdate()
     {
+        foreach (var actor in _activeList.Keys)
+        {
+            if (_activeList.TryGetValue(actor, out var hpBar) == false)
+            {
+                continue;
+            }
+
+            var screenPos = _mainCamera.WorldToScreenPoint(actor.transform.position);
+            screenPos.z = 0f;
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(_rt, screenPos, _uiCamera, out var localPos);
+
+            _activeList[actor].FollowPosition(localPos);
+        }
+    }
+
+    public void InitDependencies(Camera mainCamera, IAssetLoader assetLoader)
+    {
+        _mainCamera = mainCamera;
         _assetLoader = assetLoader;
     }
 
@@ -50,7 +71,7 @@ public class HPBarController : MonoBehaviour
         {
             _original = prefab.GetComponent<HPBar>();
 
-            PoolGenerate();
+            ExpandPool();
 
             _isLoadEnd = true;
 
@@ -58,12 +79,12 @@ public class HPBarController : MonoBehaviour
         });
     }
 
-    private void PoolGenerate()
+    private void ExpandPool()
     {
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < _expandCount; i++)
         {
             var wait = Instantiate(_original, _poolContianer);
-            wait.Init(_uiCamera, _rt);
+            wait.transform.localPosition = Vector3.zero;
             _pool.Enqueue(wait);
         }
     }
@@ -72,45 +93,61 @@ public class HPBarController : MonoBehaviour
     {
         while (_waitList.Count > 0)
         {
-            Connect(_waitList.Dequeue());
+            var actor = _waitList.Dequeue();
+            if (actor == null)
+            {
+                continue;
+            }
+
+            Connect(actor);
         }
     }
 
-    private void Connect(ActorBase actor)
+    private void Connect(ActorView actor)
     {
+        if (_activeList.ContainsKey(actor))
+        {
+            return;
+        }
+
         if (_pool.Count == 0)
         {
-            PoolGenerate();
+            ExpandPool();
         }
 
         var hpBar = _pool.Dequeue();
-        hpBar.transform.SetParent(_activeContianer, false);
-        hpBar.SetTarget(actor);
 
-        _activeList[actor.ID] = hpBar;
+        hpBar.transform.SetParent(_activeContianer);
+        hpBar.gameObject.SetActive(true);
+
+        actor.SetHpBar(hpBar);
+
+        _activeList[actor] = hpBar;
     }
 
-    private void Disconnect(ActorBase actor)
+    private void Disconnect(ActorView actor)
     {
-        if (_activeList.TryGetValue(actor.ID, out var hpBar) == false)
+        if (_activeList.TryGetValue(actor, out var hpBar) == false)
         {
             return;
         }
 
         hpBar.transform.SetParent(_poolContianer, false);
-        hpBar.ResetTarget();
+        hpBar.transform.localPosition = Vector3.zero;
+        hpBar.gameObject.SetActive(false);
 
-        _activeList.Remove(actor.ID);
+        _activeList.Remove(actor);
+
         _pool.Enqueue(hpBar);
     }
 
     private void OnHpBarConnection(object sender, object data)
     {
-        if (sender is not ActorBase actor)
+        if (sender is not ActorView actor)
         {
             return;
         }
-
+        
         if (_isLoadEnd == false)
         {
             _waitList.Enqueue(actor);
@@ -122,7 +159,7 @@ public class HPBarController : MonoBehaviour
 
     private void OnHpBarDisconnection(object sender, object data)
     {
-        if (sender is ActorBase actor)
+        if (sender is ActorView actor)
         {
             Disconnect(actor);
         }

@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class ActorView : MonoBehaviour
 {
+    public int id { get; private set; }
+    private bool useHp;
+
     private Transform _point;
     private Transform _muzzle;
 
@@ -14,6 +17,7 @@ public class ActorView : MonoBehaviour
     private Animator _animator;
     private FlashShader _flashShader;
     private Collider2D _collider;
+    private HPBar _hpBar;
 
     private bool _isVisible;
 
@@ -21,6 +25,7 @@ public class ActorView : MonoBehaviour
     public Vector3 muzzlePos => _point != null ? _muzzle.position : Vector3.zero;
     public Vector3 muzzleDir => _point != null ? _point.right : Vector3.zero;
     public Action<Body> onBodyTriggerEnter;
+    public event Action<bool> onVisibleChanged;
 
     private readonly Dictionary<Type, ActorSubView> _views = new();
 
@@ -35,6 +40,8 @@ public class ActorView : MonoBehaviour
 
     public void Initialize(ActorBase actor, RoleBase role)
     {
+        id = role.id;
+
         var body = Instantiate(role.original, transform);
         body.transform.localScale = Vector3.one / 2f;
         body.transform.localPosition = role.resourceOffset;
@@ -57,6 +64,8 @@ public class ActorView : MonoBehaviour
         _isVisible = false;
         EnableAnimation(false);
         SetCollider(false);
+
+        useHp = role.maxHP > 0f;
     }
 
     public void Bind()
@@ -155,6 +164,34 @@ public class ActorView : MonoBehaviour
         _animator.SetFloat("Speed", isMoving == true ? 1f : 0f);
     }
 
+    private void EnableHpBar(bool isEnable)
+    {
+        if (useHp == false)
+        {
+            return;
+        }
+
+        if (isEnable == true)
+        {
+            EventHelper.Send(EventName.HpBarConnection, this);
+        }
+        else
+        {
+            _hpBar = null;
+            EventHelper.Send(EventName.HpBarDisconnection, this);
+        }
+    }
+
+    public void SetHpBar(HPBar hpBar)
+    {
+        _hpBar = hpBar;
+    }
+
+    public void SetHp(ChangeHPData data)
+    {
+        _hpBar?.SetHp(data);
+    }
+
     private void OnBodyTriggerEnter(Body other)
     {
         onBodyTriggerEnter?.Invoke(other);
@@ -166,6 +203,9 @@ public class ActorView : MonoBehaviour
 
         _body.SetVisible(isVisible);
         EnableAnimation(isVisible);
+        EnableHpBar(isVisible);
+
+        onVisibleChanged?.Invoke(isVisible);
     }
 
     public T AddView<T>() where T : ActorSubView

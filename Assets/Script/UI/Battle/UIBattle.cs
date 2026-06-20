@@ -24,7 +24,7 @@ public class UIBattle : MonoBehaviour
     private TextMeshProUGUI _txtDirection;
 
     [SerializeField]
-    private HPBarController _hpBarController;
+    private HPBarManager _hpBarManager;
 
     [SerializeField]
     private UIJoystick _uiJoystick;
@@ -38,7 +38,7 @@ public class UIBattle : MonoBehaviour
     public UIBattleTop TopView => _uitop;
     public UIJoystick JoystickView => _uiJoystick;
     public UIDash DashView => _uiDash;
-    public HPBarController hpBarController => _hpBarController;
+    public HPBarManager hpBarManager => _hpBarManager;
 
     public event Action onClickLobby;
 

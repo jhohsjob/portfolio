@@ -19,7 +19,7 @@ public abstract class Role<TData> : RoleBase where TData : RoleDefinition
     public override Vector3 resourceOffset => _data.resourceOffset;
 
     public int atk => 0;
-    public float maxHP => _data.maxHP;
+    public override float maxHP => _data.maxHP;
     public float moveSpeed => _data.moveSpeed;
 
     public override GameObject original => _data.body;

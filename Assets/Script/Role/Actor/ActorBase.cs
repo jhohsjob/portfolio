@@ -8,7 +8,6 @@ public abstract class ActorBase : MonoBehaviour
     public abstract int roleId { get; }
     public Team team { get; protected set; }
 
-    public abstract HPController hp { get; }
     public abstract float moveSpeed { get; }
     public abstract Vector3 dir { get; set; }
     public abstract float distance { get; }
@@ -25,8 +24,4 @@ public abstract class ActorBase : MonoBehaviour
     public abstract void SetMoving(bool isMoving);
     public abstract void SetLookDirection(Quaternion lookDirection);
     public abstract void SetFlip(Vector2 dir);
-    // todo : delete
-    //public virtual Transform point { get; }
-    //public virtual Body body { get; }
-    //public virtual Animator animator { get; }
 }

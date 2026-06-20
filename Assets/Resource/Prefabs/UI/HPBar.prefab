@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 7465315931103844781}
   - component: {fileID: 3914833847110178012}
   - component: {fileID: 6704558612301682100}
-  - component: {fileID: 757290525791224128}
   m_Layer: 5
   m_Name: debug
   m_TagString: Untagged
@@ -154,20 +153,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 2
---- !u!114 &757290525791224128
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 433925474250924765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2688e53405446a146a30183a364324b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _hp: {fileID: 0}
-  _debug: {fileID: 0}
 --- !u!1 &848576898366286241
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,7 +240,7 @@ GameObject:
   - component: {fileID: 5705347647519936669}
   - component: {fileID: 1728666781103779424}
   - component: {fileID: 2068456264651669834}
-  - component: {fileID: 6946244159437094889}
+  - component: {fileID: 7091996405581054546}
   m_Layer: 5
   m_Name: HPBar
   m_TagString: Untagged
@@ -323,7 +308,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 3
---- !u!114 &6946244159437094889
+--- !u!114 &7091996405581054546
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -332,8 +317,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 2776325988501915856}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2688e53405446a146a30183a364324b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 8853bb4f9edc5ab4a9abf5a973a19239, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::HPBar
   _hp: {fileID: 3944707494271118165}
   _debug: {fileID: 3914833847110178012}

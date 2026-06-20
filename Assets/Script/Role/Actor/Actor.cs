@@ -17,7 +17,6 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
     public override ActorStateModel state => _state;
 
     protected HPController _hp;
-    public override HPController hp => _hp;
     protected ActorView _view;
     public override Vector2 extents => _view != null ? _view.extents : Vector2.zero;
     public override Vector3 muzzlePos => _view != null ? _view.muzzlePos : Vector3.zero;
@@ -68,8 +67,8 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
         if (_role.maxHP > 0f)
         {
             _hp.Enter(_role.maxHP);
-            _hp.cbChange += OnChangeHP;
-            EventHelper.Send(EventName.HpBarConnection, this);
+            _hp.onChanged += OnHpChanged;
+            // EventHelper.Send(EventName.HpBarConnection, this);
         }
 
         _view.Enter(sortingOrder);
@@ -90,14 +89,6 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
 
         _moveBehaviour = MoveBehaviourFactory.Create(_role.data.moveType);
         _moveBehaviour?.Init(this);
-    }
-
-    protected virtual void DieAfter()
-    {
-        if (_hp.maxHP > 0)
-        {
-            EventHelper.Send(EventName.HpBarDisconnection, this);
-        }
     }
 
     protected virtual void Die()
@@ -122,11 +113,13 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
     {
         _view.Bind();
         _view.onBodyTriggerEnter += OnBodyTriggerEnter;
+        _view.onVisibleChanged += OnVisibleChanged;
     }
 
     protected virtual void Unbind()
     {
         _view.onBodyTriggerEnter -= OnBodyTriggerEnter;
+        _view.onVisibleChanged -= OnVisibleChanged;
         _view.Unbind();
     }
 
@@ -158,8 +151,9 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
         _view.SetFlip(dir);
     }
 
-    public virtual void OnChangeHP(ChangeHPData data)
+    public virtual void OnHpChanged(ChangeHPData data)
     {
+        _view.SetHp(data);
         if (data.remainHP == 0)
         {
             _state.SetState(ActorState.Die);
@@ -175,4 +169,13 @@ public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> 
     }
 
     protected virtual void OnBodyTriggerEnter(Body other) { }
+
+    private void OnVisibleChanged(bool isVisible)
+    {
+        if (isVisible == true)
+        {
+            var data = _hp.GetCurrentData();
+            _view.SetHp(data);
+        }
+    }
 }

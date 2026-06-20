@@ -12,6 +12,7 @@ public class UIBattleContext
     public DashController dashController;
     public Action onDashAction;
     public Action<Vector2> onJoystickAction;
+    public Camera mainCamera;
 }
 
 public class UIBattlePresenter : IDisposable
@@ -21,7 +22,7 @@ public class UIBattlePresenter : IDisposable
 
     private UIBattleTopPresenter _topPresenter;
     private UIDashPresenter _dashPresenter;
-    private HPBarController _hpBarController;
+    private HPBarManager _hpBarManager;
 
     public UIBattlePresenter(UIBattle view, UIBattleContext context)
     {
@@ -38,8 +39,8 @@ public class UIBattlePresenter : IDisposable
 
         _dashPresenter = new UIDashPresenter(_view.DashView, context.dashController, context.onDashAction);
 
-        _hpBarController = view.hpBarController;
-        _hpBarController.InitDependencies(context.assetLoader);
+        _hpBarManager = view.hpBarManager;
+        _hpBarManager.InitDependencies(context.mainCamera, context.assetLoader);
 
         Bind();
     }
@@ -58,7 +59,7 @@ public class UIBattlePresenter : IDisposable
     {
         _topPresenter.Initialize();
         _dashPresenter.Initialize();
-        _hpBarController.Initialize();
+        _hpBarManager.Initialize();
     }
 
     public void Dispose()

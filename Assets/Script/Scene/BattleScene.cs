@@ -83,7 +83,8 @@ public class BattleScene : MonoBehaviour
             battleReward = _battleManager.battleReward,
             dashController = _player.dash,
             onDashAction = _player.HandleDashAction,
-            onJoystickAction = _player.HandleJoystickAction
+            onJoystickAction = _player.HandleJoystickAction,
+            mainCamera = _playerCamera.mainCamera
         });
         _uiBattlePresenter.Initialize();
     }

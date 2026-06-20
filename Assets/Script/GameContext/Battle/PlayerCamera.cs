@@ -16,6 +16,7 @@ public class PlayerCamera : MonoBehaviour
     private float _zoomOutTimer = 0f;
     private float _zoomOutSpeed = 1f;
 
+    public Camera mainCamera => _camera;
     private Func<Bounds> _getMapBounds;
     private Bounds _mapBounds => _getMapBounds?.Invoke() ?? new Bounds();
 

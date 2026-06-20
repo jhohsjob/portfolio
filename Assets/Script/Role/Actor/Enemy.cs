@@ -26,13 +26,6 @@ public class Enemy : Actor<Monster, MonsterDefinition>
         base.Update();
     }
 
-    //public override void Init(Monster role)
-    //{
-    //    base.Init(role);
-
-    //    Bind();
-    //}
-
     public override void Enter(int id, int sortingOrder, Action<ActorBase> onDied)
     {
         base.Enter(id, sortingOrder, onDied);
@@ -42,8 +35,6 @@ public class Enemy : Actor<Monster, MonsterDefinition>
 
     protected override void Die()
     {
-        DieAfter();
-
         _diePos = transform.localPosition;
 
         base.Die();
@@ -51,13 +42,10 @@ public class Enemy : Actor<Monster, MonsterDefinition>
 
     protected override void OnBodyTriggerEnter(Body other)
     {
-        if (other.TryGetComponent(out Body body))
+        if (other.actor is Player actor && actor.state.current != ActorState.Die)
         {
-            if (body.actor is Player actor && actor.state.current != ActorState.Die)
-            {
-                actor.BeHit(_damage);
-                ResetCollider();
-            }
+            actor.BeHit(_damage);
+            ResetCollider();
         }
     }
 }

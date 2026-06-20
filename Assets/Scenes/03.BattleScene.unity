@@ -165,7 +165,7 @@ GameObject:
   - component: {fileID: 48342859}
   - component: {fileID: 48342860}
   m_Layer: 5
-  m_Name: HPBarController
+  m_Name: HPBarManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -201,12 +201,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 48342858}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb990035f442dab4e8bddf11cff35934, type: 3}
+  m_Script: {fileID: 11500000, guid: 0c110633bf10f194094f776011c34633, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::HPBarManager
   _uiCamera: {fileID: 420921821}
   _poolContianer: {fileID: 1536745987}
   _activeContianer: {fileID: 8229230}
+  _rt: {fileID: 8229230}
+  _expandCount: 10
 --- !u!1 &73016012
 GameObject:
   m_ObjectHideFlags: 0
@@ -2235,7 +2237,7 @@ MonoBehaviour:
   _panelBattleMain: {fileID: 1827822309}
   _panelBattleEnd: {fileID: 1144700549}
   _txtDirection: {fileID: 952660165}
-  _hpBarController: {fileID: 48342860}
+  _hpBarManager: {fileID: 48342860}
   _uiJoystick: {fileID: 636395414}
   _uiDash: {fileID: 1868123617}
   _btnLobby: {fileID: 1616140842}
@@ -2435,9 +2437,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 48342859}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -1000, y: -1000}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1552867969

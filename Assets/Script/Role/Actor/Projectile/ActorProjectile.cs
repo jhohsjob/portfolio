@@ -19,19 +19,14 @@ public class ActorProjectile : Actor<Projectile, ProjectileDefinition>
 
     protected override void OnBodyTriggerEnter(Body other)
     {
-        if (other.TryGetComponent(out Body body))
+        var actor = other.actor;
+        if (actor.team != team && actor.team != Team.None)
         {
-            if (body.actor is ActorBase actor)
+            if (_role.beHitDie == true)
             {
-                if (actor.team != team && actor.team != Team.None)
-                {
-                    if (_role.beHitDie == true)
-                    {
-                        _state.SetState(ActorState.Die);
-                    }
-                    actor.BeHit(_role.power);
-                }
+                _state.SetState(ActorState.Die);
             }
+            actor.BeHit(_role.power);
         }
     }
 }
