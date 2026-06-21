@@ -63,6 +63,19 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
     protected ScrollOptions _options;
     public ScrollOptions options => _options;
 
+    private void OnEnable()
+    {
+        if (_initializeEnd == false)
+        {
+            return;
+        }
+
+        _scrollRect.onValueChanged.AddListener(_ =>
+        {
+            UpdateItems();
+        });
+    }
+
     private void OnDisable()
     {
         _scrollRect.onValueChanged.RemoveAllListeners();
