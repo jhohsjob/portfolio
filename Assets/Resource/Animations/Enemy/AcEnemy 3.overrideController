@@ -7,11 +7,11 @@ AnimatorOverrideController:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: AcEnemy 3
-  m_Controller: {fileID: 9100000, guid: f2855d618fc8d9c499189d3f39b9cbbc, type: 2}
+  m_Controller: {fileID: 9100000, guid: 335c8d8e342dfdf42bbd486f6854c9dc, type: 2}
   m_Clips:
-  - m_OriginalClip: {fileID: 7400000, guid: 59d07ac3ded26ef4190eb2f038ef5d2c, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: 4763a7742cfcd484e818645aa1a2ba2e, type: 2}
-  - m_OriginalClip: {fileID: 7400000, guid: 73e523c9f83f7514592d0f96d2c26d67, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: 5a98b614fb5327b429bd16f5a70bcb19, type: 2}
-  - m_OriginalClip: {fileID: 7400000, guid: 41eb84b5ea0c13b4384ead9f37ce4b8d, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: b4a0a79e089002248b6884ec0140d6d9, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: a245f32f52d91bd40be08e02bb8b051e, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 3c10adfe597e42c4a8126eb2d0996475, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 84c2050950d05634cba57a0139abd14c, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: fa7642c33645e404dbc52df4e87802fb, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 7aed3f8dcfec56348ab41cc5e18f3cc6, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 604390b7f17f9514cb242af3b0edb1fe, type: 2}
