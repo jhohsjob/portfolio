@@ -19,18 +19,16 @@ public class Player : Actor<Mercenary, MercenaryDefinition>
     private ElementController _element;
     public ElementController element => _element;
 
-    private IInputSource _inputSource;
-    public IInputSource inputSource => _inputSource;
-
     private DashController _dash;
     public DashController dash => _dash;
+    private SkillController _skill;
+
+    private IInputSource _inputSource;
+    public IInputSource inputSource => _inputSource;
 
     public override float moveSpeed => _role.moveSpeed + _additionalMoveSpeed;
 
     private float _additionalMoveSpeed;
-
-    // temp
-    private List<SkillData> _tempSkillDatas = new();
 
     public event Action<int> onGoldCollected;
 
@@ -42,6 +40,7 @@ public class Player : Actor<Mercenary, MercenaryDefinition>
 
         _element = new ElementController();
         _dash = new DashController();
+        _skill = new SkillController();
         _inputSource = new PlayerInputSource();
 
         var dashView = gameObject.AddComponent<ActorDashView>();
@@ -78,7 +77,6 @@ public class Player : Actor<Mercenary, MercenaryDefinition>
             dashView.SetMaterial(mat);
         });
 
-        // temp
         CreateSkill();
 
         _element.Init();
@@ -108,20 +106,24 @@ public class Player : Actor<Mercenary, MercenaryDefinition>
 
     private void CreateSkill()
     {
-        _tempSkillDatas.Add(role.skillData);
+        List<Skill> skills = new();
 
-        foreach (var tempSkillData in _tempSkillDatas)
+        foreach (var skillDefinition in role.skillTreeData.skillDefinitions)
         {
-            var skill = (new GameObject(tempSkillData.skillName)).AddComponent(tempSkillData.behaviourType) as Skill;
+            var skill = (new GameObject(skillDefinition.skillName)).AddComponent(skillDefinition.behaviourType) as Skill;
             skill.transform.SetParent(transform, false);
-            skill.Init(this, tempSkillData, new SkillContext
+            skill.Init(this, skillDefinition, new SkillContext
             {
                 battleState = _context.battleState,
                 actorSpawner = _context.actorSpawner,
                 GetProjectile = id => ProjectileManager.instance.GetProjectileById(id),
                 GetNearestEnemy = _context.GetNearestEnemy
             });
+
+            skills.Add(skill);
         }
+
+        _skill.Init(skills);
     }
 
     public void AddGold(int gold)
@@ -223,6 +225,6 @@ public class Player : Actor<Mercenary, MercenaryDefinition>
 
     private void HandleFireLevelUp()
     {
-        // todo : skill update
+        _skill.OnElementLevelUp();
     }
 }

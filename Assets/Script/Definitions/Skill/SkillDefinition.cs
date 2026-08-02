@@ -5,23 +5,22 @@ using System;
 using UnityEngine;
 
 
-public class RoleDefinition : ScriptableObject
+[CreateAssetMenu(menuName = "GameDefinition/SkillDefinition")]
+public class SkillDefinition : ScriptableObject
 {
-    public RoleType roleType;
     public int id;
+    public string skillName;
 #if UNITY_EDITOR
     public MonoScript behaviourScript;
 #endif
     [HideInInspector]
     public string behaviourTypeName;
 
-    public GameObject body;
-    public Vector3 resourceOffset = Vector3.zero;
+    public ProjectileDefinition[] projectileData;
 
-    public float maxHP;
-    public float moveSpeed;
-
-    public ActorMoveType moveType;
+    public int shotCount;
+    public float shotDelay;
+    public float reloadTime;
 
     private Type _cachedBehaviourType;
 
@@ -73,9 +72,4 @@ public class RoleDefinition : ScriptableObject
         _cachedBehaviourType = null;
     }
 #endif
-
-    private string LocalKey(string prefix) => $"{prefix}_{id}";
-
-    public string GetNameKey() => LocalKey("name");
-    public string GetDescKey() => LocalKey("desc");
 }

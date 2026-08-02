@@ -57,12 +57,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 83ba86fa44d40c24390d6081fff584c9
-    m_Address: SkillTable
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Preload
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8d06add70b661a046a3e9bb7e9ce90b6
     m_Address: MapInfo03
     m_ReadOnly: 0

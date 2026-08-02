@@ -7,6 +7,6 @@ using UnityEngine;
 public class SkillTable : ScriptableObject
 {
     [SerializeField]
-    private SerializableDictionary<int, SkillData> _table;
-    public Dictionary<int, SkillData> table => _table.Dictionary;
+    private SerializableDictionary<int, SkillDefinition> _table;
+    public Dictionary<int, SkillDefinition> table => _table.Dictionary;
 }

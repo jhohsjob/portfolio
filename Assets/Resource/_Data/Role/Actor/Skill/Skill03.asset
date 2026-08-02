@@ -15,9 +15,10 @@ MonoBehaviour:
   id: 501003
   skillName: Skill03
   behaviourScript: {fileID: 11500000, guid: 16304727df6e35a4da8919a5d58b7d59, type: 3}
-  behaviourTypeName: 
+  behaviourTypeName: Skill01, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
   projectileData:
   - {fileID: 11400000, guid: 8d76f622c74fae941948778c42dddc13, type: 2}
-  shotCount: 1
+  shotCount: 2
   shotDelay: 0
   reloadTime: 0.5

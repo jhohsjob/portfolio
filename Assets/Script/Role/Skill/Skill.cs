@@ -27,22 +27,32 @@ public class Skill : MonoBehaviour
 
     protected float _shotTimer = 0f;
 
+    [SerializeField, ReadOnly]
+    protected bool _isUsed = false;
+
     public virtual void Update()
     {
-        if (_context.battleState.IsRunning() == true)
+        if (_isUsed == false)
         {
-            _shotTimer += Time.deltaTime;
+            return;
+        }
 
-            if (_shotTimer >= _reloadTime)
-            {
-                _shotTimer = 0f;
+        if (_context.battleState.IsRunning() == false)
+        {
+            return;
+        }
 
-                Shot();
-            }
+        _shotTimer += Time.deltaTime;
+
+        if (_shotTimer >= _reloadTime)
+        {
+            _shotTimer = 0f;
+
+            Shot();
         }
     }
 
-    public virtual void Init(ActorBase actor, SkillData data, SkillContext context)
+    public virtual void Init(ActorBase actor, SkillDefinition data, SkillContext context)
     {
         _actor = actor;
         _context = context;
@@ -62,6 +72,14 @@ public class Skill : MonoBehaviour
             var role = ProjectileManager.instance.GetProjectileById(item.id);
             _context.actorSpawner.InitPool(role);
         }
+
+        _isUsed = false;
+    }
+
+    public void SetUsed(bool isUsed)
+    {
+        _isUsed = isUsed;
+        _shotTimer = 0f;
     }
 
     protected void Shot()

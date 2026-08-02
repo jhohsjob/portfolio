@@ -7,7 +7,7 @@ public class ElementController
 {
     private Dictionary<ElementType, int> _elements = new();
     private Dictionary<ElementType, int> _elementLevels = new();
-    private readonly int _levelupThreshold = 10;
+    private readonly int _levelupThreshold = 5;
 
     public Action<ElementType> onLevelup;
 

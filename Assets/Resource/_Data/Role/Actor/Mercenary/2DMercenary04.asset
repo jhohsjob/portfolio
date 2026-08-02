@@ -14,17 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roleType: 4000
   id: 101004
-  roleName: Mercenary04
-  roleDescription: Mercenary04
   behaviourScript: {fileID: 0}
   behaviourTypeName: 
-  resourcePath: 
   body: {fileID: 8193831111808689357, guid: e7f0a7c40ca14004eb0fa5cf97fe9f37, type: 3}
   resourceOffset: {x: 0, y: 0, z: 0}
   maxHP: 10
   moveSpeed: 3
   moveType: 6
-  skillData: {fileID: 11400000, guid: 1d0e4b0320e8ccf4fb9a960c866e8936, type: 2}
+  skillTreeDefinition: {fileID: 11400000, guid: e60296cf38c2ed849a62f9f2e9b1e747,
+    type: 2}
   dashCount: 2
   dashCooldown: 6
   icon: {fileID: 938132271, guid: 57a1443e67528144aa07582927559650, type: 3}
