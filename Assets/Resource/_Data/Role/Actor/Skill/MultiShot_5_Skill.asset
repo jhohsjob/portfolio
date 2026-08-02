@@ -10,16 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b970d6b62c0a00b49bbf2d4036e75cbe, type: 3}
-  m_Name: Skill01
-  m_EditorClassIdentifier: 
-  id: 501001
-  skillName: Skill01
-  behaviourScript: {fileID: 11500000, guid: 16304727df6e35a4da8919a5d58b7d59, type: 3}
-  behaviourTypeName: Skill01, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  m_Name: MultiShot_5_Skill
+  m_EditorClassIdentifier: Assembly-CSharp::SkillDefinition
+  id: 502001
+  skillName: MultiShot_1
+  behaviourScript: {fileID: 11500000, guid: 9266dd82d5bb5c34286ce83963a1ca04, type: 3}
+  behaviourTypeName: MultiShotSkill, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
     PublicKeyToken=null
   projectileData:
   - {fileID: 11400000, guid: efdb4700292203a488e3fc9dfe192774, type: 2}
   fireCount: 1
-  multiShotCount: 0
+  multiShotCount: 5
+  spreadAngle: 20
   shotDelay: 0
   reloadTime: 0.5

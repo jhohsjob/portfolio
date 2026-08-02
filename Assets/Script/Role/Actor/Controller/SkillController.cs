@@ -31,6 +31,8 @@ public class SkillController
         }
 
         _skillLevel = level;
+
+        UseSkill();
     }
 
     public void UseSkill()
@@ -54,6 +56,5 @@ public class SkillController
     public void OnElementLevelUp()
     {
         SetSkillLevel(_skillLevel + 1);
-        UseSkill();
     }
 }

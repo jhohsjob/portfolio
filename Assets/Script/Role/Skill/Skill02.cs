@@ -11,11 +11,11 @@ public class Skill02 : Skill
     {
         base.Init(actor, data, context);
 
-        _slot = new ActorProjectile[_shotCount];
+        _slot = new ActorProjectile[_fireCount];
 
-        _slotAngles = new float[_shotCount];
-        float angleStep = Mathf.PI * 2f / _shotCount;
-        for (int i = 0; i < _shotCount; i++)
+        _slotAngles = new float[_fireCount];
+        float angleStep = Mathf.PI * 2f / _fireCount;
+        for (int i = 0; i < _fireCount; i++)
         {
             _slotAngles[i] = angleStep * i;
         }

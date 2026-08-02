@@ -8,12 +8,12 @@ public class ActorProjectile : Actor<Projectile, ProjectileDefinition>
     public override Vector3 dir { get { return _dir; } set { _dir = value; } }
     public override float distance => _role.distance;
 
-    public void Shot(ActorBase owner)
+    public void Shot(ActorBase owner, Vector3? direction = null)
     {
         _owner = owner;
         team = owner.team;
-        _dir = owner.muzzleDir;
-        
+        _dir = direction ?? owner.muzzleDir;
+
         _state.SetState(ActorState.Move);
     }
 

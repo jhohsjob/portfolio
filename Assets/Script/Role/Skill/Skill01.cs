@@ -6,7 +6,7 @@ public class Skill01 : Skill
 {
     protected override IEnumerator coShot()
     {
-        for (int i = 0; i < _shotCount; i++)
+        for (int i = 0; i < _fireCount; i++)
         {
             var role = _context.GetProjectile(_projectileData[0].id);
             var position = _actor.muzzlePos;

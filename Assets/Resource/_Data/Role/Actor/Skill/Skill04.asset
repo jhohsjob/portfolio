@@ -20,6 +20,7 @@ MonoBehaviour:
   projectileData:
   - {fileID: 11400000, guid: 746a08e4afd79ce48b1c1c199ffb5b8a, type: 2}
   - {fileID: 11400000, guid: 7e96f119b7cfb5549a55a8bdefceed85, type: 2}
-  shotCount: 1
+  fireCount: 1
+  multiShotCount: 1
   shotDelay: 0
   reloadTime: 3

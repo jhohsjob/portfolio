@@ -18,7 +18,12 @@ public class SkillDefinition : ScriptableObject
 
     public ProjectileDefinition[] projectileData;
 
-    public int shotCount;
+    [Header("연사 횟수")]
+    public int fireCount = 1;
+    [Header("1회 발사 개수")]
+    public int multiShotCount = 1;
+    [Header("발사 각도")]
+    public int spreadAngle = 0;
     public float shotDelay;
     public float reloadTime;
 

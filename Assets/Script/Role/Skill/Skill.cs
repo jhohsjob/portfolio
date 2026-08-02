@@ -20,7 +20,8 @@ public class Skill : MonoBehaviour
     public int ID { get; private set; }
     public string NAME { get; private set; }
 
-    protected int _shotCount { get; private set; }
+    protected int _fireCount { get; private set; }
+    protected int _multiShotCount { get; private set; }
     protected float _shotDelay { get; private set; }
     protected float _reloadTime { get; private set; }
     protected ProjectileDefinition[] _projectileData { get; private set; }
@@ -62,7 +63,8 @@ public class Skill : MonoBehaviour
 
         ID = data.id;
         NAME = data.name;
-        _shotCount = data.shotCount;
+        _fireCount = data.fireCount;
+        _multiShotCount = data.multiShotCount;
         _shotDelay = data.shotDelay;
         _reloadTime = data.reloadTime;
         _projectileData = data.projectileData;
@@ -89,7 +91,7 @@ public class Skill : MonoBehaviour
 
     protected virtual IEnumerator coShot()
     {
-        for (int i = 0; i < _shotCount; i++)
+        for (int i = 0; i < _fireCount; i++)
         {
             var role = _context.GetProjectile(_projectileData[0].id);
             var position = _actor.muzzlePos;
