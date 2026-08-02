@@ -85,7 +85,6 @@ public class ActorView : MonoBehaviour
         _body.Enter(order);
 
         SetCollider(true);
-        // EnableAnimation(true);
     }
 
     public void Die()
@@ -93,7 +92,6 @@ public class ActorView : MonoBehaviour
         _body.Die();
 
         SetCollider(false);
-        EnableAnimation(false);
     }
 
     public void PlayFlash()
