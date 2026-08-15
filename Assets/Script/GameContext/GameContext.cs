@@ -42,8 +42,8 @@ public class GameContext
 
         PopupService = new PopupService(new PopupServiceDependencies
         {
-            AssetLoader = AssetService,
-            Storage = Storage
+            assetLoader = AssetService,
+            storage = Storage
         });
         SceneService = new SceneService(new SceneServiceContext
         {

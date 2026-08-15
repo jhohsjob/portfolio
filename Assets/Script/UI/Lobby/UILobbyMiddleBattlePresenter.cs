@@ -16,10 +16,10 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
 
     protected override void Bind()
     {
-        _view.onStageClick += OnStageClick;
+        _view.onClikcStageItem += OnClickStageItem;
 
         _view.onGetStageCount = () => _stages.Count;
-        _view.onGetStageItemData = GetStageItemData;
+        _view.onGetStageData = GetStageData;
 
         _view.onGetMercenaryCount = () => _mercenaries.Count;
         _view.onGetMercenaryData = (index) => _mercenaries[index];
@@ -42,15 +42,15 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
     
     protected override void Unbind()
     {
-        _view.onStageClick -= OnStageClick;
+        _view.onClikcStageItem -= OnClickStageItem;
 
         _view.onGetStageCount = null;
-        _view.onGetStageItemData = null;
+        _view.onGetStageData = null;
         _view.onGetMercenaryCount = null;
         _view.onGetMercenaryData = null;
     }
 
-    private UIBattleStageScrollItemData GetStageItemData(int index)
+    private UIBattleStageScrollItemData GetStageData(int index)
     {
         if (index < 0 || index >= _stages.Count)
         {
@@ -64,7 +64,7 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
         };
     }
 
-    private void OnStageClick(Stage stage)
+    private void OnClickStageItem(Stage stage)
     {
         int mercenaryIndex = _view.GetCenteredMercenaryIndex();
         if (mercenaryIndex < 0 || mercenaryIndex >= _mercenaries.Count)

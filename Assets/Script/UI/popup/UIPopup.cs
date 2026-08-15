@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class UIPopup : MonoBehaviour
 {
     protected IPopupService _popupService;
+    protected IAssetLoader _assetLoader;
 
     [SerializeField]
     protected Button _btnClose;
@@ -52,8 +53,9 @@ public class UIPopup : MonoBehaviour
         _popupService.ClosePopup(this);
     }
 
-    public void InitDependencies(IPopupService popupService)
+    public void InitDependencies(IPopupService popupService, IAssetLoader assetLoader)
     {
         _popupService = popupService;
+        _assetLoader = assetLoader;
     }
 }

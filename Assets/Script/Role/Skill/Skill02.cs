@@ -7,7 +7,7 @@ public class Skill02 : Skill
     private ActorProjectile[] _slot;
     private float[] _slotAngles;
 
-    public override void Init(ActorBase actor, SkillDefinition data, SkillContext context)
+    public override void Init(ActorBase actor, SkillData data, SkillContext context)
     {
         base.Init(actor, data, context);
 

@@ -9,7 +9,6 @@ using UnityEngine;
 public class SkillDefinition : ScriptableObject
 {
     public int id;
-    public string skillName;
 #if UNITY_EDITOR
     public MonoScript behaviourScript;
 #endif
@@ -23,9 +22,11 @@ public class SkillDefinition : ScriptableObject
     [Header("1회 발사 개수")]
     public int multiShotCount = 1;
     [Header("발사 각도")]
-    public int spreadAngle = 0;
+    public float spreadAngle = 0f;
     public float shotDelay;
     public float reloadTime;
+
+    public Sprite icon;
 
     private Type _cachedBehaviourType;
 
@@ -77,4 +78,9 @@ public class SkillDefinition : ScriptableObject
         _cachedBehaviourType = null;
     }
 #endif
+
+    private string LocalKey(string prefix) => $"{prefix}_{id}";
+
+    public string GetNameKey() => LocalKey("name");
+    public string GetDescKey() => LocalKey("desc");
 }

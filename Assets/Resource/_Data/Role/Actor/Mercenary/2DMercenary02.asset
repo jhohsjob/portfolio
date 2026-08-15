@@ -21,7 +21,7 @@ MonoBehaviour:
   maxHP: 10
   moveSpeed: 3
   moveType: 6
-  skillTreeDefinition: {fileID: 11400000, guid: e60296cf38c2ed849a62f9f2e9b1e747,
+  skillTreeDefinition: {fileID: 11400000, guid: ffce7935b82b11a49beaabef3ad0c9d4,
     type: 2}
   dashCount: 2
   dashCooldown: 7

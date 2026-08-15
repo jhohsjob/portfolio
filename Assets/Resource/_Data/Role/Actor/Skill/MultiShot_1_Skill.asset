@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: MultiShot_1_Skill
   m_EditorClassIdentifier: Assembly-CSharp::SkillDefinition
   id: 502001
-  skillName: MultiShot_1
   behaviourScript: {fileID: 11500000, guid: 9266dd82d5bb5c34286ce83963a1ca04, type: 3}
   behaviourTypeName: MultiShotSkill, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
     PublicKeyToken=null
@@ -21,5 +20,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: efdb4700292203a488e3fc9dfe192774, type: 2}
   fireCount: 1
   multiShotCount: 1
+  spreadAngle: 0
   shotDelay: 0
   reloadTime: 0.5
+  icon: {fileID: 21300000, guid: d68a250aa98e89e4da58cc006804d43b, type: 3}

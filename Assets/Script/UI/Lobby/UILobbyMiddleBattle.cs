@@ -18,33 +18,31 @@ public class UILobbyMiddleBattle : UILobbyMiddleBase
             return _view.onGetStageCount?.Invoke() ?? 0;
         }
 
-        public void Bind(int index, InfiniteScrollItem item)
+        public void Bind(int index, InfiniteScrollItem scrollItem)
         {
-            if (item is not UIBattleStageScrollItem stageItem)
+            if (scrollItem is not UIBattleStageScrollItem item)
             {
                 return;
             }
 
-            var itemData = _view.onGetStageItemData?.Invoke(index);
+            var itemData = _view.onGetStageData?.Invoke(index);
             if (itemData == null)
             {
                 return;
             }
 
-            stageItem.SetData(index, itemData);
-            stageItem.SetOnClick(stage => _view.onStageClick?.Invoke(stage));
+            item.SetData(index, itemData);
+            item.SetOnClick(stage => _view.onClikcStageItem?.Invoke(stage));
         }
     }
 
     private class MercenaryScrollProvider : IScrollDataProvider
     {
         private readonly UILobbyMiddleBattle _view;
-        private readonly HorizontalInfiniteScroll _scroll;
 
-        public MercenaryScrollProvider(UILobbyMiddleBattle view, HorizontalInfiniteScroll scroll)
+        public MercenaryScrollProvider(UILobbyMiddleBattle view)
         {
             _view = view;
-            _scroll = scroll;
         }
 
         public int GetItemCount()
@@ -61,9 +59,6 @@ public class UILobbyMiddleBattle : UILobbyMiddleBase
             }
 
             item.SetData(index, mercenary);
-
-            float scale = _scroll.CalculateScaleForItem(item);
-            item.ForceSetScale(scale);
         }
     }
 
@@ -75,8 +70,8 @@ public class UILobbyMiddleBattle : UILobbyMiddleBase
     public event Action<Stage, int> onStartStageRequest;
 
     public Func<int> onGetStageCount;
-    public Func<int, UIBattleStageScrollItemData> onGetStageItemData;
-    public Action<Stage> onStageClick;
+    public Func<int, UIBattleStageScrollItemData> onGetStageData;
+    public Action<Stage> onClikcStageItem;
 
     public Func<int> onGetMercenaryCount;
     public Func<int, Mercenary> onGetMercenaryData;
@@ -94,7 +89,7 @@ public class UILobbyMiddleBattle : UILobbyMiddleBase
     public void SetupMercenaryScroll(GameObject prefab, int initIndex)
     {
         _mercenaryScroll.Initialize(
-            provider: new MercenaryScrollProvider(this, _mercenaryScroll),
+            provider: new MercenaryScrollProvider(this),
             factory: new MercenaryItemFactory(prefab),
             itemCount: onGetMercenaryCount?.Invoke() ?? 0,
             initPos: initIndex

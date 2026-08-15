@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -5,7 +7,7 @@ public class Mercenary : Role<MercenaryDefinition>
 {
     public override string localTable => LocalTable.MercenaryTable;
 
-    public SkillTreeDefinition skillTreeData => _data.skillTreeDefinition;
+    public List<SkillData> skillDataList = new();
 
     public float dashSpeed => 0.2f;
     public int dashCount => _data.dashCount;
@@ -16,7 +18,15 @@ public class Mercenary : Role<MercenaryDefinition>
 
     private MercenarySaveData saveData;
 
-    public Mercenary(MercenaryDefinition data) : base(data) { }
+    public Mercenary(MercenaryDefinition data) : base(data)
+    {
+        foreach (var skillDefinition in _data.skillTreeDefinition.skillDefinitions)
+        {
+            skillDataList.Add(new SkillData(skillDefinition));
+        }
+
+        skillDataList.Last().lastData = true;
+    }
 
     public void ApplySaveData(MercenarySaveData saveData)
     {

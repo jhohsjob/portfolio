@@ -45,6 +45,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Locale-ko
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c54780153fde85c4c858d862e4e8646f
+    m_Address: SkillTable_ko
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ko
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: db47006211b7675479e48f8d0f3e948e
     m_Address: MercenaryTable_ko
     m_ReadOnly: 1

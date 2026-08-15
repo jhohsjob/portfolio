@@ -24,6 +24,7 @@ public class Skill : MonoBehaviour
     protected int _multiShotCount { get; private set; }
     protected float _shotDelay { get; private set; }
     protected float _reloadTime { get; private set; }
+    protected float _spreadAngle { get; private set; }
     protected ProjectileDefinition[] _projectileData { get; private set; }
 
     protected float _shotTimer = 0f;
@@ -53,7 +54,7 @@ public class Skill : MonoBehaviour
         }
     }
 
-    public virtual void Init(ActorBase actor, SkillDefinition data, SkillContext context)
+    public virtual void Init(ActorBase actor, SkillData data, SkillContext context)
     {
         _actor = actor;
         _context = context;
@@ -65,6 +66,7 @@ public class Skill : MonoBehaviour
         NAME = data.name;
         _fireCount = data.fireCount;
         _multiShotCount = data.multiShotCount;
+        _spreadAngle = data.spreadAngle;
         _shotDelay = data.shotDelay;
         _reloadTime = data.reloadTime;
         _projectileData = data.projectileData;

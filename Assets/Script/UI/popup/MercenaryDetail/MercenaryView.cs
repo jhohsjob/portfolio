@@ -4,7 +4,7 @@ public class MercenaryView : MonoBehaviour
 {
     private SpriteRenderer _spriteRenderer;
 
-    private void Awake()
+    public void Initialize()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }

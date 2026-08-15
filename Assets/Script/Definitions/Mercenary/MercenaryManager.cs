@@ -58,6 +58,40 @@ public class MercenaryManager : Singleton<MercenaryManager>
         return mercenary;
     }
 
+    public Mercenary GetNext(Mercenary mercenary)
+    {
+        if (mercenary == null)
+        {
+            return null;
+        }
+
+        int index = _list.IndexOf(mercenary);
+        if (index < 0)
+        {
+            return null;
+        }
+
+        index++;
+        index = CalcIndex(index);
+        return _list[index];
+    }
+
+    public Mercenary GetPrev(Mercenary mercenary)
+    {
+        if (mercenary == null)
+        {
+            return null;
+        }
+        int index = _list.IndexOf(mercenary);
+        if (index < 0)
+        {
+            return null;
+        }
+        index--;
+        index = CalcIndex(index);
+        return _list[index];
+    }
+
     public bool Has(int id)
     {
         if (_dic.TryGetValue(id, out var mercenary))

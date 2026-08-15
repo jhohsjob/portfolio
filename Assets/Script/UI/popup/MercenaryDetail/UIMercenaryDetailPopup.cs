@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -7,11 +8,36 @@ using UnityEngine.UI;
 
 public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
 {
-    class UIElement
+    private class SkillScrollProvider : IScrollDataProvider
     {
-        public int id;
-        public Mercenary data;
-        public MercenaryView view;
+        private readonly UIMercenaryDetailPopup _view;
+
+        public SkillScrollProvider(UIMercenaryDetailPopup view)
+        {
+            _view = view;
+        }
+
+        public int GetItemCount()
+        {
+            return _view.onGetSkillCount?.Invoke() ?? 0;
+        }
+
+        public void Bind(int index, InfiniteScrollItem scrollItem)
+        {
+            if (scrollItem is not UIMercenaryDetailPopupSkillScrollItem item)
+            {
+                return;
+            }
+
+            var mercenary = _view.onGetSkillData?.Invoke(index);
+            if (mercenary == null)
+            {
+                return;
+            }
+
+            item.SetData(index, mercenary);
+            item.SetOnClick((skill, itemTransform) => _view.onClickSkillItem?.Invoke(skill, itemTransform));
+        }
     }
 
     [SerializeField]
@@ -30,118 +56,84 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
     private Button _btnLeft;
     [SerializeField]
     private Button _btnRight;
+    [SerializeField]
+    private HorizontalInfiniteScroll _skillScroll;
+    [SerializeField]
+    private UIMercenaryDetailPopupSkillInfo _skillInfo;
 
-    private int _currentIndex;
-    private List<UIElement> _uiElements = new();
+    private MercenaryView _currentMercenaryView;
 
-    private Dictionary<GameObject, MercenaryViewPool> _pools = new();
+    private Dictionary<int, MercenaryViewPool> _pools = new();
 
-    private float _dragThreshold = 150f;
     private Vector2 _startPos;
+
+    public event Action onClickLeft;
+    public event Action onClickRight;
+    public event Action<float> onDrag;
+
+    public Func<int> onGetSkillCount;
+    public Func<int, SkillData> onGetSkillData;
+    public Action<SkillData, Transform> onClickSkillItem;
+
+    private UIMercenaryDetailPopupPresenter _presenter;
 
     protected override void Awake()
     {
         base.Awake();
 
-        _btnLeft.onClick.AddListener(() => OnClickMove(-1));
-        _btnRight.onClick.AddListener(() => OnClickMove(1));
+        _presenter = new UIMercenaryDetailPopupPresenter(this);
+
+        _btnLeft.onClick.AddListener(HandleClickLeft);
+        _btnRight.onClick.AddListener(HandleClickRight);
+
+        _skillInfo.Hide();
     }
 
-    private void Start()
+    public override void OnDestroy()
     {
-        SetMercenary();
-    }
+        _presenter?.Dispose();
 
+        foreach (var pool in _pools.Values)
+        {
+            pool.OnDestroy();
+        }
+        _pools.Clear();
+
+        base.OnDestroy();
+    }
+    
     public override void OnPopupReady(object data = null)
     {
-        if (data is not Mercenary mercenary)
-        {
-            return;
-        }
-
-        InitElements();
-
-        _currentIndex = _uiElements.FindIndex(x => x.id == mercenary.id);
-
+        _presenter.OnPopupReady(data, _assetLoader);
+        
         base.OnPopupReady(data);
     }
 
-    public override void Hide()
+    public void SetupSkillScroll(GameObject prefab, int initIndex)
     {
-        foreach (var element in _uiElements)
-        {
-            var prefab = element.data.original;
-            var pool = GetPool(prefab);
-            pool.Release(element.view);
-        }
-
-        _uiElements.Clear();
-
-        base.Hide();
+        _skillScroll.Initialize(
+            provider: new SkillScrollProvider(this),
+            factory: new SkillItemFactory(prefab),
+            itemCount: onGetSkillCount?.Invoke() ?? 0,
+            initPos: initIndex
+        );
+        _skillScroll.UpdateItems();
     }
 
-    private void InitElements()
+    public void ShowSkillInfo(SkillData skillData, Transform itemTransform)
     {
-        _uiElements.Clear();
-
-        var mercenaryList = MercenaryManager.instance.list;
-
-        foreach (var mercenary in mercenaryList)
-        {
-            var pool = GetPool(mercenary.original);
-            var view = pool.Get();
-
-            view.SetActive(false);
-
-            var element = new UIElement
-            {
-                id = mercenary.id,
-                data = mercenary,
-                view = view
-            };
-
-            _uiElements.Add(element);
-        }
-    }
-    
-    private MercenaryViewPool GetPool(GameObject prefab)
-    {
-        if (_pools.TryGetValue(prefab, out var pool))
-        {
-            return pool;
-        }
-
-        pool = new MercenaryViewPool(prefab, _pivot);
-        _pools[prefab] = pool;
-        return pool;
+        _skillInfo.SetData(skillData);
+        _skillInfo.Show(itemTransform);
     }
 
-    private void SetMercenary()
+    private void HandleClickLeft()
     {
-        foreach (var element in _uiElements)
-        {
-            element.view.ResetView();
-        }
-
-        var current = _uiElements[_currentIndex];
-        var data = current.data;
-        var view = current.view;
-
-        view.SetActive(true);
-        view.SetLocked(data.isOwned == false);
-
-        _txtName.text = data.name;
-        _txtAtk.text = $"atk : {data.atk}";
-        _txtMaxHp.text = $"hp : {data.maxHP}";
-        _txtMoveSpeed.text = $"speed : {data.moveSpeed}";
-        _txtDesc.text = data.description;
+        onClickLeft?.Invoke();
     }
 
-    private void OnClickMove(int direction)
+    private void HandleClickRight()
     {
-        _currentIndex = MercenaryManager.instance.CalcIndex(_currentIndex + direction);
-
-        SetMercenary();
+        onClickRight?.Invoke();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -156,18 +148,42 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
     {
         float deltaX = eventData.position.x - _startPos.x;
 
-        if (Mathf.Abs(deltaX) >= _dragThreshold)
-        {
-            if (deltaX > 0)
-            {
-                OnClickMove(1);
-            }
-            else
-            {
-                OnClickMove(-1);
-            }
-        }
+        onDrag?.Invoke(deltaX);
 
         _startPos = Vector2.zero;
+    }
+
+    public void ShowMercenary(Mercenary mercenary)
+    {
+        _currentMercenaryView?.SetActive(false);
+        
+        var view = GetPool(mercenary.id, mercenary.original).Get();
+
+        view.SetActive(true);
+        view.SetLocked(!mercenary.isOwned);
+
+        _currentMercenaryView = view;
+
+        _txtName.text = mercenary.name;
+        _txtAtk.text = $"atk : {mercenary.atk}";
+        _txtMaxHp.text = $"hp : {mercenary.maxHP}";
+        _txtMoveSpeed.text = $"speed : {mercenary.moveSpeed}";
+        _txtDesc.text = mercenary.description;
+
+        _skillScroll.UpdateItems();
+    }
+
+    private MercenaryViewPool GetPool(int id, GameObject original)
+    {
+        if (_pools.TryGetValue(id, out var pool))
+        {
+            return pool;
+        }
+
+        pool = new MercenaryViewPool(original, _pivot);
+
+        _pools.Add(id, pool);
+
+        return pool;
     }
 }

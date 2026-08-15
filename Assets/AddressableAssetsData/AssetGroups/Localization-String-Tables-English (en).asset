@@ -45,6 +45,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Locale-en
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0317c6cee162e1408840e61d140ead8
+    m_Address: SkillTable_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: de351277c6759744184a98cd19176990
     m_Address: MonsterTable_en
     m_ReadOnly: 1

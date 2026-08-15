@@ -78,6 +78,12 @@ public class VerticalInfiniteScroll : InfiniteScrollBase
             rt.anchoredPosition = new Vector2(x, y);
 
             _provider.Bind(dataIndex, item);
+
+            if (_useCenterScale == true)
+            {
+                float scale = CalculateScaleForItem(item);
+                item.ForceSetScale(scale);
+            }
         }
     }
 

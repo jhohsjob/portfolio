@@ -6,8 +6,7 @@ public class MultiShotSkill : Skill
 {
     protected override IEnumerator coShot()
     {
-        float spreadAngle = 30f;
-        float startAngle = -spreadAngle * (_multiShotCount - 1) * 0.5f;
+        float startAngle = -_spreadAngle * (_multiShotCount - 1) * 0.5f;
 
         int projectileId = _projectileData[0].id;
 
@@ -19,7 +18,7 @@ public class MultiShotSkill : Skill
                 var position = _actor.muzzlePos;
                 var projectile = _context.actorSpawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
 
-                float angle = startAngle + spreadAngle * j;
+                float angle = startAngle + _spreadAngle * j;
                 Vector3 dir = Quaternion.Euler(0, 0, angle) * _actor.muzzleDir;
 
                 if (projectile.moveBehaviour is HomingMove homing)

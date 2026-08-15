@@ -287,7 +287,7 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
         }
     }
 
-    public float CalculateScaleForItem(InfiniteScrollItem item)
+    protected float CalculateScaleForItem(InfiniteScrollItem item)
     {
         if (item.gameObject.activeSelf == false)
         {

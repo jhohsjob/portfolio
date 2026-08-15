@@ -33,6 +33,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ada047a256daa084580dbc2ba1ea4cb0
+    m_Address: UIMercenaryDetailPopupSkillScrollItem
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bcba30bf973212e4d8addebe4f2f4a34
     m_Address: UICommonPopup
     m_ReadOnly: 0

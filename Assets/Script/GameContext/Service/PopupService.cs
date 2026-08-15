@@ -16,8 +16,8 @@ public interface IPopupService
 
 public class PopupServiceDependencies
 {
-    public IAssetLoader AssetLoader;
-    public Storage Storage;
+    public IAssetLoader assetLoader;
+    public Storage storage;
 }
 
 public class PopupService : IPopupService
@@ -46,7 +46,7 @@ public class PopupService : IPopupService
 
     public void ShowPopup<T>(string address = "", object data = null, Action<T> onLoadedCallback = null) where T : UIPopup
     {
-        _context.AssetLoader.LoadPrefab(address, (prefab) =>
+        _context.assetLoader.LoadPrefab(address, (prefab) =>
         {
             GameObject go = UnityEngine.Object.Instantiate(prefab);
             go.transform.SetParent(_container, false);
@@ -83,7 +83,7 @@ public class PopupService : IPopupService
             maskImage.DOFade(0.8f, 0.4f);
         }
 
-        popup.InitDependencies(this);
+        popup.InitDependencies(this, _context.assetLoader);
         popup.OnPopupReady(data);
         popup.Show();
 

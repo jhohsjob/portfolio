@@ -108,11 +108,11 @@ public class Player : Actor<Mercenary, MercenaryDefinition>
     {
         List<Skill> skills = new();
 
-        foreach (var skillDefinition in role.skillTreeData.skillDefinitions)
+        foreach (var skillData in role.skillDataList)
         {
-            var skill = (new GameObject(skillDefinition.skillName)).AddComponent(skillDefinition.behaviourType) as Skill;
+            var skill = (new GameObject(skillData.name)).AddComponent(skillData.behaviourType) as Skill;
             skill.transform.SetParent(transform, false);
-            skill.Init(this, skillDefinition, new SkillContext
+            skill.Init(this, skillData, new SkillContext
             {
                 battleState = _context.battleState,
                 actorSpawner = _context.actorSpawner,

@@ -6,4 +6,5 @@ public static class LocalTable
     public static readonly string ProjectileTable = "ProjectileTable";
     public static readonly string ShopTable = "ShopTable";
     public static readonly string DropItemTable = "DropItemTable";
+    public static readonly string SkillTable = "SkillTable";
 }
