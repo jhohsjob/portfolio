@@ -8,7 +8,7 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
 
     public UILobbyMiddleBattlePresenter(UILobbyMiddleBattle view, UILobbyContext context) : base(view, context)
     {
-        _mercenaries = new List<Mercenary>(MercenaryManager.instance.list);
+        _mercenaries = new List<Mercenary>(context.mercenaryService.list);
 
         _stages = new List<Stage>(_context.stageService.list);
         _stages.Reverse();
@@ -25,31 +25,32 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
         _view.onGetMercenaryData = (index) => _mercenaries[index];
     }
 
-    public override void Initialize()
-    {
-        int stageListIndex = _context.stageService.GetStageIndexById(_context.user.currentStageId);
-        _context.assetLoader.LoadPrefab("BattleStageItem", prefab =>
-        {
-            _view.SetupStageScroll(prefab, stageListIndex);
-        });
-
-        int mercenaryListIndex = _mercenaries.FindIndex(x => x.id == _context.user.mercenaryId);
-        _context.assetLoader.LoadPrefab("BattleMercenaryItem", prefab =>
-        {
-            _view.SetupMercenaryScroll(prefab, mercenaryListIndex);
-        });
-    }
-    
     protected override void Unbind()
     {
         _view.onClikcStageItem -= OnClickStageItem;
 
         _view.onGetStageCount = null;
         _view.onGetStageData = null;
+
         _view.onGetMercenaryCount = null;
         _view.onGetMercenaryData = null;
     }
 
+    public override void Initialize()
+    {
+        int stageListIndex = _context.stageService.GetStageIndexById(_context.user.lastPlayStageId);
+        _context.assetLoader.LoadPrefab("BattleStageItem", prefab =>
+        {
+            _view.SetupStageScroll(prefab, stageListIndex);
+        });
+
+        int mercenaryListIndex = _mercenaries.FindIndex(x => x.id == _context.user.lastPlayMercenaryId);
+        _context.assetLoader.LoadPrefab("BattleMercenaryItem", prefab =>
+        {
+            _view.SetupMercenaryScroll(prefab, mercenaryListIndex);
+        });
+    }
+    
     private UIBattleStageScrollItemData GetStageData(int index)
     {
         if (index < 0 || index >= _stages.Count)
@@ -60,7 +61,7 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
         return new UIBattleStageScrollItemData
         {
             stage = _stages[index],
-            state = _context.stageService.IsStageStateByIndex(index, _context.user.currentStageId)
+            state = _context.stageService.IsStageStateByIndex(index, _context.user.lastPlayStageId)
         };
     }
 
@@ -76,12 +77,7 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
 
         if (mercenary.isOwned == false)
         {
-            var popupData = new UICommonPopupData
-            {
-                title = "알림",
-                message = "용병이 잠겨 있습니다", // todo : locale
-            };
-            _context.popupService.ShowPopup<UICommonPopup>(PopupName.UICommonPopup, popupData);
+            _context.popupService.ShowCommonPopup("알림", "용병이 잠겨 있습니다");
             return;
         }
 

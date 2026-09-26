@@ -21,7 +21,7 @@ public class DIElement : DropItemBase<DIElementDefinition>
 
 public class DIGold : DropItemBase<DIGoldDefinition>
 {
-    public int gold => _data.gold;
+    public int goldAmount => _data.gold;
 
     public DIGold(DIGoldDefinition data) : base(data) { }
 }

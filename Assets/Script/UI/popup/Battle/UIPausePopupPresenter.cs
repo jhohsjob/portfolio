@@ -27,6 +27,11 @@ public class UIPausePopupPresenter : IDisposable
         Bind();
     }
 
+    public void Dispose()
+    {
+        Unbind();
+    }
+
     private void Bind()
     {
         _view.onClickLobby += OnClickLobby;
@@ -34,7 +39,7 @@ public class UIPausePopupPresenter : IDisposable
         // _view.onClickOption += OnClickOption;
     }
 
-    public void Dispose()
+    private void Unbind()
     {
         _view.onClickLobby -= OnClickLobby;
         _view.onClickResume -= OnClickResume;

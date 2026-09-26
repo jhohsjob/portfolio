@@ -8,21 +8,22 @@ public class MercenaryReward : RewardBase
 
     public override RewardResult CanGive()
     {
-        var mercenary = MercenaryManager.instance.GetMercenaryById(mercenaryId);
-        if (mercenary == null)
-        {
-            return RewardResult.Fail("id error");
-        }
+        return RewardResult.Fail("todo");
+        //var mercenary = MercenaryManager.instance.GetMercenaryById(mercenaryId);
+        //if (mercenary == null)
+        //{
+        //    return RewardResult.Fail("id error");
+        //}
 
-        if (mercenary.isOwned == true)
-        {
-            return RewardResult.Fail("has mercenary");
-        }
+        //if (mercenary.isOwned == true)
+        //{
+        //    return RewardResult.Fail("has mercenary");
+        //}
 
-        return RewardResult.Success(
-                RewardType.Mercenary,
-                id: mercenaryId,
-                message: $"Mercenary {mercenaryId} acquired"
-            );
+        //return RewardResult.Success(
+        //        RewardType.Mercenary,
+        //        id: mercenaryId,
+        //        message: $"Mercenary {mercenaryId} acquired"
+        //    );
     }
 }

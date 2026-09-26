@@ -13,8 +13,10 @@ public class BootScene : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("BootScene Awake");
+
         _bootController = new BootController();
-        _bootPresenter = new BootPresenter(_uiBoot, _bootController, _launch.Context.SceneService);
+        _bootPresenter = new BootPresenter(_uiBoot, _bootController, _launch.context.SceneService);
     }
 
     private async void Start()

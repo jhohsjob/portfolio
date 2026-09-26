@@ -7,11 +7,12 @@ public class GameContext
     public RoleFactory RoleFactory { get; }
 
     public Storage Storage { get; }
-    public ProductStorage ProductStorage { get; }
-    public MercenaryStorage MercenaryStorage { get; }
     public SaveService SaveService { get; }
 
+    public IGameServer GameServer { get; }
+
     public User User { get; }
+    public MercenaryService MercenaryService { get; }
     public CurrencyService CurrencyService { get; }
     public PurchaseService PurchaseService { get; }
     public LocaleService LocaleService { get; }
@@ -29,13 +30,14 @@ public class GameContext
         RoleFactory = new RoleFactory();
 
         Storage = new Storage(AssetService);
-        MercenaryStorage = new MercenaryStorage();
-        ProductStorage = new ProductStorage();
         SaveService = new SaveService(Storage);
 
-        User = new User(Storage, SaveService);
-        CurrencyService = new CurrencyService(Storage, SaveService);
-        PurchaseService = new PurchaseService(CurrencyService, ProductStorage);
+        GameServer = new MockGameServer(AssetService);
+
+        User = new User(GameServer);
+        MercenaryService = new MercenaryService(RoleFactory, User, GameServer);
+        CurrencyService = new CurrencyService(User, SaveService);
+        PurchaseService = new PurchaseService(MercenaryService, CurrencyService);
         LocaleService = new LocaleService(Storage, SaveService);
 
         StageService = new StageService();
@@ -43,6 +45,7 @@ public class GameContext
         PopupService = new PopupService(new PopupServiceDependencies
         {
             assetLoader = AssetService,
+            gameServer = GameServer,
             storage = Storage
         });
         SceneService = new SceneService(new SceneServiceContext
@@ -52,13 +55,16 @@ public class GameContext
             currencyService = CurrencyService,
             stageService = StageService,
             user = User,
-            productStorage = ProductStorage,
+            mercenaryService = MercenaryService,
             purchaseService = PurchaseService,
         });
 
         GameDataLoader = new GameDataLoader(new GameDataLoaderContext
         {
             assetLoader = AssetService,
+            gameServer = GameServer,
+            user = User,
+            mercenaryService = MercenaryService,
             stageService = StageService,
         });
     }

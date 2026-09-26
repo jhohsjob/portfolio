@@ -10,7 +10,8 @@ public class UILobbyMiddleBarrack : UILobbyMiddleBase, IScrollDataProvider
     public event Action onClickShow;
     public Func<int, Mercenary> onGetMercenary;
     public Func<int> onGetItemCount;
-    public Action<Mercenary> onItemClick;
+    public Action<Mercenary> onClickItem;
+    public Action<Mercenary> onClickBuy;
 
     public void SetupScroll(GameObject prefab)
     {
@@ -48,6 +49,7 @@ public class UILobbyMiddleBarrack : UILobbyMiddleBase, IScrollDataProvider
         }
 
         mercenaryItem.SetData(index, mercenary);
-        mercenaryItem.SetOnClick(mercenary => onItemClick?.Invoke(mercenary));
+        mercenaryItem.SetOnClick(mercenary => onClickItem?.Invoke(mercenary));
+        mercenaryItem.SetOnClickBuy(mercenary => onClickBuy?.Invoke(mercenary));
     }
 }

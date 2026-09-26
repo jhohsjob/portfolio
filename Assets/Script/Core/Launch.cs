@@ -11,28 +11,27 @@ using UnityEngine.ResourceManagement.ResourceLocations;
 
 public class Launch : MonoBehaviour
 {
-    public static GameContext context { get; private set; }
-    public GameContext Context => context;
-
-    //public static AppContext appContext { get; private set; }
-    //public AppContext AppContext => appContext;
+    private GameContext _context;
+    public GameContext context => _context;
 
     private const float ADDRESSABLE_INIT_WEIGHT = 0.25f;
     private const float LOCALIZATION_INIT_WEIGHT = 0.1f;
-    private const float ADDRESSABLE_LOAD_WEIGHT = 0.35f;
-    private const float LOAD_WEIGHT = 0.3f;
+    private const float ADDRESSABLE_LOAD_WEIGHT = 0.25f;
+    private const float LOAD_WEIGHT = 0.2f;
+    private const float LOAD_PVO_WEIGHT = 0.2f;
 
     private void Awake()
     {
+        Debug.Log("Launch Awake");
+
         DontDestroyOnLoad(gameObject);
 
-        context = new GameContext();
-        //appContext = new AppContext();
+        _context = new GameContext();
     }
 
     private void OnDestroy()
     {
-        context.Dispose();
+        _context.Dispose();
     }
 
     public async Task RunAsync(BootController bootController)
@@ -44,6 +43,7 @@ public class Launch : MonoBehaviour
             await InitializeLocalizationAsync(bootController);
             await LoadPreloadAssetsAsync(bootController);
             await InitializeLoadAsync(bootController);
+            await InitializeServerAsync(bootController);
 
             Complete();
         }
@@ -56,10 +56,9 @@ public class Launch : MonoBehaviour
 
     private void InitializeClient()
     {
-        MercenaryManager.instance.Init(context.RoleFactory, context.MercenaryStorage);
-        MonsterManager.instance.Init(context.RoleFactory);
-        ProjectileManager.instance.Init(context.RoleFactory);
-        DropItemManager.instance.Init(context.RoleFactory);
+        MonsterManager.instance.Init(_context.RoleFactory);
+        ProjectileManager.instance.Init(_context.RoleFactory);
+        DropItemManager.instance.Init(_context.RoleFactory);
     }
 
     private async Task InitializeAddressablesAsync(BootController bootController)
@@ -109,28 +108,32 @@ public class Launch : MonoBehaviour
 
     private async Task InitializeLoadAsync(BootController bootController)
     {
+        float prevWeight = ADDRESSABLE_INIT_WEIGHT + LOCALIZATION_INIT_WEIGHT + ADDRESSABLE_LOAD_WEIGHT;
         float progress = 0f;
-        float step = 1f / 4f;
+        float step = 1f / 2f;
 
-        await context.GameDataLoader.LoadAsync();
-
-        progress += step;
-        bootController.SetProgress(ADDRESSABLE_INIT_WEIGHT + LOCALIZATION_INIT_WEIGHT + ADDRESSABLE_LOAD_WEIGHT + progress * LOAD_WEIGHT);
-
-        await context.Storage.LoadAsync();
+        await _context.GameDataLoader.LoadAsync();
 
         progress += step;
-        bootController.SetProgress(ADDRESSABLE_INIT_WEIGHT + LOCALIZATION_INIT_WEIGHT + ADDRESSABLE_LOAD_WEIGHT + progress * LOAD_WEIGHT);
+        bootController.SetProgress(prevWeight + progress * LOAD_WEIGHT);
 
-        await context.MercenaryStorage.LoadAsync();
+        await _context.Storage.LoadAsync();
 
         progress += step;
-        bootController.SetProgress(ADDRESSABLE_INIT_WEIGHT + LOCALIZATION_INIT_WEIGHT + ADDRESSABLE_LOAD_WEIGHT + progress * LOAD_WEIGHT);
+        bootController.SetProgress(prevWeight + progress * LOAD_WEIGHT);
+    }
 
-        await context.ProductStorage.LoadAsync();
-        
-        progress += step;
-        bootController.SetProgress(ADDRESSABLE_INIT_WEIGHT + LOCALIZATION_INIT_WEIGHT + ADDRESSABLE_LOAD_WEIGHT + progress * LOAD_WEIGHT);
+    private async Task InitializeServerAsync(BootController bootController)
+    {
+        var request = new InitializeRequest();
+
+        var response = await _context.GameServer.InitializeAsync(request);
+
+        _context.User.InitializeServer(response.user);
+        _context.MercenaryService.InitializeServer(response.mercenaries);
+        _context.PurchaseService.InitializeServer(response.products);
+
+        bootController.SetProgress(ADDRESSABLE_INIT_WEIGHT + LOCALIZATION_INIT_WEIGHT + ADDRESSABLE_LOAD_WEIGHT + LOAD_WEIGHT + LOAD_PVO_WEIGHT);
     }
 
     private async Task TrackProgressAsync(BootController bootController, AsyncOperationHandle handle, float start, float range)
@@ -175,8 +178,8 @@ public class Launch : MonoBehaviour
 
     private void Complete()
     {
-        context.LocaleService.Init();
-        context.CurrencyService.Init();
-        context.User.RunGame();
+        _context.LocaleService.Init();
+        _context.CurrencyService.Init();
+        _context.User.RunGame();
     }
 }

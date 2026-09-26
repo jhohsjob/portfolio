@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -44,14 +45,24 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
     private Transform _pivot;
     [SerializeField]
     private TextMeshProUGUI _txtName;
+    
     [SerializeField]
-    private TextMeshProUGUI _txtAtk;
+    private UIStat _offensiveStat;
     [SerializeField]
-    private TextMeshProUGUI _txtMaxHp;
+    private UIStat _defensiveStat;
     [SerializeField]
-    private TextMeshProUGUI _txtMoveSpeed;
+    private UIStat _utilityStat;
     [SerializeField]
-    private TextMeshProUGUI _txtDesc;
+    private TextMeshProUGUI _txtCombatPower;
+
+    [SerializeField]
+    private UIButton _btnLevelUp;
+    [SerializeField]
+    private UILongPressButton _longBtnLevelUp;
+    [SerializeField]
+    private UIButton _btnLevelUpMax;
+    [SerializeField]
+    private UIButton _btnLevelReset;
     [SerializeField]
     private Button _btnLeft;
     [SerializeField]
@@ -61,12 +72,23 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
     [SerializeField]
     private UIMercenaryDetailPopupSkillInfo _skillInfo;
 
+    [SerializeField]
+    private GameObject _gradeRoot;
+    private Image[] _gradeIcons;
+
+    private MercenaryService _mercenaryService;
+    private User _user; 
+
     private MercenaryView _currentMercenaryView;
 
     private Dictionary<int, MercenaryViewPool> _pools = new();
 
     private Vector2 _startPos;
 
+    public event Action onClickLevelUp;
+    public event Action<int> onLongPressLevelUp;
+    public event Action onClickLevelUpMax;
+    public event Action onClickLevelReset;
     public event Action onClickLeft;
     public event Action onClickRight;
     public event Action<float> onDrag;
@@ -77,16 +99,23 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
 
     private UIMercenaryDetailPopupPresenter _presenter;
 
+    private int _previewLevel;
+
     protected override void Awake()
     {
         base.Awake();
 
         _presenter = new UIMercenaryDetailPopupPresenter(this);
 
-        _btnLeft.onClick.AddListener(HandleClickLeft);
-        _btnRight.onClick.AddListener(HandleClickRight);
-
         _skillInfo.Hide();
+
+        Bind();
+
+        _gradeIcons = _gradeRoot.GetComponentsInChildren<Image>();
+        if (_gradeIcons.Length != GameConfig.MercenaryGradeLimit)
+        {
+            Debug.LogWarning("grade miss match");
+        }
     }
 
     public override void OnDestroy()
@@ -99,13 +128,48 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
         }
         _pools.Clear();
 
+        Unbind();
+
         base.OnDestroy();
     }
-    
+
+    private void Bind()
+    {
+        _btnLevelUpMax.AddListener(HandleClickLevelUpMax);
+        _btnLevelReset.AddListener(HandleClickLevelReset);
+        _btnLeft.onClick.AddListener(HandleClickLeft);
+        _btnRight.onClick.AddListener(HandleClickRight);
+
+        _longBtnLevelUp.onClick += HandleClickLevelUp;
+        _longBtnLevelUp.onLongPressStart += HandleLongPressStart;
+        _longBtnLevelUp.onLongPressLevelUp += HandleLongPressLevelUp;
+        _longBtnLevelUp.onLongPressEnd += HandleLongPressEnd;
+    }
+
+    private void Unbind()
+    {
+        _btnLevelUpMax.RemoveListener(HandleClickLevelUpMax);
+        _btnLevelReset.RemoveListener(HandleClickLevelReset);
+        _btnLeft.onClick.RemoveListener(HandleClickLeft);
+        _btnRight.onClick.RemoveListener(HandleClickRight);
+
+        _longBtnLevelUp.onClick += HandleClickLevelUp;
+        _longBtnLevelUp.onLongPressStart -= HandleLongPressStart;
+        _longBtnLevelUp.onLongPressLevelUp -= HandleLongPressLevelUp;
+        _longBtnLevelUp.onLongPressEnd -= HandleLongPressEnd;
+    }
+
+    public void AddDependencies(MercenaryService mercenaryService, User user)
+    {
+        _mercenaryService = mercenaryService;
+        _user = user;
+    }
+
     public override void OnPopupReady(object data = null)
     {
-        _presenter.OnPopupReady(data, _assetLoader);
-        
+        _presenter.InitDependencies(_assetLoader, _popupService, _mercenaryService, _user);
+        _presenter.OnPopupReady(data);
+
         base.OnPopupReady(data);
     }
 
@@ -124,6 +188,42 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
     {
         _skillInfo.SetData(skillData);
         _skillInfo.Show(itemTransform);
+    }
+
+    private void HandleClickLevelUp()
+    {
+        onClickLevelUp?.Invoke();
+    }
+
+    private void HandleLongPressStart()
+    {
+        _previewLevel = _presenter.currentLevel;
+    }
+
+    private void HandleLongPressLevelUp()
+    {
+        if (_presenter.CanPreviewLevelUp(_previewLevel) == false)
+        {
+            return;
+        }
+        _previewLevel++;
+
+        _btnLevelUp.text = $"Lv. {_previewLevel}";
+    }
+
+    private void HandleLongPressEnd()
+    {
+        onLongPressLevelUp?.Invoke(_previewLevel);
+    }
+
+    private void HandleClickLevelUpMax()
+    {
+        onClickLevelUpMax?.Invoke();
+    }
+
+    private void HandleClickLevelReset()
+    {
+        onClickLevelReset?.Invoke();
     }
 
     private void HandleClickLeft()
@@ -153,7 +253,7 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
         _startPos = Vector2.zero;
     }
 
-    public void ShowMercenary(Mercenary mercenary)
+    public void ShowMercenary(Mercenary mercenary, int availableMaxLevel)
     {
         _currentMercenaryView?.SetActive(false);
         
@@ -165,12 +265,30 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
         _currentMercenaryView = view;
 
         _txtName.text = mercenary.name;
-        _txtAtk.text = $"atk : {mercenary.atk}";
-        _txtMaxHp.text = $"hp : {mercenary.maxHP}";
-        _txtMoveSpeed.text = $"speed : {mercenary.moveSpeed}";
-        _txtDesc.text = mercenary.description;
+
+        _offensiveStat.Refresh(mercenary.stat.offensive);
+        _defensiveStat.Refresh(mercenary.stat.defensive);
+        _utilityStat.Refresh(mercenary.stat.utility);
+
+        _txtCombatPower.text = CombatPowerCalculator.Calculate(mercenary.stat).ToString();
+
+        var canLevelUp = _presenter.CanLevelUp();
+        _btnLevelUp.interactable = canLevelUp;
+        _longBtnLevelUp.interactable = canLevelUp;
+        _btnLevelUpMax.interactable = canLevelUp;
+        _btnLevelReset.interactable = _presenter.CanLevelReset();
+
+        _previewLevel = mercenary.level;
+
+        _btnLevelUp.text = $"Lv. {mercenary.level}";
+        _btnLevelUpMax.text = $"Max Lv. {availableMaxLevel}";
 
         _skillScroll.UpdateItems();
+
+        for (int i = 0; i < _gradeIcons.Length; i++)
+        {
+            _gradeIcons[i].gameObject.SetActive(i < mercenary.grade);
+        }
     }
 
     private MercenaryViewPool GetPool(int id, GameObject original)

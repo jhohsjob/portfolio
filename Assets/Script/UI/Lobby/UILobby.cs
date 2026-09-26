@@ -15,7 +15,7 @@ public class UILobby : MonoBehaviour
     public int menuCount => _bottom.menuCount;
     public event Action<int> onClickBottomMenu;
 
-    public UILobbyTop TopView =>_top;
+    public UILobbyTop topView =>_top;
     public UILobbyMiddleBase[] MiddleViews => _middles;
 
     private void Awake()

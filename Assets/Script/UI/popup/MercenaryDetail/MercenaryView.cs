@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 public class MercenaryView : MonoBehaviour
 {
     private SpriteRenderer _spriteRenderer;

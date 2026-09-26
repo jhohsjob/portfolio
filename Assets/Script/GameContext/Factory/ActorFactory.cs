@@ -46,7 +46,7 @@ public class ActorFactory
         go.transform.SetParent(parent);
         go.transform.localPosition = Vector3.zero;
 
-        actor.InitBase(role);
+        actor.Init(role);
 
         return actor;
     }

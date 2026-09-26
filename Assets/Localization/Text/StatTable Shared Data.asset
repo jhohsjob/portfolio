@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: StatTable Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: StatTable
+  m_TableCollectionNameGuidString: ca5e5c3b4149de24f8611b1578614f91
+  m_Entries:
+  - m_Id: 72980692992
+    m_Key: Attack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91053948928
+    m_Key: CriticalChance
+    m_Metadata:
+      m_Items: []
+  - m_Id: 110624571392
+    m_Key: CriticalDamage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 129784152064
+    m_Key: MaxHP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 144472604672
+    m_Key: Defense
+    m_Metadata:
+      m_Items: []
+  - m_Id: 158947147776
+    m_Key: MoveSpeed
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 863673650226921676
+  references:
+    version: 2
+    RefIds:
+    - rid: 863673650226921676
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables,
+        asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1788017185164

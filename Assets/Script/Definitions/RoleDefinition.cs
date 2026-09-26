@@ -9,6 +9,7 @@ public class RoleDefinition : ScriptableObject
 {
     public RoleType roleType;
     public int id;
+    public StatDefinition statDefinition;
 #if UNITY_EDITOR
     public MonoScript behaviourScript;
 #endif
@@ -17,9 +18,6 @@ public class RoleDefinition : ScriptableObject
 
     public GameObject body;
     public Vector3 resourceOffset = Vector3.zero;
-
-    public float maxHP;
-    public float moveSpeed;
 
     public ActorMoveType moveType;
 

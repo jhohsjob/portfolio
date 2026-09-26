@@ -18,10 +18,6 @@ public class UILobbyMiddleShopPresenter : UILobbyMiddlePresenter<UILobbyMiddleSh
         _shopDefinitions = ShopManager.instance.shopItemList;
     }
 
-    public override void Initialize()
-    {
-    }
-
     protected override void Bind()
     {
         _view.onInitializePanel += OnInitializePanel;
@@ -31,6 +27,10 @@ public class UILobbyMiddleShopPresenter : UILobbyMiddlePresenter<UILobbyMiddleSh
     {
         _view.onInitializePanel -= OnInitializePanel;
         UnbindUiItems();
+    }
+
+    public override void Initialize()
+    {
     }
 
     private void OnInitializePanel()
@@ -78,7 +78,7 @@ public class UILobbyMiddleShopPresenter : UILobbyMiddlePresenter<UILobbyMiddleSh
 
     private int GetPurchaseCount(int productId)
     {
-        var data = _context.productStorage.Get(productId);
+        var data = _context.purchaseService.GetProductPVOById(productId);
         return data?.purchaseCount ?? 0;
     }
 

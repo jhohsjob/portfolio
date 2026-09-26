@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e01d5603aa288445a3dae8b79e2e285, type: 3}
   m_Name: UserDefaultData
   m_EditorClassIdentifier: Assembly-CSharp::UserDefaultData
-  level: 1
+  level: 10
   exp: 0
-  gold: 0
+  gold: 1000
   mercenaryId: 101001
-  currentStageId: 601001
+  stageId: 601001
   locale: ko
+  mercenaryLevelLimit: 50

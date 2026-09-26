@@ -1,3 +1,6 @@
+using System;
+using UnityEngine.Localization.Settings;
+
 public enum BattleStatus
 {
     None,
@@ -96,4 +99,38 @@ public enum LobbyMenu
     Battle,
     Temp01,
     Temp02,
+}
+
+[Flags]
+public enum StatType : long
+{
+    None = 0,
+
+    Offensive = 1L << 0,
+    Defensive = 1L << 1,
+    Utility = 1L << 2,
+
+    Attack = Offensive | (1L << 8),
+    CriticalChance = Offensive | (1L << 9),
+    CriticalDamage = Offensive | (1L << 10),
+
+    MaxHP = Defensive | (1L << 24),
+    Defense = Defensive | (1L << 25),
+
+    MoveSpeed = Utility | (1L << 40),
+}
+
+public enum MercenaryAcquireType
+{
+    None,
+    Default,
+    CurrencyGold,
+}
+
+public static class StatTypeExtensions
+{
+    public static string ToName(this StatType type)
+    {
+        return LocalizationSettings.StringDatabase.GetLocalizedString("StatTable", type.ToString());
+    }
 }

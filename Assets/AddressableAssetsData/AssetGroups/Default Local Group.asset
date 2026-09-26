@@ -27,6 +27,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 118b1885d4ed9824e97df4ec2b7afa88
+    m_Address: UIDebug
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 193609839bef2e74e8d1e24bd9e34924
     m_Address: 2DGold.10
     m_ReadOnly: 0

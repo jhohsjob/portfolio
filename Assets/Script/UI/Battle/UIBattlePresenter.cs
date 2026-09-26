@@ -43,6 +43,16 @@ public class UIBattlePresenter : IDisposable
         _hpBarManager.InitDependencies(context.mainCamera, context.assetLoader);
 
         Bind();
+
+        _view.PanelChange(UIBattle.PanelMode.Start);
+    }
+
+    public void Dispose()
+    {
+        _topPresenter?.Dispose();
+        _dashPresenter?.Dispose();
+
+        Unbind();
     }
 
     private void Bind()
@@ -51,8 +61,14 @@ public class UIBattlePresenter : IDisposable
         _view.JoystickView.onJoystickMove += _context.onJoystickAction;
 
         EventHelper.AddEventListener(EventName.BattleStatus, OnBattleStatus);
+    }
 
-        _view.PanelChange(UIBattle.PanelMode.Start);
+    private void Unbind()
+    {
+        _view.onClickLobby -= OnClickLobby;
+        _view.JoystickView.onJoystickMove -= _context.onJoystickAction;
+
+        EventHelper.RemoveEventListener(EventName.BattleStatus, OnBattleStatus);
     }
 
     public void Initialize()
@@ -60,17 +76,6 @@ public class UIBattlePresenter : IDisposable
         _topPresenter.Initialize();
         _dashPresenter.Initialize();
         _hpBarManager.Initialize();
-    }
-
-    public void Dispose()
-    {
-        _topPresenter?.Dispose();
-        _dashPresenter?.Dispose();
-
-        _view.onClickLobby -= OnClickLobby;
-        _view.JoystickView.onJoystickMove -= _context.onJoystickAction;
-
-        EventHelper.RemoveEventListener(EventName.BattleStatus, OnBattleStatus);
     }
 
     private void OnClickLobby()

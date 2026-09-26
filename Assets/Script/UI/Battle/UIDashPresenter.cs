@@ -16,21 +16,26 @@ public class UIDashPresenter : IDisposable
         Bind();
     }
 
+    public void Dispose()
+    {
+        Unbind();
+    }
+
     private void Bind()
     {
         _view.onClickDash += HandleClickDash;
         _dashController.onCooldownChanged += UpdateDashUI;
     }
 
-    public void Initialize()
-    {
-        _view.SetCooldown(0f);
-    }
-
-    public void Dispose()
+    private void Unbind()
     {
         _view.onClickDash -= HandleClickDash;
         _dashController.onCooldownChanged -= UpdateDashUI;
+    }
+
+    public void Initialize()
+    {
+        _view.SetCooldown(0f);
     }
 
     private void UpdateDashUI(float timer, float duration)

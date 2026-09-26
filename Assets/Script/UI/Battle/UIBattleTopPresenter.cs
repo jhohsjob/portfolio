@@ -22,6 +22,11 @@ public class UIBattleTopPresenter
         Bind();
     }
 
+    public void Dispose()
+    {
+        Unbind();
+    }
+
     private void Bind()
     {
         _view.onClickPause += OnClickPause;
@@ -31,18 +36,18 @@ public class UIBattleTopPresenter
         EventHelper.AddEventListener(EventName.AddElement, OnAddElement);
     }
 
-    public void Initialize()
-    {
-        _view.SetGold(0);
-    }
-
-    public void Dispose()
+    private void Unbind()
     {
         _view.onClickPause -= OnClickPause;
 
         _context.battleReward.onGoldChanged -= OnGoldChanged;
-
+        
         EventHelper.RemoveEventListener(EventName.AddElement, OnAddElement);
+    }
+
+    public void Initialize()
+    {
+        _view.SetGold(0);
     }
 
     private void OnClickPause()

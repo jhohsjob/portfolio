@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,23 +7,31 @@ using UnityEngine.UI;
 public class UILobbyTop : MonoBehaviour
 {
     [SerializeField]
+    private TextMeshProUGUI _txtLevel;
+    [SerializeField]
     private UIGold _uiGold;
     [SerializeField]
     private Button _btnSetting;
 
     public event Action onClickSetting;
-    public Action onDestroyAction;
-
-    public UIGold goldView => _uiGold;
 
     private void Awake()
     {
-        _btnSetting.onClick.AddListener(() => onClickSetting?.Invoke());
+        _btnSetting.onClick.AddListener(HandleClickSetting);
     }
 
-    private void OnDestroy()
+    public void SetLevelText(int level)
     {
-        onDestroyAction?.Invoke();
-        onDestroyAction = null;
+        _txtLevel.text = $"{level}";
+    }
+
+    public void SetGoldText(int gold)
+    {
+        _uiGold.SetGoldText(gold);
+    }
+
+    private void HandleClickSetting()
+    {
+        onClickSetting?.Invoke();
     }
 }

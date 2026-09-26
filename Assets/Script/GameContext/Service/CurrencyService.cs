@@ -4,26 +4,24 @@ using System.Collections.Generic;
 
 public class CurrencyService : ICurrencyService
 {
-    public Storage _storage;
+    public User _user;
     public SaveService _saveService;
 
     private Dictionary<CurrencyType, int> _currencies = new();
 
     public event Action<CurrencyType, int> onChanged;
 
-    public CurrencyService(Storage storage, SaveService saveService)
+    public CurrencyService(User user, SaveService saveService)
     {
-        _storage = storage;
+        _user = user;
         _saveService = saveService;
     }
 
     public void Init()
     {
-        var data = _storage.data.player;
-
         _currencies.Clear();
 
-        _currencies[CurrencyType.Gold] = data.gold;
+        _currencies[CurrencyType.Gold] = _user.gold;
     }
 
     public int Get(CurrencyType type)
@@ -60,12 +58,10 @@ public class CurrencyService : ICurrencyService
 
     private void Save(CurrencyType type, int value)
     {
-        var data = _storage.data.player;
-
         switch (type)
         {
             case CurrencyType.Gold:
-                data.gold = value;
+                _user.SetGold(value);
                 break;
         }
 

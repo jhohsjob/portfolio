@@ -15,7 +15,22 @@ public class LocaleService : IDisposable
         _storage = storage;
         _saveService = saveService;
 
+        Bind();
+    }
+
+    public void Dispose()
+    {
+        Unbind();
+    }
+
+    private void Bind()
+    {
         LocalizationSettings.SelectedLocaleChanged += HandleRefreshAll;
+    }
+
+    private void Unbind()
+    {
+        LocalizationSettings.SelectedLocaleChanged -= HandleRefreshAll;
     }
 
     public void Init()
@@ -31,11 +46,6 @@ public class LocaleService : IDisposable
         {
             Debug.LogWarning($"Locale not found: {code}");
         }
-    }
-
-    public void Dispose()
-    {
-        LocalizationSettings.SelectedLocaleChanged -= HandleRefreshAll;
     }
 
     private void HandleRefreshAll(Locale locale)

@@ -3,11 +3,13 @@ using System.Threading.Tasks;
 
 public class RewardExecutor
 {
+    private readonly MercenaryService _mercenaryService;
     private readonly ICurrencyService _currency;
 
-    public RewardExecutor(ICurrencyService currency)
+    public RewardExecutor(MercenaryService mercenaryService, ICurrencyService currencyService)
     {
-        _currency = currency;
+        _mercenaryService = mercenaryService;
+        _currency = currencyService;
     }
 
     public Task Apply(RewardBase reward)
@@ -19,7 +21,7 @@ public class RewardExecutor
                 return Task.CompletedTask;
 
             case MercenaryReward mercenary:
-                return MercenaryManager.instance.Acquire(mercenary.mercenaryId);
+                return _mercenaryService.Acquire(mercenary.mercenaryId);
 
             default:
                 return Task.CompletedTask;

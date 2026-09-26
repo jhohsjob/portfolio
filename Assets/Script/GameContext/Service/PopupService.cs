@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public interface IPopupService
 {
     void ShowPopup<T>(string address = "", object data = null, Action<T> onLoadedCallback = null) where T : UIPopup;
+    void ShowCommonPopup(string title, string message);
 
     void ClosePopup(UIPopup popup);
 
@@ -17,6 +18,7 @@ public interface IPopupService
 public class PopupServiceDependencies
 {
     public IAssetLoader assetLoader;
+    public IGameServer gameServer;
     public Storage storage;
 }
 

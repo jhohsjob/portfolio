@@ -14,15 +14,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roleType: 4000
   id: 101003
+  statDefinition:
+    offensive:
+      attack:
+        value: 90
+        growth: 10
+      criticalChance:
+        value: 10
+        growth: 0
+      criticalDamage:
+        value: 150
+        growth: 0
+    defensive:
+      maxHP:
+        value: 1200
+        growth: 20
+      defense:
+        value: 10
+        growth: 1
+    utility:
+      moveSpeed: 3
   behaviourScript: {fileID: 0}
   behaviourTypeName: 
   body: {fileID: 8193831111808689357, guid: 2c940298843c92a4c8ebed2479ec3d3b, type: 3}
   resourceOffset: {x: 0, y: 0, z: 0}
-  maxHP: 10
-  moveSpeed: 3
   moveType: 6
   skillTreeDefinition: {fileID: 11400000, guid: ffce7935b82b11a49beaabef3ad0c9d4,
     type: 2}
   dashCount: 1
   dashCooldown: 4
   icon: {fileID: -1442216141, guid: 8f7a60065e3984c489b9c4d41bc3dc4e, type: 3}
+  acquire:
+    type: 2
+    value: 1000

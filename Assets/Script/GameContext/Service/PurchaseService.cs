@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
@@ -28,16 +29,46 @@ public static class PurchaseFailReasonExtensions
 public class PurchaseService
 {
     private readonly ICurrencyService _currencyService;
-    private readonly ProductStorage _productStorage;
+    private ProductStorage _productStorage;
 
     private RewardExecutor _rewardExecutor;
 
-    public PurchaseService(ICurrencyService currencyService, ProductStorage productStorage)
+    private Dictionary<int, ProductPVO> _dic = new();
+
+    public PurchaseService(MercenaryService mercenaryService, ICurrencyService currencyService)
     {
         _currencyService = currencyService;
-        _productStorage = productStorage;
 
-        _rewardExecutor = new RewardExecutor(currencyService);
+        _rewardExecutor = new RewardExecutor(mercenaryService, currencyService);
+    }
+
+    public void SetupStorage(ProductStorage productStorage)
+    {
+        _productStorage = productStorage;
+    }
+
+    public void InitializeServer(List<ProductPVO> pvos)
+    {
+        _dic.Clear();
+        foreach (var pvo in pvos)
+        {
+            _dic.Add(pvo.id, new ProductPVO(pvo));
+        }
+    }
+
+    public void ApplyPVOs(Dictionary<int, ProductPVO> pvos)
+    {
+        _dic.Clear();
+        foreach (var pvo in pvos.Values)
+        {
+            _dic.Add(pvo.id, new ProductPVO(pvo));
+        }
+    }
+
+    public ProductPVO GetProductPVOById(int id)
+    {
+        _dic.TryGetValue(id, out var product);
+        return product;
     }
 
     public async Task<(bool, PurchaseFailReason reason)> TryPurchase(ProductDefinition product)
@@ -76,13 +107,13 @@ public class PurchaseService
 
     private bool CanLimit(ProductDefinition product)
     {
-        var saveData = _productStorage.Get(product.id);
+        var pvo = _dic[product.id];
 
         switch (product.limitType)
         {
             case ShopLimitType.Daily:
             case ShopLimitType.Lifetime:
-                return saveData.purchaseCount < product.maxPurchaseCount;
+                return pvo.purchaseCount < product.maxPurchaseCount;
 
             default:
                 return false;
@@ -119,7 +150,7 @@ public class PurchaseService
 
     private async Task AddPurchaseCount(ProductDefinition product)
     {
-        var data = _productStorage.Get(product.id);
+        var data = _dic[product.id];
         data.purchaseCount++;
         data.lastPurchaseTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 

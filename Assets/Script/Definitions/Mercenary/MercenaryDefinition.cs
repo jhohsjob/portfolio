@@ -8,4 +8,13 @@ public class MercenaryDefinition : RoleDefinition
     public int dashCount;
     public float dashCooldown;
     public Sprite icon;
+
+    public MercenaryAcquireDefinition acquire;
+}
+
+[System.Serializable]
+public class MercenaryAcquireDefinition
+{
+    public MercenaryAcquireType type;
+    public int value;
 }

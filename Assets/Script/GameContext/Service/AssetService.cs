@@ -253,6 +253,15 @@ public class AssetService : IAssetLoader, IDisposable
     {
         ReleaseAllTask();
 
+        Unbind();
+
+        checkResourceOpDict.Clear();
+        asyncOpDict.Clear();
+        checkAddressOpDict.Clear();
+    }
+
+    private void Unbind()
+    {
         foreach (var async in checkResourceOpDict)
         {
             async.Key.Completed -= async.Value;
@@ -267,10 +276,6 @@ public class AssetService : IAssetLoader, IDisposable
         {
             async.Key.Completed -= async.Value;
         }
-
-        checkResourceOpDict.Clear();
-        asyncOpDict.Clear();
-        checkAddressOpDict.Clear();
     }
 
     public void LoadPrefab(string address, Action<GameObject> onLoaded, Action onFailed = null)

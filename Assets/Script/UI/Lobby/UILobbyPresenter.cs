@@ -10,7 +10,7 @@ public class UILobbyContext
     public ISceneLoader sceneLoader;
     public StageService stageService;
     public User user;
-    public ProductStorage productStorage;
+    public MercenaryService mercenaryService;
     public PurchaseService purchaseService;
 }
 
@@ -27,8 +27,9 @@ public class UILobbyPresenter : IDisposable
         _view = view;
         _context = context;
 
-        _topPresenter = new UILobbyTopPresenter(_view.TopView, new UILobbyTopContext
+        _topPresenter = new UILobbyTopPresenter(_view.topView, new UILobbyTopContext
         {
+            user = _context.user,
             popupService = _context.popupService,
             currencyService = _context.currencyService,
         });
@@ -53,9 +54,26 @@ public class UILobbyPresenter : IDisposable
         Bind();
     }
 
+    public void Dispose()
+    {
+        _topPresenter.Dispose();
+        
+        foreach (var presenter in _middlePresenters)
+        {
+            presenter?.Dispose();
+        }
+
+        Unbind();
+    }
+
     private void Bind()
     {
         _view.onClickBottomMenu += OnClickBottomMenu;
+    }
+
+    private void Unbind()
+    {
+        _view.onClickBottomMenu -= OnClickBottomMenu;
     }
 
     public void Initialize()
@@ -68,17 +86,6 @@ public class UILobbyPresenter : IDisposable
 
         _view.HideAllMiddle();
         _view.ShowMiddle(((int)LobbyMenu.Battle));
-    }
-
-    public void Dispose()
-    {
-        _view.onClickBottomMenu -= OnClickBottomMenu;
-
-        _topPresenter.Dispose();
-        foreach (var presenter in _middlePresenters)
-        {
-            presenter?.Dispose();
-        }
     }
 
     private void OnClickBottomMenu(int index)

@@ -33,8 +33,20 @@ MonoBehaviour:
     m_SerializedLabels:
     - Locale-ko
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ad6c0bdb8b0ca745bbf53e7e6d5b20c
+    m_Address: StatTable_ko
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ko
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9390ebf183954d94aaa3e43260acaef9
     m_Address: ProjectileTable_ko
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ko
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a05e59acbbaa6be419a1b53213bb732e
+    m_Address: ErrorCodeTable_ko
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-ko

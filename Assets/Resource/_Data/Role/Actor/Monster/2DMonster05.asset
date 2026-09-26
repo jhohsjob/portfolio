@@ -14,13 +14,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roleType: 3000
   id: 201005
-  roleName: Monster05
-  roleDescription: Cube
+  statDefinition:
+    offensive:
+      attack:
+        value: 10
+        growth: 1
+      criticalChance:
+        value: 0
+        growth: 0
+      criticalDamage:
+        value: 0
+        growth: 0
+    defensive:
+      maxHP:
+        value: 300
+        growth: 10
+      defense:
+        value: 10
+        growth: 1
+    utility:
+      moveSpeed: 0.5
   behaviourScript: {fileID: 11500000, guid: fdc3a6aea62ea8d4ab6e5dd4e862f26d, type: 3}
-  behaviourTypeName: 
-  resourcePath: 
+  behaviourTypeName: Enemy, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   body: {fileID: 8193831111808689357, guid: 8026a169c25386148ad080a1bd70a94c, type: 3}
   resourceOffset: {x: 0, y: 0, z: 0}
-  maxHP: 4
-  moveSpeed: 0.5
   moveType: 5

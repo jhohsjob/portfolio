@@ -14,15 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roleType: 1000
   id: 301003
-  roleName: Projectile03
-  roleDescription: 
+  statDefinition:
+    offensive:
+      attack: 0
+      attackGrowth: 0
+      criticalChance: 0
+      criticalChanceGrowth: 0
+      criticalDamage: 0
+      criticalDamageGrowth: 0
+    defensive:
+      maxHP: 0
+      maxHPGrowth: 0
+      defense: 0
+      defenseGrowth: 0
+    utility:
+      moveSpeed: 7
   behaviourScript: {fileID: 11500000, guid: f9eb3cd69fb26b04486f64fbed24a5a7, type: 3}
-  behaviourTypeName: 
-  resourcePath: 
+  behaviourTypeName: ActorProjectile, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
   body: {fileID: 8193831111808689357, guid: 823e4d62817e58d47996f20410902720, type: 3}
   resourceOffset: {x: 0, y: 0, z: 0}
-  maxHP: 0
-  moveSpeed: 10
   moveType: 3
   power: 1
   distance: 30

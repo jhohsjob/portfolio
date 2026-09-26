@@ -16,7 +16,7 @@ public class SceneServiceContext
     public ICurrencyService currencyService;
     public StageService stageService;
     public User user;
-    public ProductStorage productStorage;
+    public MercenaryService mercenaryService;
     public PurchaseService purchaseService;
 }
 
@@ -117,7 +117,7 @@ public class SceneService : ISceneLoader
             sceneLoader = this,
             stageService = _context.stageService,
             user = _context.user,
-            productStorage = _context.productStorage,
+            mercenaryService = _context.mercenaryService,
             purchaseService = _context.purchaseService,
         });
         lobbyScene.Initialize();

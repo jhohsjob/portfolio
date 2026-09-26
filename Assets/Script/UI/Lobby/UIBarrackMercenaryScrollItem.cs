@@ -1,7 +1,5 @@
 using System;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
 
@@ -10,40 +8,29 @@ public class UIBarrackMercenaryScrollItem : InfiniteScrollItem
     [SerializeField]
     private Button _btn;
     [SerializeField]
-    private TextMeshProUGUI _name;
+    private UIMercIcon _mercIcon;
     [SerializeField]
-    private Image _icon;
+    private Button _btnBuy;
 
-    private Mercenary _data;
+    private Mercenary _mercenary;
     private Action<Mercenary> _onClick;
+    private Action<Mercenary> _onClickBuy;
 
     private void Awake()
     {
         _btn.onClick.AddListener(OnClickItem);
-    }
-
-    private void OnDestroy()
-    {
-        LocalizationSettings.SelectedLocaleChanged -= locale => { UpdateUI(); };
+        _btnBuy.onClick.AddListener(OnClickBuy);
     }
 
     public override void SetData(int index, object data)
     {
         base.SetData(index, data);
 
-        _data = (Mercenary)data;
+        _mercenary = (Mercenary)data;
 
-        UpdateUI();
+        _mercIcon.Initialize(_mercenary);
 
-        LocalizationSettings.SelectedLocaleChanged += locale => { UpdateUI(); };
-    }
-
-    private void UpdateUI()
-    {
-        _name.text = _data.name;
-        _icon.sprite = _data.icon;
-        _icon.color = _data.isOwned ? Color.wheat : Color.black;
-        // _lock.gameObject.SetActive(!_data.isOwned);
+        _btnBuy.gameObject.SetActive(!_mercenary.isOwned);
     }
 
     public void SetOnClick(Action<Mercenary> onClick)
@@ -51,8 +38,18 @@ public class UIBarrackMercenaryScrollItem : InfiniteScrollItem
         _onClick = onClick;
     }
 
+    public void SetOnClickBuy(Action<Mercenary> onClick)
+    {
+        _onClickBuy = onClick;
+    }
+
     public void OnClickItem()
     {
-        _onClick?.Invoke(_data);
+        _onClick?.Invoke(_mercenary);
+    }
+
+    public void OnClickBuy()
+    {
+        _onClickBuy?.Invoke(_mercenary);
     }
 }

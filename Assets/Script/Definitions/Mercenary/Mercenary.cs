@@ -14,9 +14,12 @@ public class Mercenary : Role<MercenaryDefinition>
     public float dashCooldown => _data.dashCooldown;
     public Sprite icon => _data.icon;
 
-    public bool isOwned => saveData?.isOwned ?? false;
+    private MercenaryPVO _pvo;
 
-    private MercenarySaveData saveData;
+    public override int level => _pvo != null ? _pvo.level : 1;
+    public override int grade => _pvo != null ? _pvo.grade : 0;
+    public int availableMaxLevel;
+    public bool isOwned => _pvo?.isOwned ?? false;
 
     public Mercenary(MercenaryDefinition data) : base(data)
     {
@@ -28,24 +31,10 @@ public class Mercenary : Role<MercenaryDefinition>
         skillDataList.Last().lastData = true;
     }
 
-    public void ApplySaveData(MercenarySaveData saveData)
+    public void ApplyPVO(MercenaryPVO pvo)
     {
-        this.saveData = new MercenarySaveData(saveData);
-    }
+        _pvo = new MercenaryPVO(pvo);
 
-    public MercenarySaveData GetSaveData()
-    {
-        return saveData;
-    }
-
-    public bool Acquire()
-    {
-        if (saveData == null || isOwned == true)
-        {
-            return false;
-        }
-
-        saveData.isOwned = true;
-        return true;
+        _stat.SetLevel(_pvo.level);
     }
 }

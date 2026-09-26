@@ -24,11 +24,11 @@ public abstract class UILobbyMiddlePresenter<TView> : UILobbyMiddleBasePresenter
         Bind();
     }
 
-    protected abstract void Bind();
-    protected abstract void Unbind();
-
     public override void Dispose()
     {
         Unbind();
     }
+
+    protected abstract void Bind();
+    protected abstract void Unbind();
 }

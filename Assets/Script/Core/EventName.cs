@@ -8,4 +8,6 @@ public static class EventName
     public static readonly string HpBarDisconnection = "HpBarDisconnection";
 
     public static readonly string DebugStageClear = "DebugStageClear";
+
+    public static readonly string UpdateUserPvo = "PVOUpdateUser";
 }

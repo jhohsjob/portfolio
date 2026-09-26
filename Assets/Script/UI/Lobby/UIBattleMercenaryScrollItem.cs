@@ -1,6 +1,4 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
 
@@ -9,39 +7,22 @@ public class UIBattleMercenaryScrollItem : InfiniteScrollItem
     [SerializeField]
     private Button _btn;
     [SerializeField]
-    private TextMeshProUGUI _name;
-    [SerializeField]
-    private Image _icon;
+    private UIMercIcon _mercIcon;
 
-    private Mercenary _data;
+    private Mercenary _mercenary;
 
     private void Awake()
     {
         _btn.onClick.AddListener(OnClickItem);
     }
 
-    private void OnDestroy()
-    {
-        LocalizationSettings.SelectedLocaleChanged -= locale => { UpdateUI(); };
-    }
-
     public override void SetData(int index, object data)
     {
         base.SetData(index, data);
 
-        _data = (Mercenary)data;
+        _mercenary = (Mercenary)data;
 
-        UpdateUI();
-
-        LocalizationSettings.SelectedLocaleChanged += locale => { UpdateUI(); };
-    }
-
-    private void UpdateUI()
-    {
-        _name.text = _data.name;
-        _icon.sprite = _data.icon;
-        _icon.color = _data.isOwned ? Color.wheat : Color.black;
-        // _lock.gameObject.SetActive(!_data.isOwned);
+        _mercIcon.Initialize(_mercenary);
     }
 
     public void OnClickItem()

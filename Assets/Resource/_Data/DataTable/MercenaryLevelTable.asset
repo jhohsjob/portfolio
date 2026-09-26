@@ -1,0 +1,115 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a219adc1da53ba44b8f909123ef338f, type: 3}
+  m_Name: MercenaryLevelTable
+  m_EditorClassIdentifier: Assembly-CSharp::MercenaryLevelTable
+  mercenaryLevels:
+  - level: 1
+    levelUpCost: 0
+  - level: 2
+    levelUpCost: 100
+  - level: 3
+    levelUpCost: 200
+  - level: 4
+    levelUpCost: 300
+  - level: 5
+    levelUpCost: 400
+  - level: 6
+    levelUpCost: 500
+  - level: 7
+    levelUpCost: 600
+  - level: 8
+    levelUpCost: 700
+  - level: 9
+    levelUpCost: 800
+  - level: 10
+    levelUpCost: 900
+  - level: 11
+    levelUpCost: 1000
+  - level: 12
+    levelUpCost: 1100
+  - level: 13
+    levelUpCost: 1200
+  - level: 14
+    levelUpCost: 1300
+  - level: 15
+    levelUpCost: 1400
+  - level: 16
+    levelUpCost: 1500
+  - level: 17
+    levelUpCost: 1600
+  - level: 18
+    levelUpCost: 1700
+  - level: 19
+    levelUpCost: 1800
+  - level: 20
+    levelUpCost: 1900
+  - level: 21
+    levelUpCost: 2000
+  - level: 22
+    levelUpCost: 2100
+  - level: 23
+    levelUpCost: 2200
+  - level: 24
+    levelUpCost: 2300
+  - level: 25
+    levelUpCost: 2400
+  - level: 26
+    levelUpCost: 2500
+  - level: 27
+    levelUpCost: 2600
+  - level: 28
+    levelUpCost: 2700
+  - level: 29
+    levelUpCost: 2800
+  - level: 30
+    levelUpCost: 2900
+  - level: 31
+    levelUpCost: 3000
+  - level: 32
+    levelUpCost: 3100
+  - level: 33
+    levelUpCost: 3200
+  - level: 34
+    levelUpCost: 3300
+  - level: 35
+    levelUpCost: 3400
+  - level: 36
+    levelUpCost: 3500
+  - level: 37
+    levelUpCost: 3600
+  - level: 38
+    levelUpCost: 3700
+  - level: 39
+    levelUpCost: 3800
+  - level: 40
+    levelUpCost: 3900
+  - level: 41
+    levelUpCost: 4000
+  - level: 42
+    levelUpCost: 4100
+  - level: 43
+    levelUpCost: 4200
+  - level: 44
+    levelUpCost: 4300
+  - level: 45
+    levelUpCost: 4400
+  - level: 46
+    levelUpCost: 4500
+  - level: 47
+    levelUpCost: 4600
+  - level: 48
+    levelUpCost: 4700
+  - level: 49
+    levelUpCost: 4800
+  - level: 50
+    levelUpCost: 4900

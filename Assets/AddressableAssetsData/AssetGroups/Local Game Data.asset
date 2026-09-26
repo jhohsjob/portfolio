@@ -45,6 +45,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5531f07e5e5a96945b5a8c47a3282cef
+    m_Address: UserLevelTable
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 78c1e11b03de1a247bd2d42a97ab1a12
     m_Address: ShopItemDefinitionTable
     m_ReadOnly: 0
@@ -134,6 +140,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa2c650e41ec98a45bb3f51af464ff6b
+    m_Address: MercenaryLevelTable
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: e1eb3bcf68f81b749a27bb85c521c50e, type: 2}

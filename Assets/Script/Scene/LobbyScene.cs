@@ -10,7 +10,7 @@ public class LobbySceneContext
     public ISceneLoader sceneLoader;
     public StageService stageService;
     public User user;
-    public ProductStorage productStorage;
+    public MercenaryService mercenaryService;
     public PurchaseService purchaseService;
 }
 
@@ -22,6 +22,10 @@ public class LobbyScene : MonoBehaviour
     private UILobby _uiLobby;
 
     private UILobbyPresenter _uiLobbyPresenter;
+
+#if DEBUG_MODE
+    private UIDebug _uiDebug;
+#endif
 
     private void Awake()
     {
@@ -48,9 +52,20 @@ public class LobbyScene : MonoBehaviour
             sceneLoader = _context.sceneLoader,
             stageService = _context.stageService,
             user = _context.user,
-            productStorage = _context.productStorage,
+            mercenaryService = _context.mercenaryService,
             purchaseService = _context.purchaseService,
         });
         _uiLobbyPresenter.Initialize();
+
+#if DEBUG_MODE
+        _context.assetLoader.LoadPrefab("UIDebug", prefab =>
+        {
+            _uiDebug = Instantiate(prefab).GetComponent<UIDebug>();
+            _uiDebug.Initialize(new UIDebugContext
+            {
+                user = _context.user
+            });
+        });
+#endif
     }
 }

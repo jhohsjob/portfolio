@@ -7,6 +7,9 @@ using UnityEngine;
 public class GameDataLoaderContext
 {
     public IAssetLoader assetLoader;
+    public IGameServer gameServer;
+    public User user;
+    public MercenaryService mercenaryService;
     public StageService stageService;
 }
 
@@ -23,7 +26,19 @@ public class GameDataLoader
     {
         var tasks = new List<Task>
         {
-            LoadTableAsync<MercenaryTable>("MercenaryTable", table => MercenaryManager.instance.Setup((table as MercenaryTable).table)),
+            LoadTableAsync<UserLevelTable>("UserLevelTable", table => _context.gameServer.SetupLevels((table as UserLevelTable).userLevels)),
+
+            LoadTableAsync<MercenaryLevelTable>("MercenaryLevelTable", table =>
+            {
+                _context.gameServer.SetupMercenaryLevels((table as MercenaryLevelTable).mercenaryLevels);
+                _context.mercenaryService.SetupLevels((table as MercenaryLevelTable).mercenaryLevels);
+            }),
+
+            LoadTableAsync<MercenaryTable>("MercenaryTable", table =>
+            {
+                _context.gameServer.SetupMercenaries((table as MercenaryTable).table);
+                _context.mercenaryService.SetupDefinition((table as MercenaryTable).table);
+            }),
 
             LoadTableAsync<MonsterTable>("MonsterTable", table => MonsterManager.instance.Setup((table as MonsterTable).table)),
 

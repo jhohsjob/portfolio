@@ -39,6 +39,12 @@ public class UIPopup : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    public void InitDependencies(PopupService popupService, IAssetLoader assetLoader)
+    {
+        _popupService = popupService;
+        _assetLoader = assetLoader;
+    }
+
     public virtual void OnPopupReady(object data = null)
     {
         _isEnableClick = true;
@@ -51,11 +57,5 @@ public class UIPopup : MonoBehaviour
     protected virtual void OnClickClose()
     {
         _popupService.ClosePopup(this);
-    }
-
-    public void InitDependencies(IPopupService popupService, IAssetLoader assetLoader)
-    {
-        _popupService = popupService;
-        _assetLoader = assetLoader;
     }
 }
