@@ -154,8 +154,7 @@ QualitySettings:
     asyncUploadBufferSize: 16
     asyncUploadPersistentBuffer: 1
     resolutionScalingFixedDPIFactor: 1
-    customRenderPipeline: {fileID: 11400000, guid: 7a473bc1a031b544282e163e0cc29264,
-      type: 2}
+    customRenderPipeline: {fileID: 11400000, guid: 7a473bc1a031b544282e163e0cc29264, type: 2}
     terrainQualityOverrides: 0
     terrainPixelError: 1
     terrainDetailDensityScale: 1
@@ -331,6 +330,7 @@ QualitySettings:
     Lumin: 5
     Nintendo 3DS: 5
     Nintendo Switch: 5
+    Nintendo Switch 2: 5
     PS4: 5
     PSP2: 2
     Stadia: 5
