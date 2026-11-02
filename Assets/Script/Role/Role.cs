@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 
 
 public abstract class Role<TData> : RoleBase where TData : RoleDefinition
@@ -12,11 +11,11 @@ public abstract class Role<TData> : RoleBase where TData : RoleDefinition
     public override RoleStat stat => _stat;
 
     public RoleType roleType => _data.roleType;
-    public virtual string localTable => LocalTable.None;
-    public string description => LocalizationSettings.StringDatabase.GetLocalizedString(localTable, _data.GetDescKey());
+    public virtual LocalizationTable localTable => LocalizationTable.None;
+    public string description => LocalManager.GetLocalizedString(localTable, _data.GetDescKey());
 
     public override int id => _data.id;
-    public override string name => LocalizationSettings.StringDatabase.GetLocalizedString(localTable, _data.GetNameKey());
+    public override string name => LocalManager.GetLocalizedString(localTable, _data.GetNameKey());
     public override int level => 1;
     public override int grade => 0;
     public override Type behaviourType => _data.behaviourType;

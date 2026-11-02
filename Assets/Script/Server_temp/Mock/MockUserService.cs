@@ -9,10 +9,11 @@ public class MockUserService
 
     public int level => _userStorage.pvo.level;
     public int gold => _userStorage.pvo.gold;
+    public int gem => _userStorage.pvo.gem;
 
-    public MockUserService(IAssetLoader assetLoader)
+    public MockUserService(IAssetService assetService)
     {
-        _userStorage = new UserStorage(assetLoader);
+        _userStorage = new UserStorage(assetService);
         _levelSystem = new UserLevelSystem();
     }
 
@@ -48,6 +49,20 @@ public class MockUserService
         }
 
         _userStorage.pvo.gold += amount;
+
+        await _userStorage.SaveAsync(_userStorage.pvo);
+
+        return true;
+    }
+
+    public async Task<bool> ChangeGem(int amount)
+    {
+        if (amount == 0)
+        {
+            return false;
+        }
+
+        _userStorage.pvo.gem += amount;
 
         await _userStorage.SaveAsync(_userStorage.pvo);
 

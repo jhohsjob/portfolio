@@ -6,11 +6,13 @@ using UnityEngine;
 
 public class GameDataLoaderContext
 {
-    public IAssetLoader assetLoader;
+    public IAssetService assetService;
     public IGameServer gameServer;
+    public PurchaseService purchaseService;
     public User user;
     public MercenaryService mercenaryService;
     public StageService stageService;
+    public GachaService gachaService;
 }
 
 public class GameDataLoader
@@ -34,21 +36,37 @@ public class GameDataLoader
                 _context.mercenaryService.SetupLevels((table as MercenaryLevelTable).mercenaryLevels);
             }),
 
-            LoadTableAsync<MercenaryTable>("MercenaryTable", table =>
+            LoadTableAsync<MercenaryGradeTable>("MercenaryGradeTable", table =>
             {
-                _context.gameServer.SetupMercenaries((table as MercenaryTable).table);
-                _context.mercenaryService.SetupDefinition((table as MercenaryTable).table);
+                _context.gameServer.SetupMercenaryGrades((table as MercenaryGradeTable).mercenaryGrades);
+                _context.mercenaryService.SetupGrades((table as MercenaryGradeTable).mercenaryGrades);
             }),
 
-            LoadTableAsync<MonsterTable>("MonsterTable", table => MonsterManager.instance.Setup((table as MonsterTable).table)),
+            LoadTableAsync<MercenaryDefinitionTable>("MercenaryDefinitionTable", table =>
+            {
+                _context.gameServer.SetupMercenaries((table as MercenaryDefinitionTable).table);
+                _context.mercenaryService.SetupDefinition((table as MercenaryDefinitionTable).table);
+            }),
 
-            LoadTableAsync<ProjectileTable>("ProjectileTable", table => ProjectileManager.instance.Setup((table as ProjectileTable).table)),
+            LoadTableAsync<MonsterDefinitionTable>("MonsterDefinitionTable", table => MonsterManager.instance.Setup((table as MonsterDefinitionTable).table)),
 
-            LoadTableAsync<DropItemTable>("DropItemTable", table => DropItemManager.instance.Setup((table as DropItemTable).table)),
+            LoadTableAsync<ProjectileDefinitionTable>("ProjectileDefinitionTable", table => ProjectileManager.instance.Setup((table as ProjectileDefinitionTable).table)),
+
+            LoadTableAsync<DropItemDefinitionTable>("DropItemDefinitionTable", table => DropItemManager.instance.Setup((table as DropItemDefinitionTable).table)),
 
             LoadTableAsync<StageDefinitionTable>("StageDefinitionTable", table => _context.stageService.Init((table as StageDefinitionTable).table)),
 
-            LoadTableAsync<ShopItemDefinitionTable>("ShopItemDefinitionTable", table => ShopManager.instance.InitShopItem((table as ShopItemDefinitionTable).table)),
+            LoadTableAsync<ShopItemDefinitionTable>("ShopItemDefinitionTable", table =>
+            {
+                _context.purchaseService.SetupShopItems((table as ShopItemDefinitionTable).table);
+                _context.gameServer.SetupShopItems((table as ShopItemDefinitionTable).table);
+            }),
+
+            LoadTableAsync<GachaDefinitionTable>("GachaDefinitionTable", table =>
+            {
+                _context.gameServer.SetupGacha((table as GachaDefinitionTable).table);
+                _context.gachaService.SetupDefinition((table as GachaDefinitionTable).table);
+            }),
         };
 
         await Task.WhenAll(tasks);
@@ -58,7 +76,7 @@ public class GameDataLoader
     {
         var tcs = new TaskCompletionSource<bool>();
 
-        _context.assetLoader.LoadData(address, data =>
+        _context.assetService.LoadData(address, data =>
         {
             try
             {

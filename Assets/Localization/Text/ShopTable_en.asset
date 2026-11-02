@@ -80,7 +80,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 215824526540800
-    m_Localized: Not enough currency
+    m_Localized: Not enough gold
     m_Metadata:
       m_Items: []
   - m_Id: 215838543904768
@@ -105,6 +105,22 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 566153063497728
     m_Localized: Daily Product
+    m_Metadata:
+      m_Items: []
+  - m_Id: 54941220903649280
+    m_Localized: gem 1000
+    m_Metadata:
+      m_Items: []
+  - m_Id: 54941317720768512
+    m_Localized: gem 5000
+    m_Metadata:
+      m_Items: []
+  - m_Id: 54941377707704320
+    m_Localized: gem 10000
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55063603794739200
+    m_Localized: Not enough gem
     m_Metadata:
       m_Items: []
   references:

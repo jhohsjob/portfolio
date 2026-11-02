@@ -1,4 +1,4 @@
 public class MercenaryAcquireRequest
 {
-    public int mercenaryId;
+    public int mercenaryId { get; set; }
 }

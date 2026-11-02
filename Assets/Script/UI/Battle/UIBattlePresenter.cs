@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UIBattleContext
 {
-    public IAssetLoader assetLoader;
+    public IAssetService assetService;
     public IPopupService popupService;
     public ISceneLoader sceneLoader;
     public IBattleController battleController;
@@ -40,7 +40,7 @@ public class UIBattlePresenter : IDisposable
         _dashPresenter = new UIDashPresenter(_view.DashView, context.dashController, context.onDashAction);
 
         _hpBarManager = view.hpBarManager;
-        _hpBarManager.InitDependencies(context.mainCamera, context.assetLoader);
+        _hpBarManager.InitDependencies(context.mainCamera, context.assetService);
 
         Bind();
 

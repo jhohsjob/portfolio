@@ -103,7 +103,7 @@ public class MercenaryStorage
                 isOwned = false,
                 level = 1,
                 grade = 0,
-                useGold = 0
+                useLevelUpGold = 0
             });
         }
 

@@ -55,6 +55,18 @@ MonoBehaviour:
     m_Key: product_name_703001
     m_Metadata:
       m_Items: []
+  - m_Id: 54941220903649280
+    m_Key: product_name_704001
+    m_Metadata:
+      m_Items: []
+  - m_Id: 54941317720768512
+    m_Key: product_name_704002
+    m_Metadata:
+      m_Items: []
+  - m_Id: 54941377707704320
+    m_Key: product_name_704003
+    m_Metadata:
+      m_Items: []
   - m_Id: 207966741266432
     m_Key: success_result_tile
     m_Metadata:
@@ -72,15 +84,19 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 215824526540800
-    m_Key: failed_not_enough_currency
+    m_Key: NotEnoughGold
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55063603794739200
+    m_Key: NotEnoughGem
     m_Metadata:
       m_Items: []
   - m_Id: 215838543904768
-    m_Key: failed_purchase_limit_exceeded
+    m_Key: PurchaseLimitExceeded
     m_Metadata:
       m_Items: []
   - m_Id: 215851164565504
-    m_Key: failed_invalid_product
+    m_Key: Invalid
     m_Metadata:
       m_Items: []
   - m_Id: 215861709045760
@@ -107,7 +123,6 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 3694898478365016274
-      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables,
-        asm: Unity.Localization}
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
       data:
         m_CustomEpoch: 1777388628607

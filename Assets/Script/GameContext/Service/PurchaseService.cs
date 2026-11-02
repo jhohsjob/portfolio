@@ -1,159 +1,150 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using UnityEngine;
-using UnityEngine.Localization.Settings;
 
 
-public static class PurchaseFailReasonExtensions
+public class PurchaseServiceDependencies
 {
-    public static string ToKey(this PurchaseFailReason reason)
-    {
-        return reason switch
-        {
-            PurchaseFailReason.NotEnoughCurrency => "failed_not_enough_currency",
-            PurchaseFailReason.PurchaseLimitExceeded => "failed_purchase_limit_exceeded",
-            PurchaseFailReason.InvalidProduct => "failed_invalid_product",
-            PurchaseFailReason.AlreadyOwned => "failed_already_owned",
-            PurchaseFailReason.ServerError => "failed_server_error",
-            _ => "failed_unknown_error"
-        };
-    }
-
-    public static string ToMessage(this PurchaseFailReason reason)
-    {
-        return LocalizationSettings.StringDatabase.GetLocalizedString(LocalTable.ShopTable, reason.ToKey());
-    }
+    public IGameServer gameServer;
+    public User user;
+    public ICurrencyService currencyService;
 }
 
 public class PurchaseService
 {
+    private List<ShopItemDefinition> _shopItemList = new();
+    public IReadOnlyList<ShopItemDefinition> shopItemList => _shopItemList;
+
+    private Dictionary<int, ProductDefinition> _products = new();
+    private List<ProductPVO> _pvos = new();
+
+    private readonly IGameServer _gameServer;
+    private User _user;
     private readonly ICurrencyService _currencyService;
-    private ProductStorage _productStorage;
 
-    private RewardExecutor _rewardExecutor;
-
-    private Dictionary<int, ProductPVO> _dic = new();
-
-    public PurchaseService(MercenaryService mercenaryService, ICurrencyService currencyService)
+    public PurchaseService(PurchaseServiceDependencies dependencies)
     {
-        _currencyService = currencyService;
-
-        _rewardExecutor = new RewardExecutor(mercenaryService, currencyService);
+        _gameServer = dependencies.gameServer;
+        _user = dependencies.user;
+        _currencyService = dependencies.currencyService;
     }
 
-    public void SetupStorage(ProductStorage productStorage)
+    public void SetupShopItems(IReadOnlyList<ShopItemDefinition> shopItemDefinitions)
     {
-        _productStorage = productStorage;
+        _shopItemList.AddRange(shopItemDefinitions);
+
+        foreach (var shopItem in shopItemDefinitions)
+        {
+            foreach (var productItem in shopItem.productItems)
+            {
+                _products.Add(productItem.id, productItem);
+            }
+        }
     }
 
     public void InitializeServer(List<ProductPVO> pvos)
     {
-        _dic.Clear();
-        foreach (var pvo in pvos)
-        {
-            _dic.Add(pvo.id, new ProductPVO(pvo));
-        }
-    }
-
-    public void ApplyPVOs(Dictionary<int, ProductPVO> pvos)
-    {
-        _dic.Clear();
-        foreach (var pvo in pvos.Values)
-        {
-            _dic.Add(pvo.id, new ProductPVO(pvo));
-        }
+        _pvos.AddRange(pvos);
     }
 
     public ProductPVO GetProductPVOById(int id)
     {
-        _dic.TryGetValue(id, out var product);
-        return product;
+        return _pvos.Find(x => x.id == id);
     }
 
-    public async Task<(bool, PurchaseFailReason reason)> TryPurchase(ProductDefinition product)
+    public async Task<PurchaseResult> Purchase(int id)
     {
-        if (product == null)
+        if (_products.TryGetValue(id, out var product) == false)
         {
-            return (false, PurchaseFailReason.InvalidProduct);
+            return PurchaseResult.InvalidId;
         }
 
-        if (CanAfford(product) == false)
+        var pvo = _pvos.Find(x => x.id == product.id);
+        if (pvo == null)
         {
-            return (false, PurchaseFailReason.NotEnoughCurrency);
+            return PurchaseResult.Invalid;
+        }
+        
+        switch (product.purchaseType)
+        {
+            case PurchaseType.Free:
+                break;
+
+            case PurchaseType.Currency:
+                if (product.currencyType != CurrencyType.None && CheckCurrency(product) == false)
+                {
+                    switch (product.currencyType)
+                    {
+                        case CurrencyType.Gold:
+                            return PurchaseResult.NotEnoughGold;
+
+                        case CurrencyType.Gem:
+                            return PurchaseResult.NotEnoughGem;
+                    }
+                }
+                break;
+
+            case PurchaseType.IAP:
+                // todo
+                break;
         }
 
-        if (CanLimit(product) == false)
+        var checkLimit = CheckLimit(product, pvo);
+        if (checkLimit != PurchaseResult.Success)
         {
-            return (false, PurchaseFailReason.PurchaseLimitExceeded);
+            return checkLimit;
         }
 
-        var success = await GiveReward(product);
-        if (success == false)
+        PurchaseRequest request = new PurchaseRequest
         {
-            return (false, PurchaseFailReason.ServerError);
+            productId = id
+        };
+
+        PurchaseResponse response = await _gameServer.PurchaseAsync(request);
+
+        if (response.result == NetworkResult.SUCCESS)
+        {
+            pvo = response.product;
+
+            _user.ApplyPVO(response.user);
+
+            return PurchaseResult.Success;
         }
 
-        await AddPurchaseCount(product);
-
-        return (true, PurchaseFailReason.None);
+        return response.result switch
+        {
+            NetworkResult.E_PURCHASE_INVALID => PurchaseResult.Invalid,
+            NetworkResult.E_PURCHASE_INVALID_ID => PurchaseResult.InvalidId,
+            NetworkResult.E_PURCHASE_NOT_ENOUGH_GOLD => PurchaseResult.NotEnoughGold,
+            NetworkResult.E_PURCHASE_NOT_ENOUGH_GEM => PurchaseResult.NotEnoughGem,
+            NetworkResult.E_PURCHASE_LIMIT_EXCEEDED => PurchaseResult.PurchaseLimitExceeded,
+            _ => PurchaseResult.Invalid
+        };
     }
 
-    private bool CanAfford(ProductDefinition product)
+    private bool CheckCurrency(ProductDefinition product)
     {
         int current = _currencyService.Get(product.currencyType);
         return current >= product.price;
     }
 
-    private bool CanLimit(ProductDefinition product)
+    private PurchaseResult CheckLimit(ProductDefinition product, ProductPVO pvo)
     {
-        var pvo = _dic[product.id];
+        PurchaseResult result = PurchaseResult.Success;
 
         switch (product.limitType)
         {
+            case ShopLimitType.None:
+                break;
+
             case ShopLimitType.Daily:
             case ShopLimitType.Lifetime:
-                return pvo.purchaseCount < product.maxPurchaseCount;
-
-            default:
-                return false;
-        }
-    }
-
-    private void SpendCurrency(ProductDefinition product)
-    {
-        _currencyService.Change(product.currencyType, -product.price);
-    }
-
-    private async Task<bool> GiveReward(ProductDefinition product)
-    {
-        foreach (var reward in product.rewards)
-        {
-            var result = reward.CanGive();
-
-            if (result.success == false)
-            {
-                Debug.LogWarning(result.message);
-                return false;
-            }
+                if (pvo.purchaseCount >= product.purchaseLimit)
+                {
+                    result = PurchaseResult.PurchaseLimitExceeded;
+                }
+                break;
         }
 
-        SpendCurrency(product);
-
-        foreach (var reward in product.rewards)
-        {
-            await _rewardExecutor.Apply(reward);
-        }
-
-        return true;
-    }
-
-    private async Task AddPurchaseCount(ProductDefinition product)
-    {
-        var data = _dic[product.id];
-        data.purchaseCount++;
-        data.lastPurchaseTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-
-        await _productStorage.Update(data);
+        return result;
     }
 }

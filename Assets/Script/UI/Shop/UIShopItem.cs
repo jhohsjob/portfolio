@@ -63,7 +63,7 @@ public class UIShopItem : MonoBehaviour
     {
         if (_txtTitle != null && _definition != null)
         {
-            _txtTitle.text = LocalizationSettings.StringDatabase.GetLocalizedString(LocalTable.ShopTable, _definition.GetTitleKey()) ?? string.Empty;
+            _txtTitle.text = LocalManager.GetShopString(_definition.GetTitleKey());
         }
     }
 }

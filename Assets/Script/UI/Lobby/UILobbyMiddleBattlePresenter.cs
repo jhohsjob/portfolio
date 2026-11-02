@@ -39,13 +39,13 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
     public override void Initialize()
     {
         int stageListIndex = _context.stageService.GetStageIndexById(_context.user.lastPlayStageId);
-        _context.assetLoader.LoadPrefab("BattleStageItem", prefab =>
+        _context.assetService.LoadPrefab("BattleStageScrollItem", prefab =>
         {
             _view.SetupStageScroll(prefab, stageListIndex);
         });
 
         int mercenaryListIndex = _mercenaries.FindIndex(x => x.id == _context.user.lastPlayMercenaryId);
-        _context.assetLoader.LoadPrefab("BattleMercenaryItem", prefab =>
+        _context.assetService.LoadPrefab("BattleMercenaryScrollItem", prefab =>
         {
             _view.SetupMercenaryScroll(prefab, mercenaryListIndex);
         });
@@ -77,7 +77,8 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
 
         if (mercenary.isOwned == false)
         {
-            _context.popupService.ShowCommonPopup("알림", "용병이 잠겨 있습니다");
+            _context.popupService.ShowCommonPopup(LocalManager.GetCommonString("notice"),
+                                                  LocalManager.GetCommonString("mercenary_lock"));
             return;
         }
 

@@ -72,4 +72,25 @@ public class MercenaryLevelSystem
 
         return MercenaryLevelUpResult.Success;
     }
+
+    public NetworkResult CheckLevelUpServer(int level, int targetLevel, int userLevel, int gold)
+    {
+        var availableMaxLevel = GetAvailableMaxLevel(level, userLevel, gold);
+        if (level >= availableMaxLevel)
+        {
+            return NetworkResult.E_MERCENARY_MAX_LEVEL;
+        }
+
+        if (targetLevel > availableMaxLevel)
+        {
+            return NetworkResult.E_MERCENARY_INVALID_LEVEL;
+        }
+
+        if (GetLevelUpCost(level, targetLevel) > gold)
+        {
+            return NetworkResult.E_MERCENARY_NOT_ENOUGH_GOLD;
+        }
+
+        return NetworkResult.SUCCESS;
+    }
 }

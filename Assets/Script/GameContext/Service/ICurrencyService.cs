@@ -7,5 +7,4 @@ public interface ICurrencyService
     int Get(CurrencyType type);
     bool HasEnough(CurrencyType type, int amount);
 
-    bool Change(CurrencyType type, int amount, bool save = true);
 }

@@ -15,6 +15,12 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 079ada1163bc33d4a89d8e93b5592962
   m_SerializeEntries:
+  - m_GUID: 07e33522b07f4b94fb35f98d2cecb53c
+    m_Address: GachaScrollItem
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0c5445d415c30404b840ec903ea05598
     m_Address: HardMap
     m_ReadOnly: 0
@@ -64,13 +70,13 @@ MonoBehaviour:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 41d6dcdc609059449b6d590aa97974a4
-    m_Address: BarrackMercenaryItem
+    m_Address: BarrackMercenaryScrollItem
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5c4b2923955283449a049ca95c752b97
-    m_Address: BattleMercenaryItem
+    m_Address: BattleMercenaryScrollItem
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload
@@ -124,7 +130,7 @@ MonoBehaviour:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9d024a0b5fc1b06479ad2fdc7d88ea45
-    m_Address: BattleStageItem
+    m_Address: BattleStageScrollItem
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload

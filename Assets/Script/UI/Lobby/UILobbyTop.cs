@@ -11,6 +11,8 @@ public class UILobbyTop : MonoBehaviour
     [SerializeField]
     private UIGold _uiGold;
     [SerializeField]
+    private UIGem _uiGem;
+    [SerializeField]
     private Button _btnSetting;
 
     public event Action onClickSetting;
@@ -28,6 +30,11 @@ public class UILobbyTop : MonoBehaviour
     public void SetGoldText(int gold)
     {
         _uiGold.SetGoldText(gold);
+    }
+
+    public void SetGemText(int gold)
+    {
+        _uiGem.SetGemText(gold);
     }
 
     private void HandleClickSetting()

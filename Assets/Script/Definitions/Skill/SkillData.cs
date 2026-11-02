@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 
 
 public class SkillData
@@ -8,9 +7,9 @@ public class SkillData
     protected SkillDefinition _data;
 
     public int id => _data.id;
-    public string localTable => LocalTable.SkillTable;
-    public string name => LocalizationSettings.StringDatabase.GetLocalizedString(localTable, _data.GetNameKey());
-    public string description => LocalizationSettings.StringDatabase.GetLocalizedString(localTable, _data.GetDescKey());
+    public LocalizationTable localTable => LocalizationTable.SkillTable;
+    public string name => LocalManager.GetLocalizedString(localTable, _data.GetNameKey());
+    public string description => LocalManager.GetLocalizedString(localTable, _data.GetDescKey());
     public Sprite icon => _data.icon;
 
     public int fireCount => _data.fireCount;

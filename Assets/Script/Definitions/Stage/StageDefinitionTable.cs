@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 [CreateAssetMenu(menuName = "GameTable/StageDefinitionTable")]
-public class StageDefinitionTable : ScriptableObject
+public class StageDefinitionTable : IdSyncTable
 {
     [SerializeField]
     private SerializableDictionary<int, StageDefinition> _table;

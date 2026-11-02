@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c7372e74c2ea3a4d8b239fb0f9bfab7, type: 3}
+  m_Name: MercenaryGradeTable
+  m_EditorClassIdentifier: Assembly-CSharp::MercenaryGradeTable
+  mercenaryGrades:
+  - grade: 1
+    gradeUpCost: 10
+  - grade: 2
+    gradeUpCost: 20
+  - grade: 3
+    gradeUpCost: 30
+  - grade: 4
+    gradeUpCost: 40
+  - grade: 5
+    gradeUpCost: 50

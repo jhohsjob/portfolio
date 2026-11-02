@@ -5,25 +5,4 @@ using UnityEngine;
 public class MercenaryReward : RewardBase
 {
     public int mercenaryId;
-
-    public override RewardResult CanGive()
-    {
-        return RewardResult.Fail("todo");
-        //var mercenary = MercenaryManager.instance.GetMercenaryById(mercenaryId);
-        //if (mercenary == null)
-        //{
-        //    return RewardResult.Fail("id error");
-        //}
-
-        //if (mercenary.isOwned == true)
-        //{
-        //    return RewardResult.Fail("has mercenary");
-        //}
-
-        //return RewardResult.Success(
-        //        RewardType.Mercenary,
-        //        id: mercenaryId,
-        //        message: $"Mercenary {mercenaryId} acquired"
-        //    );
-    }
 }

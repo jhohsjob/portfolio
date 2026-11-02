@@ -4,24 +4,18 @@ using System.Collections.Generic;
 
 public class CurrencyService : ICurrencyService
 {
-    public User _user;
-    public SaveService _saveService;
+    private User _user;
 
     private Dictionary<CurrencyType, int> _currencies = new();
 
     public event Action<CurrencyType, int> onChanged;
 
-    public CurrencyService(User user, SaveService saveService)
+    public CurrencyService(User user)
     {
         _user = user;
-        _saveService = saveService;
-    }
 
-    public void Init()
-    {
-        _currencies.Clear();
-
-        _currencies[CurrencyType.Gold] = _user.gold;
+        _user.onGoldChanged += OnGoldChanged;
+        _user.onGemChanged += OnGemChanged;
     }
 
     public int Get(CurrencyType type)
@@ -34,37 +28,19 @@ public class CurrencyService : ICurrencyService
         return Get(type) >= amount;
     }
 
-    public bool Change(CurrencyType type, int amount, bool save = true)
+    private void UpdateCurrency(CurrencyType type, int value)
     {
-        int current = Get(type);
-        int next = current + amount;
-
-        if (next < 0)
-        {
-            return false;
-        }
-
-        _currencies[type] = next;
-
-        if (save)
-        {
-            Save(type, next);
-        }
-
-        onChanged?.Invoke(type, next);
-
-        return true;
+        _currencies[type] = value;
+        onChanged?.Invoke(type, value);
     }
 
-    private void Save(CurrencyType type, int value)
+    private void OnGoldChanged(int gold)
     {
-        switch (type)
-        {
-            case CurrencyType.Gold:
-                _user.SetGold(value);
-                break;
-        }
+        UpdateCurrency(CurrencyType.Gold, gold);
+    }
 
-        _saveService.RequestSave();
+    private void OnGemChanged(int gem)
+    {
+        UpdateCurrency(CurrencyType.Gem, gem);
     }
 }

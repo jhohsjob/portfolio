@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public interface IPopupService
 {
-    void ShowPopup<T>(string address = "", object data = null, Action<T> onLoadedCallback = null) where T : UIPopup;
+    void ShowPopup<T>(string address = "", object data = null, UIPopupDependencies dependencies = null, Action<T> onLoadedCallback = null) where T : UIPopup;
     void ShowCommonPopup(string title, string message);
 
     void ClosePopup(UIPopup popup);
@@ -17,7 +17,7 @@ public interface IPopupService
 
 public class PopupServiceDependencies
 {
-    public IAssetLoader assetLoader;
+    public IAssetService assetService;
     public IGameServer gameServer;
     public Storage storage;
 }
@@ -46,9 +46,9 @@ public class PopupService : IPopupService
         _alphaLayer = _container.Find("AlphaBlack");
     }
 
-    public void ShowPopup<T>(string address = "", object data = null, Action<T> onLoadedCallback = null) where T : UIPopup
+    public void ShowPopup<T>(string address = "", object data = null, UIPopupDependencies dependencies = null, Action<T> onLoadedCallback = null) where T : UIPopup
     {
-        _context.assetLoader.LoadPrefab(address, (prefab) =>
+        _context.assetService.LoadPrefab(address, (prefab) =>
         {
             GameObject go = UnityEngine.Object.Instantiate(prefab);
             go.transform.SetParent(_container, false);
@@ -64,14 +64,14 @@ public class PopupService : IPopupService
 
             onLoadedCallback?.Invoke(popup);
 
-            SetupPopup(popup, data);
+            SetupPopup(popup, data, dependencies);
         }, () =>
         {
             Debug.LogError("Popup load failed: " + address);
         });
     }
 
-    private void SetupPopup(UIPopup popup, object data)
+    private void SetupPopup(UIPopup popup, object data, UIPopupDependencies dependencies)
     {
         popup.Hide();
 
@@ -85,7 +85,12 @@ public class PopupService : IPopupService
             maskImage.DOFade(0.8f, 0.4f);
         }
 
-        popup.InitDependencies(this, _context.assetLoader);
+        dependencies ??= new UIPopupDependencies();
+
+        dependencies.assetService = _context.assetService;
+        dependencies.popupService = this;
+
+        popup.InitDependencies(dependencies);
         popup.OnPopupReady(data);
         popup.Show();
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HPBarManager : MonoBehaviour
 {
-    private IAssetLoader _assetLoader;
+    private IAssetService _assetService;
 
     private Camera _mainCamera;
     [SerializeField]
@@ -59,15 +59,15 @@ public class HPBarManager : MonoBehaviour
         }
     }
 
-    public void InitDependencies(Camera mainCamera, IAssetLoader assetLoader)
+    public void InitDependencies(Camera mainCamera, IAssetService assetService)
     {
         _mainCamera = mainCamera;
-        _assetLoader = assetLoader;
+        _assetService = assetService;
     }
 
     public void Initialize()
     {
-        _assetLoader.LoadPrefab("HPBar", (prefab) =>
+        _assetService.LoadPrefab("HPBar", (prefab) =>
         {
             _original = prefab.GetComponent<HPBar>();
 

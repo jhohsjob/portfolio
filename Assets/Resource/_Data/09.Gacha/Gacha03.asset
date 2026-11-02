@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6f2fe2fafd5ed9438fef866d6b9f37e, type: 3}
+  m_Name: Gacha03
+  m_EditorClassIdentifier: Assembly-CSharp::GachaDefinition
+  _id: 901003
+  purchaseType: 1
+  currencyType: 2
+  price: 100
+  drawCount: 010000000a000000i
+  rewards:
+  - reward: {fileID: 11400000, guid: c12592a27be927b418b9d3da390337bb, type: 2}
+    weight: 1
+    probability: 16.666666
+  - reward: {fileID: 11400000, guid: f0f1480ac466fa2438ecfe29600548c7, type: 2}
+    weight: 1
+    probability: 16.666666
+  - reward: {fileID: 11400000, guid: 93553bc54c6d78f4a95e89e57952fd42, type: 2}
+    weight: 3
+    probability: 50
+  - reward: {fileID: 11400000, guid: 1bd419a4a9b38c846a21cb80e8729b33, type: 2}
+    weight: 1
+    probability: 16.666666
+  scrollUI: {fileID: 8310758788889849707, guid: a6a490738e3cf1942b5ab11bd36a78b3, type: 3}
+  mainUI: {fileID: 3449494362979187004, guid: 7c592a87f5b6b4a4484581a79716d6a5, type: 3}

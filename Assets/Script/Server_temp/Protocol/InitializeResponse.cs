@@ -5,4 +5,5 @@ public class InitializeResponse
     public UserPVO user;
     public List<MercenaryPVO> mercenaries;
     public List<ProductPVO> products;
+    public List<GachaPVO> gachas;
 }

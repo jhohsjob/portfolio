@@ -1,5 +1,5 @@
 public class MercenaryLevelUpRequest
 {
-    public int mercenaryId;
-    public int targetLevel;
+    public int mercenaryId { get; set; }
+    public int targetLevel { get; set; }
 }

@@ -63,33 +63,34 @@ public enum ActorMoveType
     Direction
 }
 
+public enum PurchaseType
+{
+    Free,
+    Currency,
+    Ad,
+    IAP
+}
+
 public enum CurrencyType
 {
     None,
-    Free,
-    Gold
+    Gold,
+    Gem,
+    Cash
 }
 
 public enum RewardType
 {
     Gold,
+    Gem,
     Mercenary,
 }
 
 public enum ShopLimitType
 {
+    None,
     Daily,
     Lifetime
-}
-
-public enum PurchaseFailReason
-{
-    None = 0,
-    NotEnoughCurrency,
-    PurchaseLimitExceeded,
-    InvalidProduct,
-    AlreadyOwned,
-    ServerError,
 }
 
 public enum LobbyMenu

@@ -55,15 +55,18 @@ public class UIBattleTopPresenter
         _context.battleController.SetStatus(BattleStatus.Paused);
 
         var popupData = new UIPausePopupContext(OnBattleResume, _context.sceneLoader);
-        _context.popupService.ShowPopup<UIPausePopup>(PopupName.UIPausePopup, popupData, popup =>
-        {
-            var presenter = new UIPausePopupPresenter(popup, popupData);
-            popup.onDestroyAction = () =>
+        _context.popupService.ShowPopup<UIPausePopup>(
+            address: PopupName.UIPausePopup,
+            data: popupData,
+            onLoadedCallback: popup =>
             {
-                presenter?.Dispose();
-                presenter = null;
-            };
-        });
+                var presenter = new UIPausePopupPresenter(popup, popupData);
+                popup.onDestroyAction = () =>
+                {
+                    presenter?.Dispose();
+                    presenter = null;
+                };
+            });
     }
 
     private void OnBattleResume()

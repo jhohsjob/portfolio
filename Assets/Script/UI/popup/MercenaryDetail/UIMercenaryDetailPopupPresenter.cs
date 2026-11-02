@@ -1,16 +1,16 @@
 using System;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 
 
 public class UIMercenaryDetailPopupPresenter : IDisposable
 {
     private readonly UIMercenaryDetailPopup _view;
 
-    private IAssetLoader _assetLoader;
-    private IPopupService _popupService;
-    private MercenaryService _mercenaryService;
+    private IAssetService _assetService;
     private User _user;
+    private ICurrencyService _currencyService;
+    private MercenaryService _mercenaryService;
+    private IPopupService _popupService;
 
     private Mercenary _currentMercenary;
     public int currentLevel => _currentMercenary.level;
@@ -29,12 +29,13 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
         Unbind();
     }
 
-    public void InitDependencies(IAssetLoader assetLoader, IPopupService popupService, MercenaryService mercenaryService, User user)
+    public void InitDependencies(UIMercenaryDetailPopupDependencies mercenaryDependencies)
     {
-        _assetLoader = assetLoader;
-        _popupService = popupService;
-        _mercenaryService = mercenaryService;
-        _user = user;
+        _assetService = mercenaryDependencies.assetService;
+        _user = mercenaryDependencies.user;
+        _currencyService = mercenaryDependencies.currencyService;
+        _mercenaryService = mercenaryDependencies.mercenaryService;
+        _popupService = mercenaryDependencies.popupService;
     }
 
     public void OnPopupReady(object data)
@@ -46,7 +47,7 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
 
         _currentMercenary = mercenary;
 
-        _assetLoader.LoadPrefab("UIMercenaryDetailPopupSkillScrollItem", prefab =>
+        _assetService.LoadPrefab("UIMercenaryDetailPopupSkillScrollItem", prefab =>
         {
             _view.SetupSkillScroll(prefab, 0);
         });
@@ -59,6 +60,7 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
         _view.onClickLevelUp += OnClickLevelUp;
         _view.onClickLevelUpMax += OnClickLevelUpMax;
         _view.onClickLevelReset += OnClickLevelReset;
+        _view.onClickGradeUp += OnClickGradeUp;
 
         _view.onClickLeft += OnClickLeft;
         _view.onClickRight += OnClickRight;
@@ -77,6 +79,7 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
         _view.onClickLevelUp -= OnClickLevelUp;
         _view.onClickLevelUpMax -= OnClickLevelUpMax;
         _view.onClickLevelReset -= OnClickLevelReset;
+        _view.onClickGradeUp -= OnClickGradeUp;
 
         _view.onClickLeft -= OnClickLeft;
         _view.onClickRight -= OnClickRight;
@@ -92,21 +95,21 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
 
     private void Refresh()
     {
-        int availableMaxLevel = _mercenaryService.GetAvailableMaxLevel(_currentMercenary.level, _user.level, _user.gold);
+        int availableMaxLevel = _mercenaryService.GetAvailableMaxLevel(_currentMercenary.level, _user.level, _currencyService.Get(CurrencyType.Gold));
 
         _view.ShowMercenary(_currentMercenary, availableMaxLevel);
     }
 
     public bool CanLevelUp()
     {
-        int availableMaxLevel = _mercenaryService.GetAvailableMaxLevel(_currentMercenary.level, _user.level, _user.gold);
+        int availableMaxLevel = _mercenaryService.GetAvailableMaxLevel(_currentMercenary.level, _user.level, _currencyService.Get(CurrencyType.Gold));
 
         return _currentMercenary.isOwned && _currentMercenary.level < availableMaxLevel;
     }
 
     public bool CanPreviewLevelUp(int previewLevel)
     {
-        int availableMaxLevel = _mercenaryService.GetAvailableMaxLevel(_currentMercenary.level, _user.level, _user.gold);
+        int availableMaxLevel = _mercenaryService.GetAvailableMaxLevel(_currentMercenary.level, _user.level, _currencyService.Get(CurrencyType.Gold));
 
         return _currentMercenary.isOwned && previewLevel < availableMaxLevel;
     }
@@ -125,9 +128,20 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
                 break;
 
             default:
-                _popupService.ShowCommonPopup("알림", LocalizationSettings.StringDatabase.GetLocalizedString("ErrorCodeTable", result.ToString()));
+                _popupService.ShowCommonPopup(LocalManager.GetCommonString("notice"),
+                                              LocalManager.GetErrorCodeString(result.ToString()));
                 break;
         }
+    }
+
+    public bool CanGradeUp()
+    {
+        return _currentMercenary.isOwned && _mercenaryService.CanGradeUp(_currentMercenary.grade, _currentMercenary.grade + 1, _currentMercenary.shardCount);
+    }
+
+    public int GetGradeUpCost()
+    {
+        return _mercenaryService.GetGradeUpCost(_currentMercenary.grade, _currentMercenary.grade + 1);
     }
 
     private async void OnClickLevelUp()
@@ -146,7 +160,7 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
 
     private async void OnClickLevelUpMax()
     {
-        int availableMaxLevel = _mercenaryService.GetAvailableMaxLevel(_currentMercenary.level, _user.level, _user.gold);
+        int availableMaxLevel = _mercenaryService.GetAvailableMaxLevel(_currentMercenary.level, _user.level, _currencyService.Get(CurrencyType.Gold));
 
         var result = await _mercenaryService.LevelUp(_currentMercenary.id, availableMaxLevel);
 
@@ -164,7 +178,25 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
                 break;
 
             default:
-                _popupService.ShowCommonPopup("알림", LocalizationSettings.StringDatabase.GetLocalizedString("ErrorCodeTable", result.ToString()));
+                _popupService.ShowCommonPopup(LocalManager.GetCommonString("notice"),
+                                              LocalManager.GetErrorCodeString(result.ToString()));
+                break;
+        }
+    }
+
+    private async void OnClickGradeUp()
+    {
+        var result = await _mercenaryService.GradeUp(_currentMercenary.id);
+
+        switch (result)
+        {
+            case MercenaryGradeUpResult.Success:
+                Refresh();
+                break;
+
+            default:
+                _popupService.ShowCommonPopup(LocalManager.GetCommonString("notice"),
+                                              LocalManager.GetErrorCodeString(result.ToString()));
                 break;
         }
     }

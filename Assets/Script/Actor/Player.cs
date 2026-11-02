@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class PlayerContext
 {
     public IBattleState battleState;
-    public IAssetLoader assetLoader;
+    public IAssetService assetService;
     public IActorSpawner actorSpawner;
     public Func<Vector3, Vector3, float, float, Transform> GetNearestEnemy;
 }
@@ -76,7 +76,7 @@ public class Player : Actor<Mercenary>
             return;
         }
 
-        _context.assetLoader.LoadMaterial("DashMat", mat =>
+        _context.assetService.LoadMaterial("DashMat", mat =>
         {
             var dashView = _view.GetView<ActorDashView>();
             dashView.SetMaterial(mat);

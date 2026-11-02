@@ -1,4 +1,4 @@
 public class MercenaryLevelResetRequest
 {
-    public int mercenaryId;
+    public int mercenaryId { get; set; }
 }

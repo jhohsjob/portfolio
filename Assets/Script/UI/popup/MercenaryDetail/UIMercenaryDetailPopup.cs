@@ -1,11 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+
+public class UIMercenaryDetailPopupDependencies : UIPopupDependencies
+{
+    public User user;
+    public ICurrencyService currencyService;
+    public MercenaryService mercenaryService;
+}
 
 public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
 {
@@ -64,6 +70,8 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
     [SerializeField]
     private UIButton _btnLevelReset;
     [SerializeField]
+    private UIButton _btnGradeUp;
+    [SerializeField]
     private Button _btnLeft;
     [SerializeField]
     private Button _btnRight;
@@ -76,8 +84,8 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
     private GameObject _gradeRoot;
     private Image[] _gradeIcons;
 
-    private MercenaryService _mercenaryService;
     private User _user; 
+    private MercenaryService _mercenaryService;
 
     private MercenaryView _currentMercenaryView;
 
@@ -89,6 +97,7 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
     public event Action<int> onLongPressLevelUp;
     public event Action onClickLevelUpMax;
     public event Action onClickLevelReset;
+    public event Action onClickGradeUp;
     public event Action onClickLeft;
     public event Action onClickRight;
     public event Action<float> onDrag;
@@ -137,6 +146,7 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
     {
         _btnLevelUpMax.AddListener(HandleClickLevelUpMax);
         _btnLevelReset.AddListener(HandleClickLevelReset);
+        _btnGradeUp.AddListener(HandleClickGradeUp);
         _btnLeft.onClick.AddListener(HandleClickLeft);
         _btnRight.onClick.AddListener(HandleClickRight);
 
@@ -150,6 +160,7 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
     {
         _btnLevelUpMax.RemoveListener(HandleClickLevelUpMax);
         _btnLevelReset.RemoveListener(HandleClickLevelReset);
+        _btnGradeUp.RemoveListener(HandleClickGradeUp);
         _btnLeft.onClick.RemoveListener(HandleClickLeft);
         _btnRight.onClick.RemoveListener(HandleClickRight);
 
@@ -159,26 +170,31 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
         _longBtnLevelUp.onLongPressEnd -= HandleLongPressEnd;
     }
 
-    public void AddDependencies(MercenaryService mercenaryService, User user)
+    public override void InitDependencies(UIPopupDependencies dependencies)
     {
-        _mercenaryService = mercenaryService;
-        _user = user;
+        base.InitDependencies(dependencies);
+
+        if (dependencies is UIMercenaryDetailPopupDependencies mercenaryDependencies)
+        {
+            _user = mercenaryDependencies.user;
+            _mercenaryService = mercenaryDependencies.mercenaryService;
+
+            _presenter.InitDependencies(mercenaryDependencies);
+        }
     }
 
     public override void OnPopupReady(object data = null)
     {
-        _presenter.InitDependencies(_assetLoader, _popupService, _mercenaryService, _user);
-        _presenter.OnPopupReady(data);
-
         base.OnPopupReady(data);
+
+        _presenter.OnPopupReady(data);
     }
 
     public void SetupSkillScroll(GameObject prefab, int initIndex)
     {
         _skillScroll.Initialize(
             provider: new SkillScrollProvider(this),
-            factory: new SkillItemFactory(prefab),
-            itemCount: onGetSkillCount?.Invoke() ?? 0,
+            factory: new ScrollItemFactory(prefab),
             initPos: initIndex
         );
         _skillScroll.UpdateItems();
@@ -224,6 +240,11 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
     private void HandleClickLevelReset()
     {
         onClickLevelReset?.Invoke();
+    }
+
+    private void HandleClickGradeUp()
+    {
+        onClickGradeUp?.Invoke();
     }
 
     private void HandleClickLeft()
@@ -277,11 +298,21 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
         _longBtnLevelUp.interactable = canLevelUp;
         _btnLevelUpMax.interactable = canLevelUp;
         _btnLevelReset.interactable = _presenter.CanLevelReset();
+        _btnGradeUp.interactable = _presenter.CanGradeUp();
 
         _previewLevel = mercenary.level;
 
         _btnLevelUp.text = $"Lv. {mercenary.level}";
         _btnLevelUpMax.text = $"Max Lv. {availableMaxLevel}";
+        if (mercenary.grade == GameConfig.MercenaryGradeLimit)
+        {
+            _btnGradeUp.text = "Grade Max";
+        }
+        else
+        {
+            int gradeUpCost = _presenter.GetGradeUpCost();
+            _btnGradeUp.text = $"Grade Up\n({mercenary.shardCount} / {gradeUpCost})";
+        }
 
         _skillScroll.UpdateItems();
 

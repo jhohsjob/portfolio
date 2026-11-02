@@ -11,13 +11,14 @@ public interface ISceneLoader
 
 public class SceneServiceContext
 {
-    public IAssetLoader assetLoader;
+    public IAssetService assetService;
     public IPopupService popupService;
     public ICurrencyService currencyService;
     public StageService stageService;
     public User user;
     public MercenaryService mercenaryService;
     public PurchaseService purchaseService;
+    public GachaService gachaService;
 }
 
 public class SceneService : ISceneLoader
@@ -64,7 +65,7 @@ public class SceneService : ISceneLoader
 
         battleScene.InitDependencies(new BattleSceneContext
         {
-            assetLoader = _context.assetLoader,
+            assetService = _context.assetService,
             popupService = _context.popupService,
             sceneLoader = this,
             currencyService = _context.currencyService,
@@ -111,7 +112,7 @@ public class SceneService : ISceneLoader
 
         lobbyScene.InitDependencies(new LobbySceneContext
         {
-            assetLoader = _context.assetLoader,
+            assetService = _context.assetService,
             popupService = _context.popupService,
             currencyService = _context.currencyService,
             sceneLoader = this,
@@ -119,6 +120,7 @@ public class SceneService : ISceneLoader
             user = _context.user,
             mercenaryService = _context.mercenaryService,
             purchaseService = _context.purchaseService,
+            gachaService = _context.gachaService
         });
         lobbyScene.Initialize();
     }

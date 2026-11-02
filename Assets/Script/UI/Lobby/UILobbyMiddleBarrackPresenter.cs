@@ -16,7 +16,6 @@ public class UILobbyMiddleBarrackPresenter : UILobbyMiddlePresenter<UILobbyMiddl
     {
         _view.onClickShow += OnClickShow;
         _view.onClickItem += OnClickItem;
-        _view.onClickBuy += OnClickBuy;
         _view.onGetMercenary = GetMercenaryByIndex;
         _view.onGetItemCount = () => _mercenaries?.Count ?? 0;
     }
@@ -25,14 +24,13 @@ public class UILobbyMiddleBarrackPresenter : UILobbyMiddlePresenter<UILobbyMiddl
     {
         _view.onClickShow -= OnClickShow;
         _view.onClickItem -= OnClickItem;
-        _view.onClickBuy -= OnClickBuy;
         _view.onGetMercenary = null;
         _view.onGetItemCount = null;
     }
 
     public override void Initialize()
     {
-        _context.assetLoader.LoadPrefab("BarrackMercenaryItem", prefab =>
+        _context.assetService.LoadPrefab("BarrackMercenaryScrollItem", prefab =>
         {
             _view.SetupScroll(prefab);
         });
@@ -55,23 +53,14 @@ public class UILobbyMiddleBarrackPresenter : UILobbyMiddlePresenter<UILobbyMiddl
 
     private void OnClickItem(Mercenary mercenary)
     {
-        _context.popupService.ShowPopup<UIMercenaryDetailPopup>(PopupName.UIMercenaryDetailPopup, mercenary, popup =>
-        {
-            popup.AddDependencies(_context.mercenaryService, _context.user);
-        });
-    }
-
-    private async void OnClickBuy(Mercenary mercenary)
-    {
-        var result = await _mercenaryService.Acquire(mercenary.id);
-
-        if (result == MercenaryAcquireResult.Success)
-        {
-            _view.RefreshScroll();
-        }
-        else
-        {
-            // todo : error
-        }
+        _context.popupService.ShowPopup<UIMercenaryDetailPopup>(
+            address: PopupName.UIMercenaryDetailPopup,
+            data: mercenary,
+            dependencies: new UIMercenaryDetailPopupDependencies
+            {
+                user = _context.user,
+                currencyService = _context.currencyService,
+                mercenaryService = _mercenaryService,
+            });
     }
 }

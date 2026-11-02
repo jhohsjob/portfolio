@@ -1,11 +1,10 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 
 
 public class UIProductResultData
 {
-    public bool success;
+    public PurchaseResult result;
     public string message;
 }
 
@@ -28,8 +27,8 @@ public class UIProductResultPopup : UIPopup
             return;
         }
 
-        string key = popupData.success ? "success_result_tile" : "failed_result_title";
-        _txtResult.text = LocalizationSettings.StringDatabase.GetLocalizedString(LocalTable.ShopTable, key);
+        string key = popupData.result == PurchaseResult.Success ? "success_result_tile" : "failed_result_title";
+        _txtResult.text = LocalManager.GetShopString(key);
         _txtMessage.text = popupData.message;
 
         base.OnPopupReady(data);

@@ -3,13 +3,25 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 
+public class MercenaryServiceDependencies
+{
+    public RoleFactory factory;
+    public IGameServer gameServer;
+    public User user;
+    public ICurrencyService currencyService;
+}
+
 public class MercenaryService
 {
     private RoleFactory _factory;
-    private User _user;
     private IGameServer _gameServer;
+    private User _user;
+    private ICurrencyService _currencyService;
 
-    private MercenaryLevelSystem _levelSystem;
+    private MercenaryLevelSystem _levelSystem = new();
+    private MercenaryGradeSystem _gradeSystem = new();
+
+    private Dictionary<int, MercenaryDefinition> _mercenaryDefinitions;
 
     /// <summary>
     /// key : mercenary Id
@@ -19,14 +31,13 @@ public class MercenaryService
     private List<Mercenary> _list = new();
     public IReadOnlyList<Mercenary> list => _list;
 
-    public MercenaryService(RoleFactory factory, User user, IGameServer gameServer)
+    public MercenaryService(MercenaryServiceDependencies dependencies)
     {
-        _factory = factory;
-        _user = user;
-        _gameServer = gameServer;
+        _factory = dependencies.factory;
+        _gameServer = dependencies.gameServer;
+        _user = dependencies.user;
+        _currencyService = dependencies.currencyService;
 
-        _levelSystem = new MercenaryLevelSystem();
-        
         Bind();
     }
 
@@ -37,16 +48,16 @@ public class MercenaryService
 
     private void Bind()
     {
-        EventHelper.AddEventListener(EventName.UpdateUserPvo, OnUpdateUserPvo);
     }
 
     private void Unbind()
     {
-        EventHelper.AddEventListener(EventName.UpdateUserPvo, OnUpdateUserPvo);
     }
 
     public void SetupDefinition(Dictionary<int, MercenaryDefinition> mercenaryDatas)
     {
+        _mercenaryDefinitions = mercenaryDatas;
+
         foreach (var data in mercenaryDatas)
         {
             var mercenary = (Mercenary)_factory.Create(data.Value);
@@ -58,6 +69,11 @@ public class MercenaryService
     public void SetupLevels(List<MercenaryLevelData> mercenaryLevels)
     {
         _levelSystem.Setup(mercenaryLevels);
+    }
+
+    public void SetupGrades(List<MercenaryGradeData> mercenaryGrades)
+    {
+        _gradeSystem.Setup(mercenaryGrades);
     }
 
     public void InitializeServer(List<MercenaryPVO> pvos)
@@ -89,6 +105,12 @@ public class MercenaryService
         {
             Debug.LogWarning($"Mercenary with ID {pvo.id} not found in the dictionary.");
         }
+    }
+
+    public MercenaryDefinition GetMercDefinitionById(int id)
+    {
+        _mercenaryDefinitions.TryGetValue(id, out var mercenary);
+        return mercenary;
     }
 
     public Mercenary GetMercenaryByIndex(int index)
@@ -155,53 +177,6 @@ public class MercenaryService
         return _levelSystem.GetAvailableMaxLevel(level, userLevel, gold);
     }
 
-    public async Task<MercenaryAcquireResult> Acquire(int id)
-    {
-        if (_dic.TryGetValue(id, out var mercenary) == false)
-        {
-            return MercenaryAcquireResult.InvalidId;
-        }
-
-        if (mercenary.isOwned == true)
-        {
-            return MercenaryAcquireResult.AlreadyOwned;
-        }
-
-        MercenaryAcquireResult result = MercenaryAcquireResult.Success;
-
-        MercenaryAcquireRequest request = new();
-        request.mercenaryId = id;
-
-        var response = await _gameServer.MercenaryAcquireAsync(request);
-
-        if (response.result == NetworkResult.SUCCESS)
-        {
-            ApplyPVO(response.mercenary);
-
-            _user.ApplyPVO(response.user);
-        }
-        else
-        {
-            switch (response.result)
-            {
-                case NetworkResult.E_MERCENARY_INVALIED:
-                    result = MercenaryAcquireResult.Invalid;
-                    break;
-                case NetworkResult.E_MERCENARY_INVALIED_ID:
-                    result = MercenaryAcquireResult.InvalidId;
-                    break;
-                case NetworkResult.E_MERCENARY_NOT_ENOUGH_GOLD:
-                    result = MercenaryAcquireResult.NotEnoughGold;
-                    break;
-                case NetworkResult.E_MERCENARY_ALREADY_OWNED:
-                    result = MercenaryAcquireResult.AlreadyOwned;
-                    break;
-            }
-        }
-
-        return result;
-    }
-
     public async Task<MercenaryLevelUpResult> LevelUp(int id, int targetLevel)
     {
         if (_dic.TryGetValue(id, out var mercenary) == false)
@@ -214,17 +189,17 @@ public class MercenaryService
             return MercenaryLevelUpResult.NotOwned;
         }
 
-        MercenaryLevelUpResult result = MercenaryLevelUpResult.Success;
-
-        result = _levelSystem.CheckLevelUp(mercenary.level, targetLevel, _user.level, _user.gold);
-        if (result != MercenaryLevelUpResult.Success)
+        var check = _levelSystem.CheckLevelUp(mercenary.level, targetLevel, _user.level, _currencyService.Get(CurrencyType.Gold));
+        if (check != MercenaryLevelUpResult.Success)
         {
-            return result;
+            return check;
         }
 
-        MercenaryLevelUpRequest request = new();
-        request.mercenaryId = id;
-        request.targetLevel = targetLevel;
+        MercenaryLevelUpRequest request = new MercenaryLevelUpRequest
+        {
+            mercenaryId = id,
+            targetLevel = targetLevel
+        };
 
         var response = await _gameServer.MercenaryLevelUpAsync(request);
 
@@ -233,33 +208,20 @@ public class MercenaryService
             ApplyPVO(response.mercenary);
 
             _user.ApplyPVO(response.user);
-        }
-        else
-        {
-            switch (response.result)
-            {
-                case NetworkResult.E_MERCENARY_INVALIED:
-                    result = MercenaryLevelUpResult.Invalid;
-                    break;
-                case NetworkResult.E_MERCENARY_INVALIED_ID:
-                    result = MercenaryLevelUpResult.InvalidId;
-                    break;
-                case NetworkResult.E_MERCENARY_NOT_OWNED:
-                    result = MercenaryLevelUpResult.NotOwned;
-                    break;
-                case NetworkResult.E_MERCENARY_MAX_LEVEL:
-                    result = MercenaryLevelUpResult.MaxLevel;
-                    break;
-                case NetworkResult.E_MERCENARY_INVALIED_LEVEL:
-                    result = MercenaryLevelUpResult.InvalidLevel;
-                    break;
-                case NetworkResult.E_MERCENARY_NOT_ENOUGH_GOLD:
-                    result = MercenaryLevelUpResult.NotEnoughGold;
-                    break;
-            }
+
+            return MercenaryLevelUpResult.Success;
         }
 
-        return result;
+        return response.result switch
+        {
+            NetworkResult.E_MERCENARY_INVALID => MercenaryLevelUpResult.Invalid,
+            NetworkResult.E_MERCENARY_INVALID_ID => MercenaryLevelUpResult.InvalidId,
+            NetworkResult.E_MERCENARY_NOT_OWNED => MercenaryLevelUpResult.NotOwned,
+            NetworkResult.E_MERCENARY_MAX_LEVEL => MercenaryLevelUpResult.MaxLevel,
+            NetworkResult.E_MERCENARY_INVALID_LEVEL => MercenaryLevelUpResult.InvalidLevel,
+            NetworkResult.E_MERCENARY_NOT_ENOUGH_GOLD => MercenaryLevelUpResult.NotEnoughGold,
+            _ => MercenaryLevelUpResult.Invalid
+        };
     }
 
     public async Task<MercenaryLevelResetResult> LevelReset(int id)
@@ -274,10 +236,10 @@ public class MercenaryService
             return MercenaryLevelResetResult.NotOwned;
         }
 
-        MercenaryLevelResetResult result = MercenaryLevelResetResult.Success;
-
-        MercenaryLevelResetRequest request = new();
-        request.mercenaryId = id;
+        MercenaryLevelResetRequest request = new MercenaryLevelResetRequest
+        {
+            mercenaryId = id
+        };
 
         var response = await _gameServer.MercenaryLevelResetAsync(request);
 
@@ -286,24 +248,66 @@ public class MercenaryService
             ApplyPVO(response.mercenary);
 
             _user.ApplyPVO(response.user);
-        }
-        else
-        {
-            switch (response.result)
-            {
-                case NetworkResult.E_MERCENARY_INVALIED:
-                    result = MercenaryLevelResetResult.Invalid;
-                    break;
-                case NetworkResult.E_MERCENARY_INVALIED_ID:
-                    result = MercenaryLevelResetResult.InvalidId;
-                    break;
-                case NetworkResult.E_MERCENARY_NOT_OWNED:
-                    result = MercenaryLevelResetResult.NotOwned;
-                    break;
-            }
+
+            return MercenaryLevelResetResult.Success;
         }
 
-        return result;
+        return response.result switch
+        {
+            NetworkResult.E_MERCENARY_INVALID => MercenaryLevelResetResult.Invalid,
+            NetworkResult.E_MERCENARY_INVALID_ID => MercenaryLevelResetResult.InvalidId,
+            NetworkResult.E_MERCENARY_NOT_OWNED => MercenaryLevelResetResult.NotOwned,
+            _ => MercenaryLevelResetResult.Invalid
+        };
+    }
+
+    public bool CanGradeUp(int grade, int targetGrade, int shardCount)
+    {
+        return _gradeSystem.CheckGradeUp(grade, targetGrade, shardCount) == MercenaryGradeUpResult.Success;
+    }
+
+    public int GetGradeUpCost(int grade, int targetGrade)
+    {
+        return _gradeSystem.GetGradeUpCost(grade, targetGrade);
+    }
+
+    public async Task<MercenaryGradeUpResult> GradeUp(int id)
+    {
+        if (_dic.TryGetValue(id, out var mercenary) == false)
+        {
+            return MercenaryGradeUpResult.InvalidId;
+        }
+
+        if (mercenary.isOwned == false)
+        {
+            return MercenaryGradeUpResult.NotOwned;
+        }
+
+        MercenaryGradeUpRequest request = new MercenaryGradeUpRequest
+        {
+            mercenaryId = id,
+            targetGrade = mercenary.grade + 1
+        };
+
+        var response = await _gameServer.MercenaryGradeUpAsync(request);
+
+        if (response.result == NetworkResult.SUCCESS)
+        {
+            ApplyPVO(response.mercenary);
+
+            return MercenaryGradeUpResult.Success;
+        }
+
+        return response.result switch
+        {
+            NetworkResult.E_MERCENARY_INVALID => MercenaryGradeUpResult.Invalid,
+            NetworkResult.E_MERCENARY_INVALID_ID => MercenaryGradeUpResult.InvalidId,
+            NetworkResult.E_MERCENARY_NOT_OWNED => MercenaryGradeUpResult.NotOwned,
+            NetworkResult.E_MERCENARY_MAX_GRADE => MercenaryGradeUpResult.MaxGrade,
+            NetworkResult.E_MERCENARY_INVALID_GRADE => MercenaryGradeUpResult.InvalidGrade,
+            NetworkResult.E_MERCENARY_NOT_ENOUGH_SHARD => MercenaryGradeUpResult.NotEnoughShard,
+            _ => MercenaryGradeUpResult.Invalid
+        };
     }
 
     public int CalcIndex(int index)
@@ -318,15 +322,5 @@ public class MercenaryService
         }
 
         return index;
-    }
-
-    private void OnUpdateUserPvo(object sender, object data)
-    {
-        if (sender is not User user)
-        {
-            return;
-        }
-
-        // _levelSystem.UpdateMaxLevel(user.level, user.mercenaryLevelLimit);
     }
 }

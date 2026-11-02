@@ -4,10 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
+public class UIPopupDependencies
+{
+    public IAssetService assetService;
+    public IPopupService popupService;
+}
+
 public class UIPopup : MonoBehaviour
 {
+    protected IAssetService _assetService;
     protected IPopupService _popupService;
-    protected IAssetLoader _assetLoader;
 
     [SerializeField]
     protected Button _btnClose;
@@ -39,10 +45,10 @@ public class UIPopup : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void InitDependencies(PopupService popupService, IAssetLoader assetLoader)
+    public virtual void InitDependencies(UIPopupDependencies dependencies)
     {
-        _popupService = popupService;
-        _assetLoader = assetLoader;
+        _popupService = dependencies.popupService;
+        _assetService = dependencies.assetService;
     }
 
     public virtual void OnPopupReady(object data = null)

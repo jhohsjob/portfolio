@@ -46,6 +46,22 @@ MonoBehaviour:
     m_Localized: Resume
     m_Metadata:
       m_Items: []
+  - m_Id: 66694581520760832
+    m_Localized: Notice
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67058929065852928
+    m_Localized: This mercenary is locked
+    m_Metadata:
+      m_Items: []
+  - m_Id: 68147346281398272
+    m_Localized: 1 Draw
+    m_Metadata:
+      m_Items: []
+  - m_Id: 68147423787941888
+    m_Localized: 10 Draw
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

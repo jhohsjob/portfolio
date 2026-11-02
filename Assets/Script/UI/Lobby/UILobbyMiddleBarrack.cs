@@ -2,8 +2,39 @@ using System;
 using UnityEngine;
 
 
-public class UILobbyMiddleBarrack : UILobbyMiddleBase, IScrollDataProvider
+public class UILobbyMiddleBarrack : UILobbyMiddleBase
 {
+    private class BarrackScrollProvider : IScrollDataProvider
+    {
+        private readonly UILobbyMiddleBarrack _view;
+
+        public BarrackScrollProvider(UILobbyMiddleBarrack view)
+        {
+            _view = view;
+        }
+
+        public int GetItemCount()
+        {
+            return _view.onGetItemCount?.Invoke() ?? 0;
+        }
+
+        public void Bind(int index, InfiniteScrollItem item)
+        {
+            if (item is not UIBarrackMercenaryScrollItem mercenaryItem)
+            {
+                return;
+            }
+            var mercenary = _view.onGetMercenary?.Invoke(index);
+            if (mercenary == null)
+            {
+                return;
+            }
+
+            mercenaryItem.SetData(index, mercenary);
+            mercenaryItem.SetOnClick(mercenary => _view.onClickItem?.Invoke(mercenary));
+        }
+    }
+
     [SerializeField]
     private VerticalInfiniteScroll _scroll;
 
@@ -11,12 +42,13 @@ public class UILobbyMiddleBarrack : UILobbyMiddleBase, IScrollDataProvider
     public Func<int, Mercenary> onGetMercenary;
     public Func<int> onGetItemCount;
     public Action<Mercenary> onClickItem;
-    public Action<Mercenary> onClickBuy;
 
     public void SetupScroll(GameObject prefab)
     {
-        var factory = new MercenaryItemFactory(prefab);
-        _scroll.Initialize(this, factory, onGetItemCount?.Invoke() ?? 0);
+        _scroll.Initialize(
+            provider: new BarrackScrollProvider(this),
+            factory: new ScrollItemFactory(prefab)
+        );
     }
 
     protected override void OnShow()
@@ -29,27 +61,5 @@ public class UILobbyMiddleBarrack : UILobbyMiddleBase, IScrollDataProvider
     public void RefreshScroll()
     {
         _scroll.UpdateItems();
-    }
-
-    public int GetItemCount()
-    {
-        return onGetItemCount?.Invoke() ?? 0;
-    }
-
-    public void Bind(int index, InfiniteScrollItem item)
-    {
-        if (item is not UIBarrackMercenaryScrollItem mercenaryItem)
-        {
-            return;
-        }
-        var mercenary = onGetMercenary?.Invoke(index);
-        if (mercenary == null)
-        {
-            return;
-        }
-
-        mercenaryItem.SetData(index, mercenary);
-        mercenaryItem.SetOnClick(mercenary => onClickItem?.Invoke(mercenary));
-        mercenaryItem.SetOnClickBuy(mercenary => onClickBuy?.Invoke(mercenary));
     }
 }

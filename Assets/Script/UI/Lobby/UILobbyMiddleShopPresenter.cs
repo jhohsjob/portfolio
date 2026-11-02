@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using UnityEngine;
 using UnityEngine.Localization.Settings;
 
 
@@ -15,7 +12,7 @@ public class UILobbyMiddleShopPresenter : UILobbyMiddlePresenter<UILobbyMiddleSh
 
     public UILobbyMiddleShopPresenter(UILobbyMiddleShop view, UILobbyContext context) : base(view, context)
     {
-        _shopDefinitions = ShopManager.instance.shopItemList;
+        _shopDefinitions = context.purchaseService.shopItemList;
     }
 
     protected override void Bind()
@@ -78,76 +75,52 @@ public class UILobbyMiddleShopPresenter : UILobbyMiddlePresenter<UILobbyMiddleSh
 
     private int GetPurchaseCount(int productId)
     {
-        var data = _context.purchaseService.GetProductPVOById(productId);
-        return data?.purchaseCount ?? 0;
+        var pvo = _context.purchaseService.GetProductPVOById(productId);
+        return pvo?.purchaseCount ?? 0;
     }
 
-    private void OnProductClickRequest(ShopItemDefinition shopDef, ProductDefinition productDef, UIProduct targetProductUi)
+    private async void OnProductClickRequest(ShopItemDefinition shop, ProductDefinition product, UIProduct uiTarget)
     {
         if (_isPurchasing == true)
         {
             return;
         }
 
-        if (targetProductUi == null)
+        if (uiTarget == null)
         {
             return;
         }
 
-        _ = ExecutePurchaseTask(shopDef, productDef, targetProductUi);
+        _isPurchasing = true;
+
+        var result = await _context.purchaseService.Purchase(product.id);
+
+        string productName = LocalManager.GetShopString(product.GetNameKey());
+        string message = string.Empty;
+        switch (result)
+        {
+            case PurchaseResult.Success:
+                int newCount = GetPurchaseCount(product.id);
+                uiTarget.UpdatePurchaseCount(newCount);
+
+                message = LocalManager.GetShopString("success_result_message", new object[] { new { product_name = productName } });
+                break;
+
+            default:
+                message = LocalManager.GetShopString("failed_result_message", new object[] { new { product_name = productName, reason = result.ToString() } });
+                break;
+        }
+
+        ShowResultPopup(result, message);
+
+        _isPurchasing = false;
     }
 
-    private async Task ExecutePurchaseTask(ShopItemDefinition shopDef, ProductDefinition productDef, UIProduct targetProductUi)
-    {
-        try
-        {
-            _isPurchasing = true;
-
-            var (success, reason) = await _context.purchaseService.TryPurchase(productDef);
-
-            if (targetProductUi == null)
-            {
-                return;
-            }
-
-            string productName = LocalizationSettings.StringDatabase.GetLocalizedString(LocalTable.ShopTable, productDef.GetNameKey());
-            string message = string.Empty;
-
-            if (success)
-            {
-                int newCount = GetPurchaseCount(productDef.id);
-                targetProductUi.UpdatePurchaseCount(newCount);
-
-                message = LocalizationSettings.StringDatabase.GetLocalizedString(
-                    LocalTable.ShopTable,
-                    "success_result_message",
-                    new object[] { new { product_name = productName } });
-            }
-            else
-            {
-                message = LocalizationSettings.StringDatabase.GetLocalizedString(
-                    LocalTable.ShopTable,
-                    "failed_result_message",
-                    new object[] { new { product_name = productName, reason = reason.ToMessage() } });
-            }
-
-            ShowResultPopup(success, message);
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"구매 트랜잭션 도중 예외 발생: {ex.Message}");
-        }
-        finally
-        {
-            _isPurchasing = false;
-        }
-    }
-
-    private void ShowResultPopup(bool success, string message)
+    private void ShowResultPopup(PurchaseResult result, string message)
     {
         _context.popupService.ShowPopup<UIProductResultPopup>(PopupName.UIProductResultPopup, new UIProductResultData
         {
-            success = success,
+            result = result,
             message = message
         });
     }

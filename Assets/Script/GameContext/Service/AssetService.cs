@@ -6,7 +6,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
 
 
-public interface IAssetLoader
+public interface IAssetService
 {
     void LoadPrefab(string address,Action<GameObject> onLoaded, Action onFailed = null);
     void LoadMaterial(string address, Action<Material> onLoaded, Action onFailed = null);
@@ -234,7 +234,7 @@ public class AssetLoadingTask
     }
 }
 
-public class AssetService : IAssetLoader, IDisposable
+public class AssetService : IAssetService, IDisposable
 {
     private List<AssetLoadingTask> taskList;
     private Dictionary<AsyncOperationHandle, Action<AsyncOperationHandle>> asyncOpDict;

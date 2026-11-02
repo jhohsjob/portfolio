@@ -37,7 +37,9 @@ public class HorizontalInfiniteScroll : InfiniteScrollBase
 
     protected override void UpdateContentSize()
     {
-        int columnCount = Mathf.CeilToInt((float)_itemCount / _rowCount);
+        int itemCount = _provider.GetItemCount();
+
+        int columnCount = Mathf.CeilToInt((float)itemCount / _rowCount);
 
         float width = columnCount * (_itemWidth + _spacingX);
 
@@ -46,6 +48,8 @@ public class HorizontalInfiniteScroll : InfiniteScrollBase
 
     public override void UpdateItems()
     {
+        int itemCount = _provider?.GetItemCount() ?? 0;
+
         float scrollX = _content.anchoredPosition.x;
         int firstColumn = Mathf.FloorToInt(-scrollX / (_itemWidth + _spacingX));
 
@@ -63,7 +67,7 @@ public class HorizontalInfiniteScroll : InfiniteScrollBase
 
             var item = _items[i];
 
-            if (dataIndex < 0 || dataIndex >= _itemCount)
+            if (dataIndex < 0 || dataIndex >= itemCount)
             {
                 item.gameObject.SetActive(false);
                 continue;
@@ -89,6 +93,8 @@ public class HorizontalInfiniteScroll : InfiniteScrollBase
 
     protected override float GetNearestSnapPosition()
     {
+        int itemCount = _provider.GetItemCount();
+
         float unit = _itemWidth + _spacingX;
         float viewport = _scrollRect.viewport.rect.width;
 
@@ -98,7 +104,7 @@ public class HorizontalInfiniteScroll : InfiniteScrollBase
 
         int index = Mathf.RoundToInt(centerInContent / unit);
 
-        index = Mathf.Clamp(index, 0, _itemCount - 1);
+        index = Mathf.Clamp(index, 0, itemCount - 1);
 
         float itemCenter = index * unit + _itemWidth * 0.5f;
 
@@ -109,12 +115,14 @@ public class HorizontalInfiniteScroll : InfiniteScrollBase
 
     protected override float GetPositionByIndex(int index)
     {
+        int itemCount = _provider.GetItemCount();
+
         float unit = _itemWidth + _spacingX;
         float viewport = _scrollRect.viewport.rect.width;
 
-        index = Mathf.Clamp(index, 0, _itemCount - 1);
+        index = Mathf.Clamp(index, 0, itemCount - 1);
 
-        float contentWidth = _itemCount * unit - _spacingX;
+        float contentWidth = itemCount * unit - _spacingX;
         float result = 0f;
         if (_useCenterScale)
         {

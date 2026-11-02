@@ -19,14 +19,14 @@ public class MockMercenaryHandler
         var definition = _mercenaryService.GetMercenaryDefinitionById(request.mercenaryId);
         if (definition == null)
         {
-            response.result = NetworkResult.E_MERCENARY_INVALIED_ID;
+            response.result = NetworkResult.E_MERCENARY_INVALID_ID;
             return response;
         }
 
         var pvo = _mercenaryService.GetMercenaryPVOById(request.mercenaryId);
         if (pvo == null)
         {
-            response.result = NetworkResult.E_MERCENARY_INVALIED;
+            response.result = NetworkResult.E_MERCENARY_INVALID;
             return response;
         }
 
@@ -63,14 +63,14 @@ public class MockMercenaryHandler
         var definition = _mercenaryService.GetMercenaryDefinitionById(request.mercenaryId);
         if (definition == null)
         {
-            response.result = NetworkResult.E_MERCENARY_INVALIED_ID;
+            response.result = NetworkResult.E_MERCENARY_INVALID_ID;
             return response;
         }
 
         var pvo = _mercenaryService.GetMercenaryPVOById(request.mercenaryId);
         if (pvo == null)
         {
-            response.result = NetworkResult.E_MERCENARY_INVALIED;
+            response.result = NetworkResult.E_MERCENARY_INVALID;
             return response;
         }
 
@@ -83,21 +83,9 @@ public class MockMercenaryHandler
         var cost = _mercenaryService.GetLevelUpCost(pvo.level, request.targetLevel);
 
         var checkResult = _mercenaryService.CheckLevelUp(pvo.level, request.targetLevel, _userService.level, _userService.gold);
-        if (checkResult != MercenaryLevelUpResult.Success)
+        if (checkResult != NetworkResult.SUCCESS)
         {
-            switch (checkResult)
-            {
-                case MercenaryLevelUpResult.MaxLevel:
-                    response.result = NetworkResult.E_MERCENARY_INVALIED_ID;
-                    break;
-                case MercenaryLevelUpResult.InvalidLevel:
-                    response.result = NetworkResult.E_MERCENARY_INVALIED_LEVEL;
-                    break;
-                case MercenaryLevelUpResult.NotEnoughGold:
-                    response.result = NetworkResult.E_MERCENARY_NOT_ENOUGH_GOLD;
-                    break;
-            }
-
+            response.result = checkResult;
             return response;
         }
 
@@ -118,14 +106,14 @@ public class MockMercenaryHandler
         var definition = _mercenaryService.GetMercenaryDefinitionById(request.mercenaryId);
         if (definition == null)
         {
-            response.result = NetworkResult.E_MERCENARY_INVALIED_ID;
+            response.result = NetworkResult.E_MERCENARY_INVALID_ID;
             return response;
         }
 
         var pvo = _mercenaryService.GetMercenaryPVOById(request.mercenaryId);
         if (pvo == null)
         {
-            response.result = NetworkResult.E_MERCENARY_INVALIED;
+            response.result = NetworkResult.E_MERCENARY_INVALID;
             return response;
         }
 
@@ -135,13 +123,45 @@ public class MockMercenaryHandler
             return response;
         }
 
-        await _userService.ChangeGold(pvo.useGold);
+        await _userService.ChangeGold(pvo.useLevelUpGold);
 
         await _mercenaryService.LevelResetAsync(request.mercenaryId);
 
         response.mercenary = pvo;
         response.user = _userService.GetUser();
 
+        return response;
+    }
+
+    public async Task<MercenaryGradeUpResponse> MercenaryGradeUpAsync(MercenaryGradeUpRequest request)
+    {
+        MercenaryGradeUpResponse response = new();
+        var definition = _mercenaryService.GetMercenaryDefinitionById(request.mercenaryId);
+        if (definition == null)
+        {
+            response.result = NetworkResult.E_MERCENARY_INVALID_ID;
+            return response;
+        }
+        var pvo = _mercenaryService.GetMercenaryPVOById(request.mercenaryId);
+        if (pvo == null)
+        {
+            response.result = NetworkResult.E_MERCENARY_INVALID;
+            return response;
+        }
+        if (pvo.isOwned == false)
+        {
+            response.result = NetworkResult.E_MERCENARY_NOT_OWNED;
+            return response;
+        }
+        var cost = _mercenaryService.GetGradeUpCost(pvo.grade, request.targetGrade);
+        var checkResult = _mercenaryService.CheckGradeUp(pvo.grade, request.targetGrade, pvo.shardCount);
+        if (checkResult != NetworkResult.SUCCESS)
+        {
+            response.result = checkResult;
+            return response;
+        }
+        await _mercenaryService.GradeUpAsync(request.mercenaryId, request.targetGrade);
+        response.mercenary = pvo;
         return response;
     }
 }

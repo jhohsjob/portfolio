@@ -8,11 +8,13 @@ public class MockMercenaryService
 
     private Dictionary<int, MercenaryDefinition> _mercenaryDefinitions;
     private MercenaryLevelSystem _levelSystem;
+    private MercenaryGradeSystem _gradeSystem;
 
     public MockMercenaryService()
     {
         _mercenaryStorage = new MercenaryStorage();
         _levelSystem = new MercenaryLevelSystem();
+        _gradeSystem = new MercenaryGradeSystem();
     }
 
     public void SetupMercenaries(Dictionary<int, MercenaryDefinition> mercenaries)
@@ -25,6 +27,11 @@ public class MockMercenaryService
     public void SetupMercenaryLevels(List<MercenaryLevelData> mercenaryLevels)
     {
         _levelSystem.Setup(mercenaryLevels);
+    }
+
+    public void SetupMercenaryGrades(List<MercenaryGradeData> mercenaryGrades)
+    {
+        _gradeSystem.Setup(mercenaryGrades);
     }
 
     public async Task<List<MercenaryPVO>> InitializeAsync()
@@ -45,7 +52,7 @@ public class MockMercenaryService
     {
         var mercenary = _mercenaryStorage.GetById(id);
         mercenary.level = targetLevel;
-        mercenary.useGold += useGold;
+        mercenary.useLevelUpGold += useGold;
 
         await _mercenaryStorage.UpdateAsync(mercenary);
     }
@@ -54,8 +61,37 @@ public class MockMercenaryService
     {
         var mercenary = _mercenaryStorage.GetById(id);
         mercenary.level = 1;
-        mercenary.useGold = 0;
+        mercenary.useLevelUpGold = 0;
 
+        await _mercenaryStorage.UpdateAsync(mercenary);
+    }
+
+    public async Task<bool> AddShard(int id, int shardCount)
+    {
+        if (shardCount <= 0)
+        {
+            return false;
+        }
+
+        var mercenary = _mercenaryStorage.GetById(id);
+        if (mercenary == null)
+        {
+            return false;
+        }
+
+        if (mercenary.isOwned == false)
+        {
+            mercenary.isOwned = true;
+        }
+        mercenary.shardCount += shardCount;
+        await _mercenaryStorage.UpdateAsync(mercenary);
+        return true;
+    }
+
+    public async Task GradeUpAsync(int id, int targetGrade)
+    {
+        var mercenary = _mercenaryStorage.GetById(id);
+        mercenary.grade = targetGrade;
         await _mercenaryStorage.UpdateAsync(mercenary);
     }
 
@@ -83,13 +119,23 @@ public class MockMercenaryService
         return _mercenaryStorage.GetById(id);
     }
 
-    public MercenaryLevelUpResult CheckLevelUp(int level, int targetLevel, int userLevel, int gold)
+    public NetworkResult CheckLevelUp(int level, int targetLevel, int userLevel, int gold)
     {
-        return _levelSystem.CheckLevelUp(level, targetLevel, userLevel, gold);
+        return _levelSystem.CheckLevelUpServer(level, targetLevel, userLevel, gold);
     }
 
     public int GetLevelUpCost(int level, int targetLevel)
     {
         return _levelSystem.GetLevelUpCost(level, targetLevel);
+    }
+
+    public NetworkResult CheckGradeUp(int grade, int targetGrade, int shardCount)
+    {
+        return _gradeSystem.CheckGradeUpServer(grade, targetGrade, shardCount);
+    }
+
+    public int GetGradeUpCost(int grade, int targetGrade)
+    {
+        return _gradeSystem.GetGradeUpCost(grade, targetGrade);
     }
 }

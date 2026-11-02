@@ -6,6 +6,7 @@ public class UserDefaultData : ScriptableObject
     public int level;
     public int exp;
     public int gold;
+    public int gem;
     public int mercenaryId;
     public int stageId;
     public string locale;

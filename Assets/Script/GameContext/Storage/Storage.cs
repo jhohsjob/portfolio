@@ -7,15 +7,15 @@ using UnityEngine;
 
 public class Storage
 {
-    private IAssetLoader _assetLoader;
+    private IAssetService _assetService;
 
     private static string _savePath => Path.Combine(Application.persistentDataPath, "save.json");
 
     public GameSaveData data { get; private set; }
 
-    public Storage(IAssetLoader assetLoader)
+    public Storage(IAssetService assetService)
     {
-        _assetLoader = assetLoader;
+        _assetService = assetService;
     }
 
     public async Task SaveAsync(GameSaveData data)
@@ -98,7 +98,7 @@ public class Storage
     {
         var tcs = new TaskCompletionSource<UserDefaultData>();
 
-        _assetLoader.LoadData("UserDefaultData", data =>
+        _assetService.LoadData("UserDefaultData", data =>
         {
             var userData = data as UserDefaultData;
             if (userData == null)

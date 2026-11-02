@@ -3,68 +3,92 @@ using System;
 
 public class GameContext
 {
-    public AssetService AssetService { get; }
-    public RoleFactory RoleFactory { get; }
-
+    public IAssetService AssetService { get; }
     public Storage Storage { get; }
     public SaveService SaveService { get; }
-
     public IGameServer GameServer { get; }
-
     public User User { get; }
-    public MercenaryService MercenaryService { get; }
     public CurrencyService CurrencyService { get; }
+    public RoleFactory RoleFactory { get; }
+    public MercenaryService MercenaryService { get; }
     public PurchaseService PurchaseService { get; }
+    public GachaService GachaService { get; }
     public LocaleService LocaleService { get; }
-
     public StageService StageService { get; }
-
     public SceneService SceneService { get; }
     public PopupService PopupService { get; }
-
     public GameDataLoader GameDataLoader { get; }
 
     public GameContext()
     {
         AssetService = new AssetService();
-        RoleFactory = new RoleFactory();
 
         Storage = new Storage(AssetService);
+
         SaveService = new SaveService(Storage);
 
         GameServer = new MockGameServer(AssetService);
 
         User = new User(GameServer);
-        MercenaryService = new MercenaryService(RoleFactory, User, GameServer);
-        CurrencyService = new CurrencyService(User, SaveService);
-        PurchaseService = new PurchaseService(MercenaryService, CurrencyService);
+
+        CurrencyService = new CurrencyService(User);
+
+        RoleFactory = new RoleFactory();
+
+        MercenaryService = new MercenaryService(new MercenaryServiceDependencies
+        {
+            factory = RoleFactory,
+            gameServer = GameServer,
+            user = User,
+            currencyService = CurrencyService
+        });
+
+        PurchaseService = new PurchaseService(new PurchaseServiceDependencies
+        {
+            gameServer = GameServer,
+            user = User,
+            currencyService = CurrencyService
+        });
+
+        GachaService = new GachaService(new GachaServiceDependencies
+        {
+            gameServer = GameServer,
+            user = User,
+            currencyService = CurrencyService,
+            mercenaryService = MercenaryService
+        });
+
         LocaleService = new LocaleService(Storage, SaveService);
 
         StageService = new StageService();
 
         PopupService = new PopupService(new PopupServiceDependencies
         {
-            assetLoader = AssetService,
+            assetService = AssetService,
+            storage = Storage,
             gameServer = GameServer,
-            storage = Storage
         });
+
         SceneService = new SceneService(new SceneServiceContext
         {
-            assetLoader = AssetService,
-            popupService = PopupService,
-            currencyService = CurrencyService,
-            stageService = StageService,
+            assetService = AssetService,
             user = User,
+            currencyService = CurrencyService,
             mercenaryService = MercenaryService,
             purchaseService = PurchaseService,
+            gachaService = GachaService,
+            stageService = StageService,
+            popupService = PopupService,
         });
 
         GameDataLoader = new GameDataLoader(new GameDataLoaderContext
         {
-            assetLoader = AssetService,
+            assetService = AssetService,
             gameServer = GameServer,
             user = User,
             mercenaryService = MercenaryService,
+            purchaseService = PurchaseService,
+            gachaService = GachaService,
             stageService = StageService,
         });
     }

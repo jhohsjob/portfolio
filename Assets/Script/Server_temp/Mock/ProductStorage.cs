@@ -2,39 +2,33 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
-
-
-public class ProductPVO
-{
-    public int id;
-    public int purchaseCount;
-    public long lastPurchaseTime;
-    public long lastResetTime;
-
-    public ProductPVO() { }
-
-    public ProductPVO(ProductPVO other)
-    {
-        id = other.id;
-        purchaseCount = other.purchaseCount;
-        lastPurchaseTime = other.lastPurchaseTime;
-        lastResetTime = other.lastResetTime;
-    }
-}
 
 
 public class ProductStorage
 {
     private static string _savePath => Path.Combine(Application.persistentDataPath, "product_save.json");
 
+    private Dictionary<int, ProductDefinition> _productDefinitions;
+
     private List<ProductPVO> _pvos = new();
     public IReadOnlyList<ProductPVO> pvos => _pvos;
 
     public ProductStorage()
     {
+    }
+
+    public void SetupProduct(Dictionary<int, ProductDefinition> products)
+    {
+        _productDefinitions = products;
+    }
+
+    public ProductPVO GetById(int id)
+    {
+        return _pvos.FirstOrDefault(x => x.id == id);
     }
 
     public async Task SaveAsync(List<ProductPVO> saveDatas)
@@ -66,7 +60,7 @@ public class ProductStorage
             throw;
         }
 
-        this._pvos = JsonConvert.DeserializeObject<List<ProductPVO>>(json);
+        _pvos = JsonConvert.DeserializeObject<List<ProductPVO>>(json);
     }
 
     public async Task LoadAsync()
@@ -100,13 +94,13 @@ public class ProductStorage
 
     private Task<List<ProductPVO>> LoadDefaultDataAsync()
     {
-        var shopItemDatas = ShopManager.instance.shopItemList;
+        var products = _productDefinitions.Values.ToList();
         var pvos = new List<ProductPVO>();
-        foreach (var shopItem in shopItemDatas)
+        foreach (var product in products)
         {
             pvos.Add(new ProductPVO
             {
-                id = shopItem.id,
+                id = product.id,
                 purchaseCount = 0,
                 lastPurchaseTime = 0,
                 lastResetTime = 0
@@ -134,13 +128,14 @@ public class ProductStorage
         await Task.CompletedTask;
     }
 
-    public async Task Update(ProductPVO changeData)
+    public async Task UpdateAsync(ProductPVO changeData)
     {
         var index = _pvos.FindIndex(pvo => pvo.id == changeData.id);
         if (index == -1)
         {
             return;
         }
+
         _pvos[index] = changeData;
 
         await SaveAsync(_pvos);

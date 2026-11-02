@@ -34,8 +34,9 @@ public class UIMercIcon : MonoBehaviour
     private void UpdateUI()
     {
         _txtName.text = _mercenary.name;
-        _txtLevel.text = $"l.{_mercenary.level}";
-        _txtGrade.text = $"g.{_mercenary.grade}";
+
+        _txtLevel.text = _mercenary.isOwned ? $"L.{_mercenary.level}" : string.Empty;
+        _txtGrade.text = _mercenary.isOwned ? $"G.{_mercenary.grade}" : string.Empty;
         _icon.sprite = _mercenary.icon;
         _icon.color = _mercenary.isOwned ? Color.wheat : Color.black;
         // _lock.gameObject.SetActive(!_data.isOwned);

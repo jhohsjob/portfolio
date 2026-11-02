@@ -4,8 +4,8 @@ using System;
 public class UILobbyTopContext
 {
     public User user;
-    public IPopupService popupService;
     public ICurrencyService currencyService;
+    public IPopupService popupService;
 }
 
 public class UILobbyTopPresenter : IDisposable
@@ -31,8 +31,7 @@ public class UILobbyTopPresenter : IDisposable
         _view.onClickSetting += OnClickSetting;
 
         _context.currencyService.onChanged += OnChangeCurrency;
-
-        EventHelper.AddEventListener(EventName.UpdateUserPvo, OnUpdateUserPvo);
+        _context.user.OnExpChanged += OnUpdateUserExp;
     }
 
     private void Unbind()
@@ -40,15 +39,15 @@ public class UILobbyTopPresenter : IDisposable
         _view.onClickSetting -= OnClickSetting;
 
         _context.currencyService.onChanged -= OnChangeCurrency;
-
-        EventHelper.RemoveEventListener(EventName.UpdateUserPvo, OnUpdateUserPvo);
+        _context.user.OnExpChanged -= OnUpdateUserExp;
     }
 
     public void Initialize()
     {
         _view.SetLevelText(_context.user.level);
-        int currentGold = _context.currencyService.Get(CurrencyType.Gold);
-        _view.SetGoldText(currentGold);
+        var currency = _context.currencyService;
+        _view.SetGoldText(currency.Get(CurrencyType.Gold));
+        _view.SetGemText(currency.Get(CurrencyType.Gem));
     }
 
     private void OnClickSetting()
@@ -58,20 +57,19 @@ public class UILobbyTopPresenter : IDisposable
 
     private void OnChangeCurrency(CurrencyType type, int result)
     {
-        if (type == CurrencyType.Gold)
+        switch (type)
         {
-            _view.SetGoldText(result);
+            case CurrencyType.Gold:
+                _view.SetGoldText(result);
+                break;
+            case CurrencyType.Gem:
+                _view.SetGemText(result);
+                break;
         }
     }
 
-    private void OnUpdateUserPvo(object sender, object data)
+    private void OnUpdateUserExp(int exp, int level)
     {
-        if (sender is not User user)
-        {
-            return;
-        }
-        
-        _view.SetLevelText(user.level);
-        _view.SetGoldText(user.gold);
+        _view.SetLevelText(level);
     }
 }

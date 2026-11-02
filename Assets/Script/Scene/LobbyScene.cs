@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LobbySceneContext
 {
-    public IAssetLoader assetLoader;
+    public IAssetService assetService;
     public IPopupService popupService;
     public ICurrencyService currencyService;
     public ISceneLoader sceneLoader;
@@ -12,6 +12,7 @@ public class LobbySceneContext
     public User user;
     public MercenaryService mercenaryService;
     public PurchaseService purchaseService;
+    public GachaService gachaService;
 }
 
 public class LobbyScene : MonoBehaviour
@@ -46,7 +47,7 @@ public class LobbyScene : MonoBehaviour
     {
         _uiLobbyPresenter = new UILobbyPresenter(_uiLobby, new UILobbyContext
         {
-            assetLoader = _context.assetLoader,
+            assetService = _context.assetService,
             popupService = _context.popupService,
             currencyService = _context.currencyService,
             sceneLoader = _context.sceneLoader,
@@ -54,11 +55,12 @@ public class LobbyScene : MonoBehaviour
             user = _context.user,
             mercenaryService = _context.mercenaryService,
             purchaseService = _context.purchaseService,
+            gachaService = _context.gachaService
         });
         _uiLobbyPresenter.Initialize();
 
 #if DEBUG_MODE
-        _context.assetLoader.LoadPrefab("UIDebug", prefab =>
+        _context.assetService.LoadPrefab("UIDebug", prefab =>
         {
             _uiDebug = Instantiate(prefab).GetComponent<UIDebug>();
             _uiDebug.Initialize(new UIDebugContext

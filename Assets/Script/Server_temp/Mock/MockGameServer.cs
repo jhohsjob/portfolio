@@ -7,18 +7,24 @@ public class MockGameServer : IGameServer
     private readonly MockUserService _userService;
     private readonly MockMercenaryService _mercenaryService;
     private readonly MockPurchaseService _purchaseService;
+    private readonly MockGachaService _gachaService;
 
     private MockUserHandler _userHandler;
     private MockMercenaryHandler _mercenaryHandler;
+    private MockPurchaseHandler _purchaseHandler;
+    private MockGachaHandler _gachaHandler;
 
-    public MockGameServer(IAssetLoader assetLoader)
+    public MockGameServer(IAssetService assetService)
     {
-        _userService = new MockUserService(assetLoader);
+        _userService = new MockUserService(assetService);
         _mercenaryService = new MockMercenaryService();
         _purchaseService = new MockPurchaseService();
+        _gachaService = new MockGachaService();
 
         _userHandler = new MockUserHandler(_userService);
         _mercenaryHandler = new MockMercenaryHandler(_mercenaryService, _userService);
+        _purchaseHandler = new MockPurchaseHandler(_purchaseService, _userService);
+        _gachaHandler = new MockGachaHandler(_gachaService, _userService, _mercenaryService);
     }
 
     public void SetupLevels(List<UserLevelData> userLevels)
@@ -36,6 +42,21 @@ public class MockGameServer : IGameServer
         _mercenaryService.SetupMercenaryLevels(mercenaryLevels);
     }
 
+    public void SetupMercenaryGrades(List<MercenaryGradeData> mercenaryGrades)
+    {
+        _mercenaryService.SetupMercenaryGrades(mercenaryGrades);
+    }
+
+    public void SetupShopItems(IReadOnlyList<ShopItemDefinition> shopItems)
+    {
+        _purchaseService.SetupShopItems(shopItems);
+    }
+
+    public void SetupGacha(Dictionary<int, GachaDefinition> gachas)
+    {
+        _gachaService.SetupGacha(gachas);
+    }
+
     public async Task<InitializeResponse> InitializeAsync(InitializeRequest request)
     {
         var user = await _userService.InitializeAsync();
@@ -44,11 +65,14 @@ public class MockGameServer : IGameServer
 
         var products = await _purchaseService.InitializeAsync();
 
+        var gachas = await _gachaService.InitializeAsync();
+
         return new InitializeResponse
         {
             user = user,
             mercenaries = mercenaries,
-            products = products
+            products = products,
+            gachas = gachas
         };
     }
 
@@ -67,14 +91,24 @@ public class MockGameServer : IGameServer
         return _mercenaryHandler.MercenaryLevelResetAsync(request);
     }
 
+    public Task<MercenaryGradeUpResponse> MercenaryGradeUpAsync(MercenaryGradeUpRequest request)
+    {
+        return _mercenaryHandler.MercenaryGradeUpAsync(request);
+    }
+
     public Task<List<MercenaryPVO>> GetMercenariesAsync()
     {
         return _mercenaryService.GetMercenariesAsync();
     }
 
-    public Task<bool> PurchaseAsync(int productId)
+    public Task<PurchaseResponse> PurchaseAsync(PurchaseRequest request)
     {
-        return _purchaseService.PurchaseAsync(productId);
+        return _purchaseHandler.PurchaseAsync(request);
+    }
+
+    public Task<GachaResponse> GachaAsync(GachaRequest request)
+    {
+        return _gachaHandler.GachaAsync(request);
     }
 
 #if DEBUG_MODE

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 
@@ -13,11 +14,14 @@ public class User
     public int level => _pvo.level;
     public int exp => _pvo.exp;
 
-    public int gold => _pvo.gold;
-
     public int lastPlayMercenaryId => _pvo.lastPlayMercenaryId;
 
     public int lastPlayStageId => _pvo.lastPlayStageId;
+
+    public event Action<int> onGoldChanged;
+    public event Action<int> onGemChanged;
+
+    public event Action<int ,int> OnExpChanged;
 
     public User(IGameServer gameServer)
     {
@@ -33,6 +37,12 @@ public class User
     {
         _pvo = new UserPVO(pvo);
 
+        onGoldChanged?.Invoke(_pvo.gold);
+        onGemChanged?.Invoke(_pvo.gem);
+
+        OnExpChanged?.Invoke(_pvo.exp, _pvo.level);
+
+        // todo : delete
         EventHelper.Send(EventName.UpdateUserPvo, this);
     }
 
@@ -54,12 +64,6 @@ public class User
 
         //_storage.data.player.currentStageId = _currentStageId;
         //_saveService.RequestSave();
-    }
-
-    // temp
-    public void SetGold(int value)
-    {
-        _pvo.gold = value;
     }
 
 #if DEBUG_MODE

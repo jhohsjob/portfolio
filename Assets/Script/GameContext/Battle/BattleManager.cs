@@ -106,6 +106,7 @@ public class BattleManager : MonoBehaviour
 
         _context.user.SetStage(nextStageId);
 
-        _context.currencyService.Change(CurrencyType.Gold, _battleReward.gold);
+        // todo : 게임 결과를 서버에 전송
+        // _context.currencyService.Change(CurrencyType.Gold, _battleReward.gold);
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UILobbyContext
 {
-    public IAssetLoader assetLoader;
+    public IAssetService assetService;
     public IPopupService popupService;
     public ICurrencyService currencyService;
     public ISceneLoader sceneLoader;
@@ -12,6 +12,7 @@ public class UILobbyContext
     public User user;
     public MercenaryService mercenaryService;
     public PurchaseService purchaseService;
+    public GachaService gachaService;
 }
 
 public class UILobbyPresenter : IDisposable
@@ -30,8 +31,8 @@ public class UILobbyPresenter : IDisposable
         _topPresenter = new UILobbyTopPresenter(_view.topView, new UILobbyTopContext
         {
             user = _context.user,
-            popupService = _context.popupService,
             currencyService = _context.currencyService,
+            popupService = _context.popupService,
         });
 
         _middlePresenters = new UILobbyMiddleBasePresenter[_view.MiddleViews.Length];
@@ -48,6 +49,10 @@ public class UILobbyPresenter : IDisposable
             else if (_view.MiddleViews[i] is UILobbyMiddleShop shop)
             {
                 _middlePresenters[i] = new UILobbyMiddleShopPresenter(shop, context);
+            }
+            else if (_view.MiddleViews[i] is UILobbyMiddleGacha gacha)
+            {
+                _middlePresenters[i] = new UILobbyMiddleGachaPresenter(gacha, context);
             }
         }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 [CreateAssetMenu(menuName = "GameTable/ProductDefinitionTable")]
-public class ProductDefinitionTable : ScriptableObject
+public class ProductDefinitionTable : IdSyncTable
 {
     [SerializeField]
     private SerializableDictionary<int, ProductDefinition> _table;

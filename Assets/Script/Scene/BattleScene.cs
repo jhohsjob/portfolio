@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BattleSceneContext
 {
-    public IAssetLoader assetLoader;
+    public IAssetService assetService;
     public IPopupService popupService;
     public ISceneLoader sceneLoader;
     public ICurrencyService currencyService;
@@ -76,7 +76,7 @@ public class BattleScene : MonoBehaviour
     {
         _uiBattlePresenter = new UIBattlePresenter(_uiBattle, new UIBattleContext
         {
-            assetLoader = _context.assetLoader,
+            assetService = _context.assetService,
             popupService = _context.popupService,
             sceneLoader = _context.sceneLoader,
             battleController = _battleManager.battleController,
@@ -94,7 +94,7 @@ public class BattleScene : MonoBehaviour
         _player.InitDependencies(new PlayerContext()
         {
             battleState = _battleManager.battleState,
-            assetLoader = _context.assetLoader,
+            assetService = _context.assetService,
             actorSpawner = _battleManager.actorSpawner,
             GetNearestEnemy = _battleManager.GetNearestEnemy
         });

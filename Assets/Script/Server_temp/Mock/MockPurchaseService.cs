@@ -6,9 +6,26 @@ public class MockPurchaseService
 {
     private readonly ProductStorage _productStorage;
 
+    private Dictionary<int, ProductDefinition> _products = new();
+
     public MockPurchaseService()
     {
-        _productStorage = new ProductStorage();
+        _productStorage = new();
+    }
+
+    public void SetupShopItems(IReadOnlyList<ShopItemDefinition> shopItems)
+    {
+        _products.Clear();
+
+        foreach (var shopItem in shopItems)
+        {
+            foreach (var productItem in shopItem.productItems)
+            {
+                _products.Add(productItem.id, productItem);
+            }
+        }
+
+        _productStorage.SetupProduct(_products);
     }
 
     public async Task<List<ProductPVO>> InitializeAsync()
@@ -17,15 +34,14 @@ public class MockPurchaseService
         return new List<ProductPVO>(_productStorage.pvos);
     }
 
-    public Task<bool> PurchaseAsync(int productId)
+    public ProductDefinition GetProductDefinitionById(int id)
     {
-        // 1. 상품 확인
-        // 2. 구매 가능 여부 확인
-        // 3. 재화 확인
-        // 4. 재화 차감
-        // 5. 보상 지급
-        // 6. 구매 횟수 증가
+        _products.TryGetValue(id, out var definition);
+        return definition;
+    }
 
-        return Task.FromResult(true);
+    public ProductPVO GetProductPVOById(int id)
+    {
+        return _productStorage.GetById(id);
     }
 }

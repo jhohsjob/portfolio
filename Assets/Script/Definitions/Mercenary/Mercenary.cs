@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Mercenary : Role<MercenaryDefinition>
 {
-    public override string localTable => LocalTable.MercenaryTable;
+    public override LocalizationTable localTable => LocalizationTable.MercenaryTable;
 
     public List<SkillData> skillDataList = new();
 
@@ -18,7 +18,8 @@ public class Mercenary : Role<MercenaryDefinition>
 
     public override int level => _pvo != null ? _pvo.level : 1;
     public override int grade => _pvo != null ? _pvo.grade : 0;
-    public int availableMaxLevel;
+    public int shardCount => _pvo != null ? _pvo.shardCount : 0;
+
     public bool isOwned => _pvo?.isOwned ?? false;
 
     public Mercenary(MercenaryDefinition data) : base(data)

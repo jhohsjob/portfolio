@@ -2,9 +2,8 @@ using UnityEngine;
 
 
 [CreateAssetMenu(menuName = "GameDefinition/StageDefinition")]
-public class StageDefinition : ScriptableObject
+public class StageDefinition : DefinitionBase
 {
-    public int id;
     public string stageName;
     public MapDefinition mapDefinition;
     public StageClearCondition stageClearCondition;

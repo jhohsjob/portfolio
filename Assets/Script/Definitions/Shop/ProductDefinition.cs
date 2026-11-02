@@ -3,11 +3,11 @@ using UnityEngine;
 
 
 [CreateAssetMenu(menuName = "GameDefinition/ProductDefinition")]
-public class ProductDefinition : ScriptableObject
+public class ProductDefinition : DefinitionBase
 {
-    public int id;
     public ShopLimitType limitType;
-    public int maxPurchaseCount;
+    public int purchaseLimit;
+    public PurchaseType purchaseType;
     public CurrencyType currencyType;
     public int price;
     public List<RewardBase> rewards;

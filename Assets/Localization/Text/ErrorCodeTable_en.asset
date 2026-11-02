@@ -46,6 +46,18 @@ MonoBehaviour:
     m_Localized: Invalid level
     m_Metadata:
       m_Items: []
+  - m_Id: 12307090496094208
+    m_Localized: Invalid draw count
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12307093251751936
+    m_Localized: Not enough Gems
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12307094635872256
+    m_Localized: Not enough Tickets
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

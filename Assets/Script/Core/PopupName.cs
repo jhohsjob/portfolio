@@ -5,4 +5,5 @@ public static class PopupName
     public static readonly string UIPausePopup = "UIPausePopup";
     public static readonly string UIProductResultPopup = "UIProductResultPopup";
     public static readonly string UISettingPopup = "UISettingPopup";
+    public static readonly string UIGachaResultPopup = "UIGachaResultPopup";
 }

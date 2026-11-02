@@ -132,6 +132,7 @@ public class Launch : MonoBehaviour
         _context.User.InitializeServer(response.user);
         _context.MercenaryService.InitializeServer(response.mercenaries);
         _context.PurchaseService.InitializeServer(response.products);
+        _context.GachaService.InitializeServer(response.gachas);
 
         bootController.SetProgress(ADDRESSABLE_INIT_WEIGHT + LOCALIZATION_INIT_WEIGHT + ADDRESSABLE_LOAD_WEIGHT + LOAD_WEIGHT + LOAD_PVO_WEIGHT);
     }
@@ -179,7 +180,6 @@ public class Launch : MonoBehaviour
     private void Complete()
     {
         _context.LocaleService.Init();
-        _context.CurrencyService.Init();
         _context.User.RunGame();
     }
 }

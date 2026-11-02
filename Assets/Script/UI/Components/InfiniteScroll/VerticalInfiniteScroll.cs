@@ -37,7 +37,9 @@ public class VerticalInfiniteScroll : InfiniteScrollBase
 
     protected override void UpdateContentSize()
     {
-        int rowCount = Mathf.CeilToInt((float)_itemCount / _columnCount);
+        int itemCount = _provider.GetItemCount();
+
+        int rowCount = Mathf.CeilToInt((float)itemCount / _columnCount);
 
         float height = rowCount * (_itemHeight + _spacingY);
 
@@ -46,6 +48,8 @@ public class VerticalInfiniteScroll : InfiniteScrollBase
 
     public override void UpdateItems()
     {
+        int itemCount = _provider.GetItemCount();
+
         float scrollY = _content.anchoredPosition.y;
         int firstRow = Mathf.FloorToInt(scrollY / (_itemHeight + _spacingY));
 
@@ -63,7 +67,7 @@ public class VerticalInfiniteScroll : InfiniteScrollBase
 
             var item = _items[i];
 
-            if (dataIndex < 0 || dataIndex >= _itemCount)
+            if (dataIndex < 0 || dataIndex >= itemCount)
             {
                 item.gameObject.SetActive(false);
                 continue;
@@ -89,6 +93,8 @@ public class VerticalInfiniteScroll : InfiniteScrollBase
 
     protected override float GetNearestSnapPosition()
     {
+        int itemCount = _provider.GetItemCount();
+
         float unit = _itemHeight + _spacingY;
         float viewport = _scrollRect.viewport.rect.height;
 
@@ -98,7 +104,7 @@ public class VerticalInfiniteScroll : InfiniteScrollBase
 
         int index = Mathf.RoundToInt(centerInContent / unit);
 
-        index = Mathf.Clamp(index, 0, _itemCount - 1);
+        index = Mathf.Clamp(index, 0, itemCount - 1);
 
         float itemCenter = index * unit + _itemHeight * 0.5f;
 
@@ -109,12 +115,14 @@ public class VerticalInfiniteScroll : InfiniteScrollBase
 
     protected override float GetPositionByIndex(int index)
     {
+        int itemCount = _provider.GetItemCount();
+
         float unit = _itemHeight + _spacingY;
         float viewport = _scrollRect.viewport.rect.height;
 
-        index = Mathf.Clamp(index, 0, _itemCount - 1);
+        index = Mathf.Clamp(index, 0, itemCount - 1);
 
-        float contentHeight = _itemCount * unit - _spacingY;
+        float contentHeight = itemCount * unit - _spacingY;
         float result = 0f;
         if (_useCenterScale)
         {

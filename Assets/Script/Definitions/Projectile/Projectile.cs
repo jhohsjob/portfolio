@@ -1,6 +1,6 @@
 public class Projectile : Role<ProjectileDefinition>
 {
-    public override string localTable => LocalTable.ProjectileTable;
+    public override LocalizationTable localTable => LocalizationTable.ProjectileTable;
 
     public float power => _data.power;
     public float distance => _data.distance;

@@ -8,16 +8,16 @@ using UnityEngine;
 
 public class UserStorage
 {
-    private IAssetLoader _assetLoader;
+    private IAssetService _assetService;
 
     private static string _savePath => Path.Combine(Application.persistentDataPath, "user_save.json");
 
     private UserPVO _pvo = new();
     public UserPVO pvo => _pvo;
 
-    public UserStorage(IAssetLoader assetLoader)
+    public UserStorage(IAssetService assetService)
     {
-        _assetLoader = assetLoader;
+        _assetService = assetService;
     }
 
     public async Task SaveAsync(UserPVO saveData)
@@ -84,7 +84,7 @@ public class UserStorage
     {
         var tcs = new TaskCompletionSource<UserPVO>();
 
-        _assetLoader.LoadData("UserDefaultData", data =>
+        _assetService.LoadData("UserDefaultData", data =>
         {
             var userData = data as UserDefaultData;
             if (userData == null)
@@ -100,6 +100,7 @@ public class UserStorage
                 level = userData.level,
                 exp = userData.exp,
                 gold = userData.gold,
+                gem = userData.gem,
                 lastPlayMercenaryId = userData.mercenaryId,
                 lastPlayStageId = userData.stageId,
             };

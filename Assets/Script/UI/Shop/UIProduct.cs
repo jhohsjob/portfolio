@@ -58,9 +58,34 @@ public class UIProduct : MonoBehaviour
     {
         if (_definition == null || _desc == null) return;
 
-        string productName = LocalizationSettings.StringDatabase.GetLocalizedString(LocalTable.ShopTable, _definition.GetNameKey());
-        string price = _definition.currencyType == CurrencyType.Free ? $"{_definition.currencyType}" : $"{_definition.currencyType} {_definition.price}";
+        string productName = LocalManager.GetShopString(_definition.GetNameKey());
+        string price = string.Empty;
 
-        _desc.text = $"{productName}\n{price}\n{_definition.limitType} {_currentPurchaseCount}/{_definition.maxPurchaseCount}";
+        if (_definition.purchaseType == PurchaseType.Free)
+        {
+            price = $"{_definition.currencyType}";
+        }
+        else if (_definition.purchaseType == PurchaseType.IAP)
+        {
+            price = $"$ {_definition.price}";
+        }
+        else
+        {
+            price = $"{_definition.currencyType} {_definition.price}";
+        }
+
+        string desc = string.Empty;
+
+        switch (_definition.limitType)
+        {
+            case ShopLimitType.None:
+                _desc.text = $"{productName}\n{price}";
+                break;
+
+            case ShopLimitType.Daily:
+            case ShopLimitType.Lifetime:
+                _desc.text = $"{productName}\n{price}\n{_definition.limitType} {_currentPurchaseCount}/{_definition.purchaseLimit}";
+                break;
+        }
     }
 }

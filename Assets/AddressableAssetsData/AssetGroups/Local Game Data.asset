@@ -16,10 +16,15 @@ MonoBehaviour:
   m_GUID: 162edae7266ca0344a7d9f1581df87a4
   m_SerializeEntries:
   - m_GUID: 0229a2748ba7a37429744a3bf4aa2c52
-    m_Address: ProjectileTable
+    m_Address: ProjectileDefinitionTable
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06e10da084bdffa4a9fdc530ac3a1ee3
+    m_Address: GachaDefinitionTable
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2d133e1322fb5084d8f38b4957b5e5de
     m_Address: DropItem
@@ -34,7 +39,7 @@ MonoBehaviour:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4db4b77f5a825d5428e7c1b91c0fd2dc
-    m_Address: DropItemTable
+    m_Address: DropItemDefinitionTable
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload
@@ -76,13 +81,13 @@ MonoBehaviour:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 981686dab9df2e8408bd0ba7859fb097
-    m_Address: MercenaryTable
+    m_Address: MercenaryDefinitionTable
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a8108be619cb0ca4b82a68d3b12de4c9
-    m_Address: MonsterTable
+    m_Address: MonsterDefinitionTable
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload
@@ -110,6 +115,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c956a198b6b18a7478131af0f430e03b
+    m_Address: MercenaryGradeTable
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cb18cf884c4c0ff4885e1b24a5252233
     m_Address: MapInfo02

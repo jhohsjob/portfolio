@@ -80,8 +80,7 @@ public class UILobbyMiddleBattle : UILobbyMiddleBase
     {
         _stageScroll.Initialize(
             provider: new StageScrollProvider(this),
-            factory: new StageItemFactory(prefab),
-            itemCount: onGetStageCount?.Invoke() ?? 0,
+            factory: new ScrollItemFactory(prefab),
             initPos: initIndex
         );
     }
@@ -90,8 +89,7 @@ public class UILobbyMiddleBattle : UILobbyMiddleBase
     {
         _mercenaryScroll.Initialize(
             provider: new MercenaryScrollProvider(this),
-            factory: new MercenaryItemFactory(prefab),
-            itemCount: onGetMercenaryCount?.Invoke() ?? 0,
+            factory: new ScrollItemFactory(prefab),
             initPos: initIndex
         );
         _mercenaryScroll.UpdateItems();

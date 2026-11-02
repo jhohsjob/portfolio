@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -51,7 +52,6 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
     protected IScrollItemFactory _itemFactory;
 
     protected readonly List<InfiniteScrollItem> _items = new();
-    protected int _itemCount;
 
     private bool _isSnapping;
     private float _targetPos;
@@ -62,6 +62,9 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
 
     protected ScrollOptions _options;
     public ScrollOptions options => _options;
+
+    public event Action<int> OnScrollStopped;
+    private bool _wasMoving;
 
     private void OnEnable()
     {
@@ -105,6 +108,15 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
             HandleSnap();
         }
 
+        bool isMoving = moved || _isSnapping || _scrollRect.velocity.sqrMagnitude > 0.01f;
+
+        if (_wasMoving && isMoving == false)
+        {
+            OnScrollStopped?.Invoke(GetCenteredIndex());
+        }
+
+        _wasMoving = isMoving;
+
         CachePos();
     }
     
@@ -140,6 +152,7 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
         _isDragging = true;
         _isSnapping = false;
         _snapCompleted = false;
+        _wasMoving = true;
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -147,13 +160,12 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
         _isDragging = false;
     }
 
-    public void Initialize(IScrollDataProvider provider, IScrollItemFactory factory, int itemCount, int initPos = 0)
+    public void Initialize(IScrollDataProvider provider, IScrollItemFactory factory, int initPos = 0)
     {
         _initializeEnd = false;
 
         _provider = provider;
         _itemFactory = factory;
-        _itemCount = itemCount;
 
         _options = new ScrollOptions(_useCenterScale);
 

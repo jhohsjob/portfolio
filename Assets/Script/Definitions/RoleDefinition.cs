@@ -5,10 +5,10 @@ using System;
 using UnityEngine;
 
 
-public class RoleDefinition : ScriptableObject
+public class RoleDefinition : DefinitionBase
 {
     public RoleType roleType;
-    public int id;
+    // public int id;
     public StatDefinition statDefinition;
 #if UNITY_EDITOR
     public MonoScript behaviourScript;
