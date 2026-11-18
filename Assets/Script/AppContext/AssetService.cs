@@ -11,6 +11,7 @@ public interface IAssetService
     void LoadPrefab(string address,Action<GameObject> onLoaded, Action onFailed = null);
     void LoadMaterial(string address, Action<Material> onLoaded, Action onFailed = null);
     void LoadData(string address, Action<ScriptableObject> onLoaded, Action onFailed = null);
+    void Dispose();
 }
 
 public class AssetLoadingTask

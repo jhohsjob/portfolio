@@ -5,7 +5,7 @@ public class BattleSceneContext
 {
     public IAssetService assetService;
     public IPopupService popupService;
-    public ISceneLoader sceneLoader;
+    public ISceneService sceneLoader;
     public ICurrencyService currencyService;
     public StageService stageService;
     public User user;

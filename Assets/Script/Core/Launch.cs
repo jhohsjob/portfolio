@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Cysharp.Threading.Tasks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Localization.Settings;
@@ -9,48 +10,113 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
 
 
+public class BootException : Exception
+{
+    public string stepName { get; }
+
+    public BootException(string stepName, Exception inner) : base($"Boot failed at step '{stepName}'", inner)
+    {
+        this.stepName = stepName;
+    }
+}
+
 public class Launch : MonoBehaviour
 {
+    private sealed class SimpleProgress : IProgress<float>
+    {
+        private readonly Action<float> _handler;
+        public SimpleProgress(Action<float> handler) => _handler = handler;
+        public void Report(float value) => _handler(value);
+    }
+
+    private readonly struct BootStep
+    {
+        public readonly string Name;
+        public readonly float Weight;
+        public readonly Func<IProgress<float>, CancellationToken, UniTask> Run;
+
+        public BootStep(string name, float weight, Func<IProgress<float>, CancellationToken, UniTask> run)
+        {
+            Name = name;
+            Weight = weight;
+            Run = run;
+        }
+    }
+
+    private AppContext _app;
     private GameContext _context;
-    public GameContext context => _context;
+    public ISceneService sceneService => _context.SceneService;
 
-    private const float ADDRESSABLE_INIT_WEIGHT = 0.25f;
-    private const float LOCALIZATION_INIT_WEIGHT = 0.1f;
-    private const float ADDRESSABLE_LOAD_WEIGHT = 0.25f;
-    private const float LOAD_WEIGHT = 0.2f;
-    private const float LOAD_PVO_WEIGHT = 0.2f;
+    private BootStep[] _steps;
+    private bool _isRunning;
 
-    private void Awake()
+    public void Begin(AppContext app)
     {
-        Debug.Log("Launch Awake");
+        Debug.Log("Launch Begin");
 
-        DontDestroyOnLoad(gameObject);
+        _app = app;
+        _context = Session.Begin(app);
 
-        _context = new GameContext();
+        _steps = new[]
+        {
+            new BootStep("Addressables Init", 0.25f, InitializeAddressablesAsync),
+            new BootStep("Localization Init", 0.10f, InitializeLocalizationAsync),
+            new BootStep("Preload Assets",    0.25f, LoadPreloadAssetsAsync),
+            new BootStep("Load Data",         0.20f, InitializeLoadAsync),
+            new BootStep("Server Init",       0.20f, InitializeServerAsync),
+        };
     }
 
-    private void OnDestroy()
+    public async UniTask RunAsync(BootController bootController, CancellationToken ct)
     {
-        _context.Dispose();
-    }
+        if (_isRunning == true)
+        {
+            throw new InvalidOperationException("Boot already running");
+        }
+        _isRunning = true;
 
-    public async Task RunAsync(BootController bootController)
-    {
         try
         {
-            InitializeClient();
-            await InitializeAddressablesAsync(bootController);
-            await InitializeLocalizationAsync(bootController);
-            await LoadPreloadAssetsAsync(bootController);
-            await InitializeLoadAsync(bootController);
-            await InitializeServerAsync(bootController);
+            using var linked = CancellationTokenSource.CreateLinkedTokenSource(ct, destroyCancellationToken);
+            var token = linked.Token;
 
+            float totalWeight = _steps.Sum(s => s.Weight);
+            float start = 0f;
+
+            InitializeClient();
+
+            foreach (var step in _steps)
+            {
+                token.ThrowIfCancellationRequested();
+
+                float range = step.Weight / totalWeight;
+                float capturedStart = start;
+
+                var progress = new SimpleProgress(p => bootController.SetProgress(capturedStart + Mathf.Clamp01(p) * range));
+
+                try
+                {
+                    await step.Run(progress, token);
+                }
+                catch (Exception e) when (e is not OperationCanceledException)
+                {
+                    throw new BootException(step.Name, e);
+                }
+                finally
+                {
+                    _isRunning = false;
+                }
+
+                start += range;
+                bootController.SetProgress(start);
+            }
+
+            token.ThrowIfCancellationRequested();
             Complete();
         }
-        catch (Exception e)
+        finally
         {
-            Debug.LogException(e);
-            throw;
+            _isRunning = false;
         }
     }
 
@@ -61,21 +127,35 @@ public class Launch : MonoBehaviour
         DropItemManager.instance.Init(_context.RoleFactory);
     }
 
-    private async Task InitializeAddressablesAsync(BootController bootController)
+    private async UniTask InitializeAddressablesAsync(IProgress<float> progress, CancellationToken ct)
     {
-        var handle = Addressables.InitializeAsync();
-        await TrackProgressAsync(bootController, handle, 0f, ADDRESSABLE_INIT_WEIGHT);
+        var handle = Addressables.InitializeAsync(false);
+        try
+        {
+            await TrackProgressAsync(handle, progress, ct);
+            ThrowIfFailed(handle, "Addressables initialization");
+        }
+        finally
+        {
+            if (handle.IsValid() == false)
+            {
+                Addressables.Release(handle);
+            }
+        }
     }
 
-    private async Task InitializeLocalizationAsync(BootController bootController)
+    private async UniTask InitializeLocalizationAsync(IProgress<float> progress, CancellationToken ct)
     {
         var handle = LocalizationSettings.InitializationOperation;
-
-        await TrackProgressAsync(bootController, handle, ADDRESSABLE_INIT_WEIGHT, LOCALIZATION_INIT_WEIGHT);
+        await TrackProgressAsync(handle, progress, ct);
+        ThrowIfFailed(handle, "Localization initialization");
     }
 
-    private async Task LoadPreloadAssetsAsync(BootController bootController)
+    private async UniTask LoadPreloadAssetsAsync(IProgress<float> progress, CancellationToken ct)
     {
+        var preload = _context.Preload;
+        preload.Release();
+
         string[] labels = { "Preload" };
 
         var locations = new List<IResourceLocation>();
@@ -83,72 +163,93 @@ public class Launch : MonoBehaviour
         foreach (var label in labels)
         {
             var handle = Addressables.LoadResourceLocationsAsync(label);
-            await handle.Task;
 
-            if (handle.Status != AsyncOperationStatus.Succeeded)
+            try
             {
-                Debug.LogWarning($"Preload label failed: {label}");
-                continue;
-            }
+                await UniTask.WaitUntil(() => handle.IsDone, cancellationToken: ct);
+                ThrowIfFailed(handle, $"Resolve preload label '{label}'");
 
-            locations.AddRange(handle.Result);
+                locations.AddRange(handle.Result);
+            }
+            finally
+            {
+                if (handle.IsValid() == true)
+                {
+                    Addressables.Release(handle);
+                }
+            }
         }
 
-        locations = locations.Distinct().ToList();
-
-        if (locations.Count == 0)
+        var distinct = locations.Distinct().ToList();
+        if (distinct.Count == 0)
         {
             return;
         }
 
-        var handles = locations.Select(loc => Addressables.LoadAssetAsync<UnityEngine.Object>(loc)).ToList();
+        foreach (var loc in distinct)
+        {
+            preload.Add(Addressables.LoadAssetAsync<UnityEngine.Object>(loc));
+        }
 
-        await TrackProgressAsync(bootController, handles, ADDRESSABLE_INIT_WEIGHT + LOCALIZATION_INIT_WEIGHT, ADDRESSABLE_LOAD_WEIGHT);
+        try
+        {
+            await TrackProgressAsync(preload.Handles, progress, ct);
+
+            var failed = preload.Handles.Where(h => h.Status != AsyncOperationStatus.Succeeded).ToList();
+            if (failed.Count > 0)
+            {
+                throw new InvalidOperationException($"Preload failed: {failed.Count}/{preload.Handles.Count} assets", failed[0].OperationException);
+            }
+        }
+        catch
+        {
+            preload.Release();
+            throw;
+        }
     }
 
-    private async Task InitializeLoadAsync(BootController bootController)
+    private async UniTask InitializeLoadAsync(IProgress<float> progress, CancellationToken ct)
     {
-        float prevWeight = ADDRESSABLE_INIT_WEIGHT + LOCALIZATION_INIT_WEIGHT + ADDRESSABLE_LOAD_WEIGHT;
-        float progress = 0f;
-        float step = 1f / 2f;
+        const int stepCount = 2;
+        int done = 0;
 
         await _context.GameDataLoader.LoadAsync();
-
-        progress += step;
-        bootController.SetProgress(prevWeight + progress * LOAD_WEIGHT);
+        ct.ThrowIfCancellationRequested();
+        progress.Report(++done / (float)stepCount);
 
         await _context.Storage.LoadAsync();
-
-        progress += step;
-        bootController.SetProgress(prevWeight + progress * LOAD_WEIGHT);
+        ct.ThrowIfCancellationRequested();
+        _app.ApplyDeviceSettings();
+        progress.Report(++done / (float)stepCount);
     }
 
-    private async Task InitializeServerAsync(BootController bootController)
+    private async UniTask InitializeServerAsync(IProgress<float> progress, CancellationToken ct)
     {
         var request = new InitializeRequest();
 
         var response = await _context.GameServer.InitializeAsync(request);
+        ct.ThrowIfCancellationRequested();
 
         _context.User.InitializeServer(response.user);
         _context.MercenaryService.InitializeServer(response.mercenaries);
         _context.PurchaseService.InitializeServer(response.products);
         _context.GachaService.InitializeServer(response.gachas);
 
-        bootController.SetProgress(ADDRESSABLE_INIT_WEIGHT + LOCALIZATION_INIT_WEIGHT + ADDRESSABLE_LOAD_WEIGHT + LOAD_WEIGHT + LOAD_PVO_WEIGHT);
+        progress.Report(1f);
     }
 
-    private async Task TrackProgressAsync(BootController bootController, AsyncOperationHandle handle, float start, float range)
+    private async UniTask TrackProgressAsync(AsyncOperationHandle handle, IProgress<float> progress, CancellationToken ct)
     {
         while (handle.IsDone == false)
         {
-            bootController.SetProgress(start + handle.PercentComplete * range);
-            await Task.Yield();
+            progress.Report(handle.PercentComplete);
+            await UniTask.Yield(PlayerLoopTiming.Update, ct);
         }
 
-        bootController.SetProgress(start + range);
+        progress.Report(1f);
     }
 
-    private async Task TrackProgressAsync<T>(BootController bootController, List<AsyncOperationHandle<T>> handles, float start, float range)
+    private async UniTask TrackProgressAsync<T>(IReadOnlyList<AsyncOperationHandle<T>> handles, IProgress<float> progress, CancellationToken ct)
     {
         while (true)
         {
@@ -164,22 +265,32 @@ public class Launch : MonoBehaviour
                 }
             }
 
-            bootController.SetProgress(start + (sum / handles.Count) * range);
+            progress.Report(sum / handles.Count);
 
             if (done)
             {
                 break;
             }
 
-            await Task.Yield();
+            await UniTask.Yield(PlayerLoopTiming.Update, ct);
         }
 
-        bootController.SetProgress(start + range);
+        progress.Report(1f);
+    }
+
+    private static void ThrowIfFailed(AsyncOperationHandle handle, string what)
+    {
+        if (handle.Status == AsyncOperationStatus.Succeeded)
+        {
+            return;
+        }
+
+        throw new InvalidOperationException($"{what} failed", handle.OperationException);
     }
 
     private void Complete()
     {
-        _context.LocaleService.Init();
         _context.User.RunGame();
+        _context.SoundService.PlayBGM(SoundId.BGM_BOOT);
     }
 }

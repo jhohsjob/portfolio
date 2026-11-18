@@ -29,6 +29,8 @@ public interface IGameServer
     void SetupGacha(Dictionary<int, GachaDefinition> gachas);
     Task<GachaResponse> GachaAsync(GachaRequest request);
 
+    void Dispose();
+
 
 #if DEBUG_MODE
     Task<DebugAddUserExpResponse> DebugUserAddExpAsync();

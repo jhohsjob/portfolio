@@ -1,16 +1,16 @@
 public class BootPresenter
 {
-    private readonly ISceneLoader _sceneLoader;
+    private readonly ISceneService _sceneService;
 
     private readonly UIBoot _view;
     private readonly BootController _controller;
 
-    public BootPresenter(UIBoot view, BootController controller, ISceneLoader sceneLoader)
+    public BootPresenter(UIBoot view, BootController controller, ISceneService sceneService)
     {
         _view = view;
         _controller = controller;
 
-        _sceneLoader = sceneLoader;
+        _sceneService = sceneService;
 
         _controller.onProgressChanged += HandleProgressChanged;
 
@@ -38,6 +38,6 @@ public class BootPresenter
     private void HandleNextSceneClicked()
     {
         _view.DisableInteraction();
-        _sceneLoader.LoadLobbyScene();
+        _sceneService.LoadLobbyScene();
     }
 }

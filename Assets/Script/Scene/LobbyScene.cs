@@ -5,14 +5,16 @@ using UnityEngine;
 public class LobbySceneContext
 {
     public IAssetService assetService;
-    public IPopupService popupService;
-    public ICurrencyService currencyService;
-    public ISceneLoader sceneLoader;
-    public StageService stageService;
+    public ISoundService soundService;
+    public IDeviceSettings deviceSettings;
     public User user;
+    public ICurrencyService currencyService;
     public MercenaryService mercenaryService;
     public PurchaseService purchaseService;
     public GachaService gachaService;
+    public StageService stageService;
+    public ISceneService sceneService;
+    public IPopupService popupService;
 }
 
 public class LobbyScene : MonoBehaviour
@@ -48,14 +50,15 @@ public class LobbyScene : MonoBehaviour
         _uiLobbyPresenter = new UILobbyPresenter(_uiLobby, new UILobbyContext
         {
             assetService = _context.assetService,
-            popupService = _context.popupService,
-            currencyService = _context.currencyService,
-            sceneLoader = _context.sceneLoader,
-            stageService = _context.stageService,
+            deviceSettings = _context.deviceSettings,
             user = _context.user,
+            currencyService = _context.currencyService,
             mercenaryService = _context.mercenaryService,
             purchaseService = _context.purchaseService,
-            gachaService = _context.gachaService
+            gachaService = _context.gachaService,
+            stageService = _context.stageService,
+            sceneService = _context.sceneService,
+            popupService = _context.popupService,
         });
         _uiLobbyPresenter.Initialize();
 

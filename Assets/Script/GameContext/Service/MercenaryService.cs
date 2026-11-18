@@ -56,7 +56,7 @@ public class MercenaryService
 
     public void SetupDefinition(Dictionary<int, MercenaryDefinition> mercenaryDatas)
     {
-        _mercenaryDefinitions = mercenaryDatas;
+        _mercenaryDefinitions = new Dictionary<int, MercenaryDefinition>(mercenaryDatas);
 
         foreach (var data in mercenaryDatas)
         {

@@ -128,6 +128,12 @@ public enum MercenaryAcquireType
     CurrencyGold,
 }
 
+public enum SoundType
+{
+    BGM,
+    SFX
+}
+
 public static class StatTypeExtensions
 {
     public static string ToName(this StatType type)

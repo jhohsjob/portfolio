@@ -3,8 +3,10 @@ using System;
 
 public class UILobbyTopContext
 {
+    public IDeviceSettings deviceSettings;
     public User user;
     public ICurrencyService currencyService;
+    public ISceneService sceneService;
     public IPopupService popupService;
 }
 
@@ -52,7 +54,13 @@ public class UILobbyTopPresenter : IDisposable
 
     private void OnClickSetting()
     {
-        _context.popupService.ShowPopup<UISettingPopup>(PopupName.UISettingPopup);
+        _context.popupService.ShowPopup<UISettingPopup>(
+            address: PopupName.UISettingPopup,
+            dependencies: new UISettingPopupDependencies
+            {
+                deviceSettings = _context.deviceSettings,
+                sceneService = _context.sceneService
+            });
     }
 
     private void OnChangeCurrency(CurrencyType type, int result)

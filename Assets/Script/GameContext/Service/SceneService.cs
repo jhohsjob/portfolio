@@ -1,109 +1,128 @@
-using System.Collections;
+using Cysharp.Threading.Tasks;
+using System;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
-public interface ISceneLoader
+public interface ISceneService
 {
+    void LoadBootScene();
     void LoadLobbyScene();
     void LoadBattleScene();
+    void Dispose();
+}
+
+public static class SceneNames
+{
+    public const string Boot = "01.BootScene";   // 실제 빌드 세팅의 씬 이름으로 맞추세요
+    public const string Lobby = "02.LobbyScene";
+    public const string Battle = "03.BattleScene";
 }
 
 public class SceneServiceContext
 {
     public IAssetService assetService;
-    public IPopupService popupService;
-    public ICurrencyService currencyService;
-    public StageService stageService;
+    public ISoundService soundService;
+    public IDeviceSettings deviceSettings;
     public User user;
+    public ICurrencyService currencyService;
     public MercenaryService mercenaryService;
     public PurchaseService purchaseService;
     public GachaService gachaService;
+    public StageService stageService;
+    public IPopupService popupService;
 }
 
-public class SceneService : ISceneLoader
+public class SceneService : ISceneService, IDisposable
 {
     private SceneServiceContext _context;
+
+    private readonly CancellationTokenSource _cts = new();
+
+    private bool _isLoading;
+    private bool _disposed;
 
     public SceneService(SceneServiceContext context)
     {
         _context = context;
     }
 
-    public void LoadBattleScene()
+    public void LoadBootScene() => TransitionAsync(SceneNames.Boot, inject: null, bgm: null).Forget();
+
+    public void LoadLobbyScene() => TransitionAsync(SceneNames.Lobby, InjectLobbyScene, SoundId.BGM_LOBBY).Forget();
+
+    public void LoadBattleScene() => TransitionAsync(SceneNames.Battle, InjectBattleScene, SoundId.BGM_BATTLE).Forget();
+
+    public void Dispose()
     {
-        IEnumeratorTool.instance.StartCoroutine(coLoadBattleScene());
-    }
-
-    private IEnumerator coLoadBattleScene()
-    {
-        yield return null;
-        _context.popupService.CloseAllPopup();
-
-        yield return null;
-        var op = SceneManager.LoadSceneAsync("03.BattleScene");
-        //op.allowSceneActivation = false;
-
-        while (op.isDone == false)
+        if (_disposed == true)
         {
-            Debug.Log(op.progress);
-
-            yield return null;
+            return;
         }
+        _disposed = true;
 
-        InjectBattleScene();
+        _cts.Cancel();
+        _cts.Dispose();
     }
 
-    private void InjectBattleScene()
+    private async UniTask TransitionAsync(string sceneName, Action inject, int? bgm)
     {
-        var battleScene = Object.FindAnyObjectByType<BattleScene>();
-        if (battleScene == null)
+        if (_disposed == true)
         {
-            Debug.LogError("BattleScene not found");
             return;
         }
 
-        battleScene.InitDependencies(new BattleSceneContext
+        if (_isLoading == true)
         {
-            assetService = _context.assetService,
-            popupService = _context.popupService,
-            sceneLoader = this,
-            currencyService = _context.currencyService,
-            stageService = _context.stageService,
-            user = _context.user
-        });
-        battleScene.Initialize();
-    }
-
-    public void LoadLobbyScene()
-    {
-        IEnumeratorTool.instance.StartCoroutine(coLoadLobbyScene());
-    }
-
-    private IEnumerator coLoadLobbyScene()
-    {
-        yield return null;
-        _context.popupService.CloseAllPopup();
-
-        yield return null;
-        var op = SceneManager.LoadSceneAsync("02.LobbyScene");
-        //op.allowSceneActivation = false;
-
-        while (op.isDone == false)
-        {
-            Debug.Log(op.progress);
-
-            yield return null;
+            Debug.LogWarning($"Scene transition already in progress. Ignored: {sceneName}");
+            return;
         }
 
-        InjectLobbyScene();
+        _isLoading = true;
+        var ct = _cts.Token;
 
-        yield return null;
+        try
+        {
+            _context.soundService.StopBGM();
+            await UniTask.Yield(ct);
+
+            _context.popupService.CloseAllPopup();
+            await UniTask.Yield(ct);
+
+            var op = SceneManager.LoadSceneAsync(sceneName);
+            if (op == null)
+            {
+                throw new InvalidOperationException($"Failed to start loading scene '{sceneName}'");
+            }
+
+            await op.ToUniTask(cancellationToken: ct);
+
+            ct.ThrowIfCancellationRequested();
+
+            inject?.Invoke();
+
+            if (bgm.HasValue)
+            {
+                _context.soundService.PlayBGM(bgm.Value);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
     }
 
     private void InjectLobbyScene()
     {
-        var lobbyScene = Object.FindAnyObjectByType<LobbyScene>();
+        var lobbyScene = UnityEngine.Object.FindAnyObjectByType<LobbyScene>();
         if (lobbyScene == null)
         {
             Debug.LogError("LobbyScene not found");
@@ -113,15 +132,38 @@ public class SceneService : ISceneLoader
         lobbyScene.InitDependencies(new LobbySceneContext
         {
             assetService = _context.assetService,
-            popupService = _context.popupService,
-            currencyService = _context.currencyService,
-            sceneLoader = this,
-            stageService = _context.stageService,
+            soundService = _context.soundService,
+            deviceSettings = _context.deviceSettings,
             user = _context.user,
+            currencyService = _context.currencyService,
             mercenaryService = _context.mercenaryService,
             purchaseService = _context.purchaseService,
-            gachaService = _context.gachaService
+            gachaService = _context.gachaService,
+            stageService = _context.stageService,
+            sceneService = this,
+            popupService = _context.popupService,
         });
         lobbyScene.Initialize();
+    }
+
+    private void InjectBattleScene()
+    {
+        var battleScene = UnityEngine.Object.FindAnyObjectByType<BattleScene>();
+        if (battleScene == null)
+        {
+            Debug.LogError("BattleScene not found");
+            return;
+        }
+
+        battleScene.InitDependencies(new BattleSceneContext
+        {
+            assetService = _context.assetService,
+            user = _context.user,
+            sceneLoader = this,
+            currencyService = _context.currencyService,
+            stageService = _context.stageService,
+            popupService = _context.popupService,
+        });
+        battleScene.Initialize();
     }
 }

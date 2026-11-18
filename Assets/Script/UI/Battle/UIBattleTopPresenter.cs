@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class UIBattleTopContext
 {
     public IPopupService popupService;
-    public ISceneLoader sceneLoader;
+    public ISceneService sceneLoader;
     public IBattleController battleController;
     public BattleRewardRuntime battleReward;
 }

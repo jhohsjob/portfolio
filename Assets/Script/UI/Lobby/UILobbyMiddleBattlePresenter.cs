@@ -87,6 +87,6 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
         GameSession.instance.SetMercenary(mercenary);
         GameSession.instance.SetStage(stage);
 
-        _context.sceneLoader.LoadBattleScene();
+        _context.sceneService.LoadBattleScene();
     }
 }

@@ -7,7 +7,8 @@ using UnityEngine;
 
 public class Storage
 {
-    private IAssetService _assetService;
+    private readonly IAssetService _assetService;
+    private bool _loaded;
 
     private static string _savePath => Path.Combine(Application.persistentDataPath, "save.json");
 
@@ -47,28 +48,28 @@ public class Storage
             throw;
         }
 
-        this.data = JsonUtility.FromJson<GameSaveData>(json);
+        // this.data = JsonUtility.FromJson<GameSaveData>(json);
     }
 
     public async Task LoadAsync()
     {
+        if (_loaded == true)
+        {
+            return;
+        }
+
         string savePath = _savePath;
 
-        try
+        if (File.Exists(savePath) == false)
         {
-            if (File.Exists(savePath) == false)
-            {
-                await CreateDefaultSaveAsync();
-            }
-            else
-            {
-                LoadFromDisk();
-            }
+            await CreateDefaultSaveAsync();
         }
-        catch
+        else
         {
-            throw;
+            LoadFromDisk();
         }
+
+        _loaded = true;
     }
 
     private async Task CreateDefaultSaveAsync()

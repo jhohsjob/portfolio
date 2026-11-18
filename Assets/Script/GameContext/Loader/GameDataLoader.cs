@@ -7,6 +7,7 @@ using UnityEngine;
 public class GameDataLoaderContext
 {
     public IAssetService assetService;
+    public ISoundService soundService;
     public IGameServer gameServer;
     public PurchaseService purchaseService;
     public User user;
@@ -28,6 +29,8 @@ public class GameDataLoader
     {
         var tasks = new List<Task>
         {
+            LoadTableAsync<SoundDefinitionTable>("SoundDefinitionTable", table => _context.soundService.SetupDefinition((table as SoundDefinitionTable).table)),
+
             LoadTableAsync<UserLevelTable>("UserLevelTable", table => _context.gameServer.SetupLevels((table as UserLevelTable).userLevels)),
 
             LoadTableAsync<MercenaryLevelTable>("MercenaryLevelTable", table =>

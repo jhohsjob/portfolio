@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,7 +13,16 @@ public class UIMercenaryDetailPopupDependencies : UIPopupDependencies
     public MercenaryService mercenaryService;
 }
 
-public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
+public struct MercenaryViewState
+{
+    public int availableMaxLevel { get; set; }
+    public bool canLevelUp { get; set; }
+    public bool canLevelReset { get; set; }
+    public bool canGradeUp { get; set; }
+    public int gradeUpCost { get; set; }
+}
+
+public class UIMercenaryDetailPopup : UIPopup, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     private class SkillScrollProvider : IScrollDataProvider
     {
@@ -36,13 +45,13 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
                 return;
             }
 
-            var mercenary = _view.onGetSkillData?.Invoke(index);
-            if (mercenary == null)
+            var skillData = _view.onGetSkillData?.Invoke(index);
+            if (skillData == null)
             {
                 return;
             }
 
-            item.SetData(index, mercenary);
+            item.SetData(index, skillData);
             item.SetOnClick((skill, itemTransform) => _view.onClickSkillItem?.Invoke(skill, itemTransform));
         }
     }
@@ -51,7 +60,7 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
     private Transform _pivot;
     [SerializeField]
     private TextMeshProUGUI _txtName;
-    
+
     [SerializeField]
     private UIStat _offensiveStat;
     [SerializeField]
@@ -84,14 +93,8 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
     private GameObject _gradeRoot;
     private Image[] _gradeIcons;
 
-    private User _user; 
-    private MercenaryService _mercenaryService;
-
-    private MercenaryView _currentMercenaryView;
-
-    private Dictionary<int, MercenaryViewPool> _pools = new();
-
-    private Vector2 _startPos;
+    private float _dragStartX;
+    private bool _skillScrollReady;
 
     public event Action onClickLevelUp;
     public event Action<int> onLongPressLevelUp;
@@ -114,13 +117,13 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
     {
         base.Awake();
 
-        _presenter = new UIMercenaryDetailPopupPresenter(this);
+        _presenter = new UIMercenaryDetailPopupPresenter(this, _pivot);
 
         _skillInfo.Hide();
 
         Bind();
 
-        _gradeIcons = _gradeRoot.GetComponentsInChildren<Image>();
+        _gradeIcons = _gradeRoot.GetComponentsInChildren<Image>(true);
         if (_gradeIcons.Length != GameConfig.MercenaryGradeLimit)
         {
             Debug.LogWarning("grade miss match");
@@ -130,12 +133,6 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
     public override void OnDestroy()
     {
         _presenter?.Dispose();
-
-        foreach (var pool in _pools.Values)
-        {
-            pool.OnDestroy();
-        }
-        _pools.Clear();
 
         Unbind();
 
@@ -164,7 +161,7 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
         _btnLeft.onClick.RemoveListener(HandleClickLeft);
         _btnRight.onClick.RemoveListener(HandleClickRight);
 
-        _longBtnLevelUp.onClick += HandleClickLevelUp;
+        _longBtnLevelUp.onClick -= HandleClickLevelUp;
         _longBtnLevelUp.onLongPressStart -= HandleLongPressStart;
         _longBtnLevelUp.onLongPressLevelUp -= HandleLongPressLevelUp;
         _longBtnLevelUp.onLongPressEnd -= HandleLongPressEnd;
@@ -176,9 +173,6 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
 
         if (dependencies is UIMercenaryDetailPopupDependencies mercenaryDependencies)
         {
-            _user = mercenaryDependencies.user;
-            _mercenaryService = mercenaryDependencies.mercenaryService;
-
             _presenter.InitDependencies(mercenaryDependencies);
         }
     }
@@ -190,6 +184,13 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
         _presenter.OnPopupReady(data);
     }
 
+    public override void Show(object data = null)
+    {
+        base.Show(data);
+
+        _presenter.Show();
+    }
+
     public void SetupSkillScroll(GameObject prefab, int initIndex)
     {
         _skillScroll.Initialize(
@@ -198,6 +199,8 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
             initPos: initIndex
         );
         _skillScroll.UpdateItems();
+
+        _skillScrollReady = true;
     }
 
     public void ShowSkillInfo(SkillData skillData, Transform itemTransform)
@@ -205,6 +208,8 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
         _skillInfo.SetData(skillData);
         _skillInfo.Show(itemTransform);
     }
+
+    #region Handlers
 
     private void HandleClickLevelUp()
     {
@@ -229,7 +234,10 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
 
     private void HandleLongPressEnd()
     {
-        onLongPressLevelUp?.Invoke(_previewLevel);
+        if (_previewLevel > _presenter.currentLevel)
+        {
+            onLongPressLevelUp?.Invoke(_previewLevel);
+        }
     }
 
     private void HandleClickLevelUpMax()
@@ -257,33 +265,33 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
         onClickRight?.Invoke();
     }
 
+    #endregion
+
+    #region Drag
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        _dragStartX = eventData.position.x;
+    }
+
+    // IDragHandler를 구현해야 EventSystem이 Begin/End 드래그를 전달함
     public void OnDrag(PointerEventData eventData)
     {
-        if (_startPos == Vector2.zero)
-        {
-            _startPos = eventData.position;
-        }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        float deltaX = eventData.position.x - _startPos.x;
-
-        onDrag?.Invoke(deltaX);
-
-        _startPos = Vector2.zero;
+        onDrag?.Invoke(eventData.position.x - _dragStartX);
     }
 
-    public void ShowMercenary(Mercenary mercenary, int availableMaxLevel)
-    {
-        _currentMercenaryView?.SetActive(false);
-        
-        var view = GetPool(mercenary.id, mercenary.original).Get();
+    #endregion
 
-        view.SetActive(true);
+    public void ShowMercenary(Mercenary mercenary, MercenaryView view, in MercenaryViewState state)
+    {
+        // 뷰의 활성화/비활성화와 반환은 프레젠터와 풀이 담당
         view.SetLocked(!mercenary.isOwned);
 
-        _currentMercenaryView = view;
+        _skillInfo.Hide();
 
         _txtName.text = mercenary.name;
 
@@ -293,46 +301,34 @@ public class UIMercenaryDetailPopup : UIPopup, IDragHandler, IEndDragHandler
 
         _txtCombatPower.text = CombatPowerCalculator.Calculate(mercenary.stat).ToString();
 
-        var canLevelUp = _presenter.CanLevelUp();
-        _btnLevelUp.interactable = canLevelUp;
-        _longBtnLevelUp.interactable = canLevelUp;
-        _btnLevelUpMax.interactable = canLevelUp;
-        _btnLevelReset.interactable = _presenter.CanLevelReset();
-        _btnGradeUp.interactable = _presenter.CanGradeUp();
+        _btnLevelUp.interactable = state.canLevelUp;
+        _longBtnLevelUp.interactable = state.canLevelUp;
+        _btnLevelUpMax.interactable = state.canLevelUp;
+        _btnLevelReset.interactable = state.canLevelReset;
+        _btnGradeUp.interactable = state.canGradeUp;
 
         _previewLevel = mercenary.level;
 
         _btnLevelUp.text = $"Lv. {mercenary.level}";
-        _btnLevelUpMax.text = $"Max Lv. {availableMaxLevel}";
+        _btnLevelUpMax.text = $"Max Lv. {state.availableMaxLevel}";
+
         if (mercenary.grade == GameConfig.MercenaryGradeLimit)
         {
             _btnGradeUp.text = "Grade Max";
         }
         else
         {
-            int gradeUpCost = _presenter.GetGradeUpCost();
-            _btnGradeUp.text = $"Grade Up\n({mercenary.shardCount} / {gradeUpCost})";
+            _btnGradeUp.text = $"Grade Up\n({mercenary.shardCount} / {state.gradeUpCost})";
         }
 
-        _skillScroll.UpdateItems();
+        if (_skillScrollReady == true)
+        {
+            _skillScroll.UpdateItems();
+        }
 
         for (int i = 0; i < _gradeIcons.Length; i++)
         {
             _gradeIcons[i].gameObject.SetActive(i < mercenary.grade);
         }
-    }
-
-    private MercenaryViewPool GetPool(int id, GameObject original)
-    {
-        if (_pools.TryGetValue(id, out var pool))
-        {
-            return pool;
-        }
-
-        pool = new MercenaryViewPool(original, _pivot);
-
-        _pools.Add(id, pool);
-
-        return pool;
     }
 }

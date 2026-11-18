@@ -1,9 +1,9 @@
 public static class PopupName
 {
-    public static readonly string UICommonPopup = "UICommonPopup";
-    public static readonly string UIMercenaryDetailPopup = "UIMercenaryDetailPopup";
-    public static readonly string UIPausePopup = "UIPausePopup";
-    public static readonly string UIProductResultPopup = "UIProductResultPopup";
-    public static readonly string UISettingPopup = "UISettingPopup";
-    public static readonly string UIGachaResultPopup = "UIGachaResultPopup";
+    public const string UICommonPopup = "UICommonPopup";
+    public const string UIMercenaryDetailPopup = "UIMercenaryDetailPopup";
+    public const string UIPausePopup = "UIPausePopup";
+    public const string UIProductResultPopup = "UIProductResultPopup";
+    public const string UISettingPopup = "UISettingPopup";
+    public const string UIGachaResultPopup = "UIGachaResultPopup";
 }

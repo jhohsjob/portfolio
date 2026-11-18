@@ -26,6 +26,6 @@ public class MercenaryView : MonoBehaviour
         {
             _spriteRenderer.color = Color.white;
         }
-        gameObject.SetActive(false);
+        SetActive(false);
     }
 }

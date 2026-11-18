@@ -6,7 +6,7 @@ public class UIBattleContext
 {
     public IAssetService assetService;
     public IPopupService popupService;
-    public ISceneLoader sceneLoader;
+    public ISceneService sceneLoader;
     public IBattleController battleController;
     public BattleRewardRuntime battleReward;
     public DashController dashController;

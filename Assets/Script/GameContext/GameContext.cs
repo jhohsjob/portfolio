@@ -1,31 +1,64 @@
 using System;
+using System.Collections.Generic;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 
-public class GameContext
+// 프리로드 에셋은 세션 동안 상주하므로 GameContext가 소유한다.
+public sealed class PreloadCache : IDisposable
+{
+    private readonly List<AsyncOperationHandle<UnityEngine.Object>> _handles = new();
+
+    public IReadOnlyList<AsyncOperationHandle<UnityEngine.Object>> Handles => _handles;
+
+    public void Add(AsyncOperationHandle<UnityEngine.Object> handle) => _handles.Add(handle);
+
+    public void Release()
+    {
+        foreach (var h in _handles)
+        {
+            if (h.IsValid()) Addressables.Release(h);
+        }
+        _handles.Clear();
+    }
+
+    public void Dispose() => Release();
+}
+
+public class GameContext : IDisposable
 {
     public IAssetService AssetService { get; }
     public Storage Storage { get; }
     public SaveService SaveService { get; }
+    public LocaleService LocaleService { get; }
+    public ISoundService SoundService { get; }
+    public IDeviceSettings DeviceSettings { get; }
+
+    public PreloadCache Preload { get; }
     public IGameServer GameServer { get; }
     public User User { get; }
-    public CurrencyService CurrencyService { get; }
+    public ICurrencyService CurrencyService { get; }
     public RoleFactory RoleFactory { get; }
     public MercenaryService MercenaryService { get; }
     public PurchaseService PurchaseService { get; }
     public GachaService GachaService { get; }
-    public LocaleService LocaleService { get; }
     public StageService StageService { get; }
-    public SceneService SceneService { get; }
-    public PopupService PopupService { get; }
+    public ISceneService SceneService { get; }
+    public IPopupService PopupService { get; }
     public GameDataLoader GameDataLoader { get; }
 
-    public GameContext()
+    private bool _disposed;
+
+    public GameContext(AppContext app)
     {
         AssetService = new AssetService();
+        Storage = app.Storage;
+        SaveService = app.SaveService;
+        LocaleService = app.LocaleService;
+        SoundService = app.SoundService;
+        DeviceSettings = app.DeviceSettings;
 
-        Storage = new Storage(AssetService);
-
-        SaveService = new SaveService(Storage);
+        Preload = new PreloadCache();
 
         GameServer = new MockGameServer(AssetService);
 
@@ -58,20 +91,20 @@ public class GameContext
             mercenaryService = MercenaryService
         });
 
-        LocaleService = new LocaleService(Storage, SaveService);
-
         StageService = new StageService();
 
         PopupService = new PopupService(new PopupServiceDependencies
         {
             assetService = AssetService,
-            storage = Storage,
-            gameServer = GameServer,
+            soundService = SoundService,
+            container = app.PopupContainer
         });
 
         SceneService = new SceneService(new SceneServiceContext
         {
             assetService = AssetService,
+            soundService = SoundService,
+            deviceSettings = DeviceSettings,
             user = User,
             currencyService = CurrencyService,
             mercenaryService = MercenaryService,
@@ -84,6 +117,7 @@ public class GameContext
         GameDataLoader = new GameDataLoader(new GameDataLoaderContext
         {
             assetService = AssetService,
+            soundService = SoundService,
             gameServer = GameServer,
             user = User,
             mercenaryService = MercenaryService,
@@ -95,7 +129,15 @@ public class GameContext
 
     public void Dispose()
     {
-        (AssetService as IDisposable).Dispose();
-        LocaleService.Dispose();
+        if (_disposed == true)
+        {
+            return;
+        }
+        _disposed = true;
+
+        SceneService?.Dispose();
+        PopupService?.Dispose();
+        GameServer?.Dispose();
+        Preload.Dispose();
     }
 }

@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
-public class MockGameServer : IGameServer
+public class MockGameServer : IGameServer, IDisposable
 {
     private readonly MockUserService _userService;
     private readonly MockMercenaryService _mercenaryService;
@@ -109,6 +110,11 @@ public class MockGameServer : IGameServer
     public Task<GachaResponse> GachaAsync(GachaRequest request)
     {
         return _gachaHandler.GachaAsync(request);
+    }
+
+    public void Dispose()
+    {
+
     }
 
 #if DEBUG_MODE

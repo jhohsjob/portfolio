@@ -23,7 +23,7 @@ public class MercenaryStorage
 
     public void SetupMercenaries(Dictionary<int, MercenaryDefinition> mercenaries)
     {
-        _mercenaryDefinitions = mercenaries;
+        _mercenaryDefinitions = new Dictionary<int, MercenaryDefinition>(mercenaries);
     }
 
     public MercenaryPVO GetById(int id)

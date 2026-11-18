@@ -19,7 +19,7 @@ public class MockMercenaryService
 
     public void SetupMercenaries(Dictionary<int, MercenaryDefinition> mercenaries)
     {
-        _mercenaryDefinitions = mercenaries;
+        _mercenaryDefinitions = new Dictionary<int, MercenaryDefinition>(mercenaries);
 
         _mercenaryStorage.SetupMercenaries(mercenaries);
     }

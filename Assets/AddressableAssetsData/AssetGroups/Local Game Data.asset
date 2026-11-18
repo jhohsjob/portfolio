@@ -104,6 +104,11 @@ MonoBehaviour:
     m_SerializedLabels:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5a472dfade8e3c4bb421c49bab1c8de
+    m_Address: Sound
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c68ae498da39380419a72d8f581a66ad
     m_Address: Shop
     m_ReadOnly: 0
@@ -138,6 +143,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4f3800932a0afc43bf263733b823883
+    m_Address: SoundDefinitionTable
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f38dc39830cc6b940a1c7aa0c4ff40ba
     m_Address: ProductDefinitionTable

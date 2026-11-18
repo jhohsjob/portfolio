@@ -37,4 +37,9 @@ public class BootController
     {
         _target = 1f;
     }
+
+    public void Fail(Exception e)
+    {
+        // todo
+    }
 }

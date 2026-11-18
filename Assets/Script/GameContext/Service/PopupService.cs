@@ -1,55 +1,62 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
 
-public interface IPopupService
+public interface IPopupService : IDisposable
 {
     void ShowPopup<T>(string address = "", object data = null, UIPopupDependencies dependencies = null, Action<T> onLoadedCallback = null) where T : UIPopup;
     void ShowCommonPopup(string title, string message);
 
     void ClosePopup(UIPopup popup);
-
     void CloseAllPopup();
 }
 
 public class PopupServiceDependencies
 {
     public IAssetService assetService;
-    public IGameServer gameServer;
-    public Storage storage;
+    public ISoundService soundService;
+    public Transform container;
 }
 
 public class PopupService : IPopupService
 {
     private PopupServiceDependencies _context;
 
-    private List<UIPopup> _openPopup;
+    private List<UIPopup> _openPopup = new();
+    private readonly HashSet<UIPopup> _closing = new();
+    private readonly CancellationTokenSource _cts = new();
 
     private Transform _container;
     private Transform _alphaLayer;
+    private bool _disposed;
 
     public PopupService(PopupServiceDependencies context)
     {
         _context = context;
 
-        _openPopup = new List<UIPopup>();
-
-        BindingContainer();
-    }
-
-    private void BindingContainer()
-    {
-        _container = GameObject.Find("Global/PopupCanvas").transform;
+        _container = context.container;
         _alphaLayer = _container.Find("AlphaBlack");
     }
 
     public void ShowPopup<T>(string address = "", object data = null, UIPopupDependencies dependencies = null, Action<T> onLoadedCallback = null) where T : UIPopup
     {
+        if (_disposed == true)
+        {
+            return;
+        }
+
         _context.assetService.LoadPrefab(address, (prefab) =>
         {
+            if (_disposed == true)
+            {
+                return;
+            }
+
             GameObject go = UnityEngine.Object.Instantiate(prefab);
             go.transform.SetParent(_container, false);
             go.name = address;
@@ -88,6 +95,7 @@ public class PopupService : IPopupService
         dependencies ??= new UIPopupDependencies();
 
         dependencies.assetService = _context.assetService;
+        dependencies.soundService = _context.soundService;
         dependencies.popupService = this;
 
         popup.InitDependencies(dependencies);
@@ -99,12 +107,7 @@ public class PopupService : IPopupService
 
     public void ClosePopup<T>()
     {
-        Type t = typeof(T);
-        UIPopup Popup = GetPopup(t);
-        if (Popup != null)
-        {
-            ClosePopup(Popup);
-        }
+        ClosePopup(typeof(T));
     }
 
     public void ClosePopup(Type t)
@@ -118,28 +121,55 @@ public class PopupService : IPopupService
 
     public void ClosePopup(UIPopup popup)
     {
-        if (popup == null)
+        if (_disposed == true || popup == null)
         {
             return;
         }
 
-        if (popup.transform != null && popup.transform.TryGetComponent(out Animator animator))
+        if (_closing.Add(popup) == false)
+        {
+            return;
+        }
+
+        if (popup.TryGetComponent(out Animator animator))
+        {
+            ClosePopupWithAnimAsync(popup, animator, _cts.Token).Forget();
+        }
+        else
+        {
+            ClosePopupWithoutAnim(popup);
+        }
+    }
+
+    private async UniTaskVoid ClosePopupWithAnimAsync(UIPopup popup, Animator animator, CancellationToken ct)
+    {
+        try
         {
             var stateId = Animator.StringToHash("AutoClose");
             if (animator.HasState(0, stateId))
             {
                 animator.Play(stateId);
-                PlayAlphaLayerFadeOutAnim(popup);
-                return;
+
+                await UniTask.Yield(ct);
+
+                while (animator != null &&
+                       animator.GetCurrentAnimatorStateInfo(0).shortNameHash == stateId &&
+                       animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
+                {
+                    await UniTask.Yield(ct);
+                }
             }
-            if (animator.layerCount > 1 && animator.HasState(1, stateId))
+
+            if (popup != null)
             {
-                animator.Play(stateId, 1);
                 PlayAlphaLayerFadeOutAnim(popup);
-                return;
             }
         }
-        ClosePopupWithoutAnim(popup);
+        catch (OperationCanceledException) { }
+        finally
+        {
+            _closing.Remove(popup);
+        }
     }
 
     public void ClosePopupWithoutAnim(UIPopup popup)
@@ -150,6 +180,7 @@ public class PopupService : IPopupService
         }
 
         _openPopup.Remove(popup);
+        _closing.Remove(popup);
         GameObject.Destroy(popup.gameObject);
 
         if (_openPopup.Count > 0)
@@ -192,7 +223,14 @@ public class PopupService : IPopupService
             _openPopup.RemoveAt(i);
             GameObject.Destroy(popup.gameObject);
         }
-        _alphaLayer.gameObject.SetActive(false);
+
+        _openPopup.Clear();
+        _closing.Clear();
+
+        if (_alphaLayer != null)
+        {
+            _alphaLayer.gameObject.SetActive(false);
+        }
     }
 
     public UIPopup GetTopPopup()
@@ -205,9 +243,12 @@ public class PopupService : IPopupService
         return null;
     }
 
-    public void PlayAlphaLayerFadeOutAnim(UIPopup popup, Action callback = null)
+    private void PlayAlphaLayerFadeOutAnim(UIPopup popup, Action callback = null)
     {
-        if (popup == null) return;
+        if (popup == null)
+        {
+            return;
+        }
 
         if (_alphaLayer.gameObject.activeSelf && _alphaLayer.TryGetComponent(out Image image))
         {
@@ -257,5 +298,24 @@ public class PopupService : IPopupService
             message = message
         };
         ShowPopup<UICommonPopup>(PopupName.UICommonPopup, data);
+    }
+
+    public void Dispose()
+    {
+        if (_disposed == true)
+        {
+            return;
+        }
+        _disposed = true;
+
+        _cts.Cancel();
+        _cts.Dispose();
+           
+        if (_alphaLayer != null && _alphaLayer.TryGetComponent(out Image image))
+        {
+            image.DOKill();
+        }
+
+        CloseAllPopup();
     }
 }

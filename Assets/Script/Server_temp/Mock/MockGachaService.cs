@@ -15,7 +15,7 @@ public class MockGachaService
 
     public void SetupGacha(Dictionary<int, GachaDefinition> gachas)
     {
-        _gachas = gachas;
+        _gachas = new Dictionary<int, GachaDefinition>(gachas);
 
         _gachaStorage.SetupGacha(gachas);
     }

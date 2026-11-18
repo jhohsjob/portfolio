@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 
 public class UIMercenaryDetailPopupPresenter : IDisposable
 {
     private readonly UIMercenaryDetailPopup _view;
+    private readonly Transform _pivot;
 
     private IAssetService _assetService;
     private User _user;
@@ -12,21 +14,37 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
     private MercenaryService _mercenaryService;
     private IPopupService _popupService;
 
+    private readonly Dictionary<int, MercenaryViewPool> _pools = new();
+
     private Mercenary _currentMercenary;
-    public int currentLevel => _currentMercenary.level;
+    private MercenaryView _currentView;
+    private int _currentViewId = -1;
 
-    private const float _dragThreshold = 150f;
+    private bool _isBusy;
+    private bool _disposed;
 
-    public UIMercenaryDetailPopupPresenter(UIMercenaryDetailPopup view)
+    public int currentLevel => _currentMercenary == null ? 0 : _currentMercenary.level;
+
+    public UIMercenaryDetailPopupPresenter(UIMercenaryDetailPopup view, Transform pivot)
     {
         _view = view;
+        _pivot = pivot;
 
         Bind();
     }
 
     public void Dispose()
     {
+        _disposed = true;
+
         Unbind();
+        ReleaseCurrentView();
+
+        foreach (var pool in _pools.Values)
+        {
+            pool.Dispose();
+        }
+        _pools.Clear();
     }
 
     public void InitDependencies(UIMercenaryDetailPopupDependencies mercenaryDependencies)
@@ -49,11 +67,21 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
 
         _assetService.LoadPrefab("UIMercenaryDetailPopupSkillScrollItem", prefab =>
         {
+            if (_disposed == false)
+            {
+                return;
+            }
+
             _view.SetupSkillScroll(prefab, 0);
         });
+    }
 
+    public void Show()
+    {
         Refresh();
     }
+
+    #region Bind
 
     private void Bind()
     {
@@ -70,8 +98,8 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
 
         _view.onClickSkillItem += OnClickSkillItem;
 
-        _view.onGetSkillCount = () => _currentMercenary.skillDataList.Count;
-        _view.onGetSkillData = (index) => _currentMercenary.skillDataList[index];  
+        _view.onGetSkillCount = () => _currentMercenary?.skillDataList.Count ?? 0;
+        _view.onGetSkillData = index => _currentMercenary?.skillDataList[index];
     }
 
     private void Unbind()
@@ -93,129 +121,276 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
         _view.onGetSkillData = null;
     }
 
+    #endregion
+
+    #region View / Pool
+
+    private MercenaryViewPool GetPool(int id, GameObject original)
+    {
+        if (_pools.TryGetValue(id, out var pool))
+        {
+            return pool;
+        }
+
+        pool = new MercenaryViewPool(original, _pivot);
+        _pools.Add(id, pool);
+
+        return pool;
+    }
+
+    private void ReleaseCurrentView()
+    {
+        if (_currentView == null)
+        {
+            _currentViewId = -1;
+            return;
+        }
+
+        if (_pools.TryGetValue(_currentViewId, out var pool))
+        {
+            pool.Release(_currentView);
+        }
+
+        _currentView = null;
+        _currentViewId = -1;
+    }
+
+    private int GetAvailableMaxLevel()
+    {
+        return _mercenaryService.GetAvailableMaxLevel(_currentMercenary.level, _user.level, _currencyService.Get(CurrencyType.Gold));
+    }
+
     private void Refresh()
     {
-        int availableMaxLevel = _mercenaryService.GetAvailableMaxLevel(_currentMercenary.level, _user.level, _currencyService.Get(CurrencyType.Gold));
+        if (_disposed || _currentMercenary == null)
+        {
+            return;
+        }
 
-        _view.ShowMercenary(_currentMercenary, availableMaxLevel);
+        if (_currentView == null || _currentViewId != _currentMercenary.id)
+        {
+            ReleaseCurrentView();
+
+            _currentView = GetPool(_currentMercenary.id, _currentMercenary.original).Get();
+            _currentViewId = _currentMercenary.id;
+        }
+
+        _view.ShowMercenary(_currentMercenary, _currentView, BuildViewState());
     }
 
-    public bool CanLevelUp()
+    private MercenaryViewState BuildViewState()
     {
-        int availableMaxLevel = _mercenaryService.GetAvailableMaxLevel(_currentMercenary.level, _user.level, _currencyService.Get(CurrencyType.Gold));
+        int availableMaxLevel = GetAvailableMaxLevel();
+        bool isOwned = _currentMercenary.isOwned;
+        bool isGradeMax = _currentMercenary.grade >= GameConfig.MercenaryGradeLimit;
 
-        return _currentMercenary.isOwned && _currentMercenary.level < availableMaxLevel;
+        return new MercenaryViewState
+        {
+            availableMaxLevel = availableMaxLevel,
+            canLevelUp = isOwned && _currentMercenary.level < availableMaxLevel,
+            canLevelReset = isOwned && _currentMercenary.level > 1,
+            canGradeUp = isOwned && !isGradeMax && _mercenaryService.CanGradeUp(_currentMercenary.grade, _currentMercenary.grade + 1, _currentMercenary.shardCount),
+            gradeUpCost = isGradeMax ? 0 : _mercenaryService.GetGradeUpCost(_currentMercenary.grade, _currentMercenary.grade + 1),
+        };
     }
+
+    #endregion
 
     public bool CanPreviewLevelUp(int previewLevel)
     {
-        int availableMaxLevel = _mercenaryService.GetAvailableMaxLevel(_currentMercenary.level, _user.level, _currencyService.Get(CurrencyType.Gold));
-
-        return _currentMercenary.isOwned && previewLevel < availableMaxLevel;
-    }
-
-    public bool CanLevelReset()
-    {
-        return _currentMercenary.isOwned && _currentMercenary.level > 1;
-    }
-
-    private void LevelUp(MercenaryLevelUpResult result)
-    {
-        switch (result)
+        if (_currentMercenary == null)
         {
-            case MercenaryLevelUpResult.Success:
-                Refresh();
-                break;
-
-            default:
-                _popupService.ShowCommonPopup(LocalManager.GetCommonString("notice"),
-                                              LocalManager.GetErrorCodeString(result.ToString()));
-                break;
+            return false;
         }
+
+        return _currentMercenary.isOwned && previewLevel < GetAvailableMaxLevel();
     }
 
-    public bool CanGradeUp()
+    #region Requests
+
+    private bool TryBeginBusy()
     {
-        return _currentMercenary.isOwned && _mercenaryService.CanGradeUp(_currentMercenary.grade, _currentMercenary.grade + 1, _currentMercenary.shardCount);
+        if (_isBusy == true || _disposed == true)
+        {
+            return false;
+        }
+
+        _isBusy = true;
+        return true;
     }
 
-    public int GetGradeUpCost()
+    private void ShowError(string resultName)
     {
-        return _mercenaryService.GetGradeUpCost(_currentMercenary.grade, _currentMercenary.grade + 1);
+        _popupService.ShowCommonPopup(LocalManager.GetCommonString("notice"), LocalManager.GetErrorCodeString(resultName));
     }
 
-    private async void OnClickLevelUp()
+    private void OnClickLevelUp()
     {
-        var result = await _mercenaryService.LevelUp(_currentMercenary.id, _currentMercenary.level + 1);
-
-        LevelUp(result);
+        OnClickLevelUp(_currentMercenary.level + 1);
     }
 
     private async void OnClickLevelUp(int targetLevel)
     {
-        var result = await _mercenaryService.LevelUp(_currentMercenary.id, targetLevel);
+        if (TryBeginBusy() == false)
+        {
+            return;
+        }
 
-        LevelUp(result);
+        try
+        {
+            var result = await _mercenaryService.LevelUp(_currentMercenary.id, targetLevel);
+            if (_disposed == true)
+            {
+                return;
+            }
+
+            if (result != MercenaryLevelUpResult.Success)
+            {
+                ShowError(result.ToString());
+            }
+
+            Refresh();
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
+        finally
+        {
+            _isBusy = false;
+        }
     }
 
     private async void OnClickLevelUpMax()
     {
-        int availableMaxLevel = _mercenaryService.GetAvailableMaxLevel(_currentMercenary.level, _user.level, _currencyService.Get(CurrencyType.Gold));
+        if (TryBeginBusy() == false)
+        {
+            return;
+        }
 
-        var result = await _mercenaryService.LevelUp(_currentMercenary.id, availableMaxLevel);
+        try
+        {
+            var result = await _mercenaryService.LevelUp(_currentMercenary.id, GetAvailableMaxLevel());
+            if (_disposed == true)
+            {
+                return;
+            }
 
-        LevelUp(result);
+            if (result != MercenaryLevelUpResult.Success)
+            {
+                ShowError(result.ToString());
+            }
+
+            Refresh();
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
+        finally
+        {
+            _isBusy = false;
+        }
     }
 
     private async void OnClickLevelReset()
     {
-        var result = await _mercenaryService.LevelReset(_currentMercenary.id);
-
-        switch (result)
+        if (TryBeginBusy() == false)
         {
-            case MercenaryLevelResetResult.Success:
-                Refresh();
-                break;
+            return;
+        }
 
-            default:
-                _popupService.ShowCommonPopup(LocalManager.GetCommonString("notice"),
-                                              LocalManager.GetErrorCodeString(result.ToString()));
-                break;
+        try
+        {
+            var result = await _mercenaryService.LevelReset(_currentMercenary.id);
+            if (_disposed == true)
+            {
+                return;
+            }
+
+            if (result == MercenaryLevelResetResult.Success)
+            {
+                Refresh();
+            }
+            else
+            {
+                ShowError(result.ToString());
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
+        finally
+        {
+            _isBusy = false;
         }
     }
 
     private async void OnClickGradeUp()
     {
-        var result = await _mercenaryService.GradeUp(_currentMercenary.id);
-
-        switch (result)
+        if (TryBeginBusy() == false)
         {
-            case MercenaryGradeUpResult.Success:
-                Refresh();
-                break;
+            return;
+        }
 
-            default:
-                _popupService.ShowCommonPopup(LocalManager.GetCommonString("notice"),
-                                              LocalManager.GetErrorCodeString(result.ToString()));
-                break;
+        try
+        {
+            var result = await _mercenaryService.GradeUp(_currentMercenary.id);
+            if (_disposed == true)
+            {
+                return;
+            }
+
+            if (result == MercenaryGradeUpResult.Success)
+            {
+                Refresh();
+            }
+            else
+            {
+                ShowError(result.ToString());
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
+        finally
+        {
+            _isBusy = false;
         }
     }
 
+    #endregion
+
+    #region Navigation
+
     private void OnClickLeft()
     {
-        _currentMercenary = _mercenaryService.GetPrev(_currentMercenary);
-        Refresh();
+        Move(_mercenaryService.GetPrev(_currentMercenary));
     }
 
     private void OnClickRight()
     {
-        _currentMercenary = _mercenaryService.GetNext(_currentMercenary);
+        Move(_mercenaryService.GetNext(_currentMercenary));
+    }
+
+    private void Move(Mercenary target)
+    {
+        if (_isBusy == true || _disposed == true || target == null)
+        {
+            return;
+        }
+
+        _currentMercenary = target;
         Refresh();
     }
 
     private void OnDrag(float deltaX)
     {
-        if (Mathf.Abs(deltaX) < _dragThreshold)
+        float threshold = Screen.width * 0.15f;
+
+        if (Mathf.Abs(deltaX) < threshold)
         {
             return;
         }
@@ -224,7 +399,7 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
         {
             OnClickRight();
         }
-        else if (deltaX < 0)
+        else
         {
             OnClickLeft();
         }
@@ -234,4 +409,6 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
     {
         _view.ShowSkillInfo(skillData, itemTransform);
     }
+
+    #endregion
 }

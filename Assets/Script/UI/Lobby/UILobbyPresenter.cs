@@ -5,14 +5,15 @@ using UnityEngine;
 public class UILobbyContext
 {
     public IAssetService assetService;
-    public IPopupService popupService;
-    public ICurrencyService currencyService;
-    public ISceneLoader sceneLoader;
-    public StageService stageService;
+    public IDeviceSettings deviceSettings;
     public User user;
+    public ICurrencyService currencyService;
     public MercenaryService mercenaryService;
     public PurchaseService purchaseService;
     public GachaService gachaService;
+    public StageService stageService;
+    public ISceneService sceneService;
+    public IPopupService popupService;
 }
 
 public class UILobbyPresenter : IDisposable
@@ -30,8 +31,10 @@ public class UILobbyPresenter : IDisposable
 
         _topPresenter = new UILobbyTopPresenter(_view.topView, new UILobbyTopContext
         {
+            deviceSettings = _context.deviceSettings,
             user = _context.user,
             currencyService = _context.currencyService,
+            sceneService = _context.sceneService,
             popupService = _context.popupService,
         });
 

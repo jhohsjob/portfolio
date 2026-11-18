@@ -5,9 +5,9 @@ using UnityEngine;
 public class UIPausePopupContext
 {
     public Action onResumeBattle { get; }
-    public ISceneLoader sceneLoader { get; }
+    public ISceneService sceneLoader { get; }
 
-    public UIPausePopupContext(Action onResumeBattle, ISceneLoader sceneLoader)
+    public UIPausePopupContext(Action onResumeBattle, ISceneService sceneLoader)
     {
         this.onResumeBattle = onResumeBattle;
         this.sceneLoader = sceneLoader;
