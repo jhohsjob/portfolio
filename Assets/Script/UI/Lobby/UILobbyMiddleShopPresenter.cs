@@ -53,7 +53,7 @@ public class UILobbyMiddleShopPresenter : UILobbyMiddlePresenter<UILobbyMiddleSh
                 continue;
             }
 
-            uiItem.Bind(definition, id => GetPurchaseCount(id));
+            uiItem.Bind(_context.purchaseService, definition);
 
             uiItem.onProductClick += OnProductClickRequest;
             _createdUiItems.Add(uiItem);
@@ -72,24 +72,12 @@ public class UILobbyMiddleShopPresenter : UILobbyMiddlePresenter<UILobbyMiddleSh
         _createdUiItems.Clear();
     }
 
-    private int GetPurchaseCount(int productId)
-    {
-        var pvo = _context.purchaseService.GetProductPVOById(productId);
-        return pvo?.purchaseCount ?? 0;
-    }
-
-    private async void OnProductClickRequest(ShopItemDefinition shop, ProductDefinition product, UIProduct uiTarget)
+    private async void OnProductClickRequest(ProductDefinition product)
     {
         if (_isPurchasing == true)
         {
             return;
         }
-
-        if (uiTarget == null)
-        {
-            return;
-        }
-
         _isPurchasing = true;
 
         var result = await _context.purchaseService.Purchase(product.id);
@@ -99,9 +87,6 @@ public class UILobbyMiddleShopPresenter : UILobbyMiddlePresenter<UILobbyMiddleSh
         switch (result)
         {
             case PurchaseResult.Success:
-                int newCount = GetPurchaseCount(product.id);
-                uiTarget.UpdatePurchaseCount(newCount);
-
                 message = LocalManager.GetShopString("success_result_message", new object[] { new { product_name = productName } });
                 break;
 

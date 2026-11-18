@@ -1,19 +1,21 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
 
 public class UIProduct : MonoBehaviour
 {
+    private PurchaseService _purchaseService;
+
     [SerializeField]
     private Button _btn;
     [SerializeField]
     private TextMeshProUGUI _desc;
 
     private ProductDefinition _definition;
-    private int _currentPurchaseCount;
 
     public event Action<ProductDefinition> onClickProduct;
 
@@ -24,10 +26,13 @@ public class UIProduct : MonoBehaviour
 
         _btn.onClick.AddListener(() =>
         {
-            if (_definition != null) onClickProduct?.Invoke(_definition);
+            if (_definition != null)
+            {
+                onClickProduct?.Invoke(_definition);
+            }
         });
 
-        LocalizationSettings.SelectedLocaleChanged += locale => { UpdateUI(); };
+        LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
     }
 
     private void OnEnable()
@@ -37,26 +42,27 @@ public class UIProduct : MonoBehaviour
 
     private void OnDestroy()
     {
-        LocalizationSettings.SelectedLocaleChanged -= locale => { UpdateUI(); };
+        LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
+
+        _purchaseService.onPVOChanged -= HandlePVOChanged;
     }
 
-    public void Bind(ProductDefinition definition, int purchaseCount)
+    public void Bind(PurchaseService purchaseService, ProductDefinition definition)
     {
+        _purchaseService = purchaseService;
         _definition = definition;
-        _currentPurchaseCount = purchaseCount;
 
         UpdateUI();
-    }
 
-    public void UpdatePurchaseCount(int newCount)
-    {
-        _currentPurchaseCount = newCount;
-        UpdateUI();
+        _purchaseService.onPVOChanged += HandlePVOChanged;
     }
 
     private void UpdateUI()
     {
-        if (_definition == null || _desc == null) return;
+        if (_definition == null || _desc == null)
+        {
+            return;
+        }
 
         string productName = LocalManager.GetShopString(_definition.GetNameKey());
         string price = string.Empty;
@@ -84,8 +90,19 @@ public class UIProduct : MonoBehaviour
 
             case ShopLimitType.Daily:
             case ShopLimitType.Lifetime:
-                _desc.text = $"{productName}\n{price}\n{_definition.limitType} {_currentPurchaseCount}/{_definition.purchaseLimit}";
+                _desc.text = $"{productName}\n{price}\n{_definition.limitType}" +
+                    $" {_purchaseService.GetProductPVOById(_definition.id).purchaseCount}/{_definition.purchaseLimit}";
                 break;
         }
+    }
+
+    private void HandleLocaleChanged(Locale locale)
+    {
+        UpdateUI();
+    }
+
+    private void HandlePVOChanged(ProductPVO pvo)
+    {
+        UpdateUI();
     }
 }

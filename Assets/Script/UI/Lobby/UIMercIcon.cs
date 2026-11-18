@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
@@ -17,9 +18,14 @@ public class UIMercIcon : MonoBehaviour
 
     private Mercenary _mercenary;
 
+    private void Awake()
+    {
+        LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
+    }
+
     private void OnDestroy()
     {
-        LocalizationSettings.SelectedLocaleChanged -= locale => { UpdateUI(); };
+        LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
     }
 
     public void Initialize(Mercenary mercenary)
@@ -27,8 +33,6 @@ public class UIMercIcon : MonoBehaviour
         _mercenary = mercenary;
 
         UpdateUI();
-
-        LocalizationSettings.SelectedLocaleChanged += locale => { UpdateUI(); };
     }
 
     private void UpdateUI()
@@ -40,5 +44,10 @@ public class UIMercIcon : MonoBehaviour
         _icon.sprite = _mercenary.icon;
         _icon.color = _mercenary.isOwned ? Color.wheat : Color.black;
         // _lock.gameObject.SetActive(!_data.isOwned);
+    }
+
+    private void HandleLocaleChanged(Locale locale)
+    {
+        UpdateUI();
     }
 }

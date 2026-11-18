@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -274,7 +273,6 @@ public class UIMercenaryDetailPopup : UIPopup, IBeginDragHandler, IDragHandler, 
         _dragStartX = eventData.position.x;
     }
 
-    // IDragHandler를 구현해야 EventSystem이 Begin/End 드래그를 전달함
     public void OnDrag(PointerEventData eventData)
     {
     }
@@ -288,7 +286,6 @@ public class UIMercenaryDetailPopup : UIPopup, IBeginDragHandler, IDragHandler, 
 
     public void ShowMercenary(Mercenary mercenary, MercenaryView view, in MercenaryViewState state)
     {
-        // 뷰의 활성화/비활성화와 반환은 프레젠터와 풀이 담당
         view.SetLocked(!mercenary.isOwned);
 
         _skillInfo.Hide();

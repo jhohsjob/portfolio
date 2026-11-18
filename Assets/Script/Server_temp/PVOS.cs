@@ -62,6 +62,7 @@ public class ProductPVO
     {
         id = other.id;
         purchaseCount = other.purchaseCount;
+        totalPurchaseCount = other.totalPurchaseCount;
         lastPurchaseTime = other.lastPurchaseTime;
         lastResetTime = other.lastResetTime;
     }

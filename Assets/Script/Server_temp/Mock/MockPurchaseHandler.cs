@@ -49,7 +49,7 @@ public class MockPurchaseHandler
                 break;
         }
 
-        var checkLimit = CheckLimit(product, pvo);
+        var checkLimit = CheckLimit(product, pvo.purchaseCount);
         if (checkLimit != NetworkResult.SUCCESS)
         {
             response.result = checkLimit;
@@ -75,10 +75,9 @@ public class MockPurchaseHandler
             await GrantReward(reward);
         }
 
-        pvo.purchaseCount++;
-        pvo.totalPurchaseCount++;
+        await _purchaseService.AddPurchaseCount(product.id, 1);
 
-        response.product = pvo;
+        response.product = _purchaseService.GetProductPVOById(product.id);
         response.user = _userService.GetUser();
 
         return response;
@@ -108,7 +107,7 @@ public class MockPurchaseHandler
         return result;
     }
 
-    private NetworkResult CheckLimit(ProductDefinition product, ProductPVO pvo)
+    private NetworkResult CheckLimit(ProductDefinition product, int purchaseCount)
     {
         NetworkResult result = NetworkResult.SUCCESS;
 
@@ -119,7 +118,7 @@ public class MockPurchaseHandler
 
             case ShopLimitType.Daily:
             case ShopLimitType.Lifetime:
-                if (pvo.purchaseCount >= product.purchaseLimit)
+                if (purchaseCount >= product.purchaseLimit)
                 {
                     result = NetworkResult.E_PURCHASE_LIMIT_EXCEEDED;
                 }

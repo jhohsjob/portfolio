@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
@@ -22,11 +23,13 @@ public class UIMercenaryDetailPopupSkillScrollItem : InfiniteScrollItem
     private void Awake()
     {
         _btn.onClick.AddListener(OnClickItem);
+
+        LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
     }
 
     private void OnDestroy()
     {
-        LocalizationSettings.SelectedLocaleChanged -= locale => { UpdateUI(); };
+        LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
     }
 
     public override void SetData(int index, object data)
@@ -40,8 +43,6 @@ public class UIMercenaryDetailPopupSkillScrollItem : InfiniteScrollItem
         _data = skillData;
 
         UpdateUI();
-
-        LocalizationSettings.SelectedLocaleChanged += locale => { UpdateUI(); };
     }
 
     private void UpdateUI()
@@ -60,5 +61,10 @@ public class UIMercenaryDetailPopupSkillScrollItem : InfiniteScrollItem
     public void OnClickItem()
     {
         _onClick?.Invoke(_data, transform);
+    }
+
+    private void HandleLocaleChanged(Locale locale)
+    {
+        UpdateUI();
     }
 }

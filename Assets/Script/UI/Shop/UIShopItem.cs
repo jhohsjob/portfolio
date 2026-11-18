@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 
 
@@ -14,41 +15,42 @@ public class UIShopItem : MonoBehaviour
 
     private ShopItemDefinition _definition;
 
-    public event Action<ShopItemDefinition, ProductDefinition, UIProduct> onProductClick;
+    public event Action<ProductDefinition> onProductClick;
 
     private void Awake()
     {
-        LocalizationSettings.SelectedLocaleChanged += locale => { UpdateUI(); };
+        LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
+
+        foreach (var item in _items)
+        {
+            item.onClickProduct += HandleProductClick;
+        }
     }
 
     private void OnDestroy()
     {
-        LocalizationSettings.SelectedLocaleChanged -= locale => { UpdateUI(); };
+        LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
+
+        foreach (var item in _items)
+        {
+            item.onClickProduct += HandleProductClick;
+        }
     }
 
-    public void Bind(ShopItemDefinition definition, Func<int, int> getPurchaseCountFunc)
+    public void Bind(PurchaseService purchaseService, ShopItemDefinition definition)
     {
-        _definition = definition;
-        if (_definition == null)
+        if (definition == null)
         {
             return;
         }
+        _definition = definition;
 
         int count = Mathf.Min(_items.Count, definition.productItems.Count);
 
         for (int i = 0; i < count; i++)
         {
-            var productDefinition = definition.productItems[i];
-            int currentCount = getPurchaseCountFunc?.Invoke(productDefinition.id) ?? 0;
-
-            _items[i].Bind(productDefinition, currentCount);
+            _items[i].Bind(purchaseService, definition.productItems[i]);
             _items[i].gameObject.SetActive(true);
-
-            var currentProductUi = _items[i];
-            currentProductUi.onClickProduct += (def) =>
-            {
-                onProductClick?.Invoke(_definition, def, currentProductUi);
-            };
         }
 
         for (int i = count; i < _items.Count; i++)
@@ -65,5 +67,15 @@ public class UIShopItem : MonoBehaviour
         {
             _txtTitle.text = LocalManager.GetShopString(_definition.GetTitleKey());
         }
+    }
+
+    private void HandleLocaleChanged(Locale locale)
+    {
+        UpdateUI();
+    }
+
+    private void HandleProductClick(ProductDefinition definition)
+    {
+        onProductClick?.Invoke(definition);
     }
 }

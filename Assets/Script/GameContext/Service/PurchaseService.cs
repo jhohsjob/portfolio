@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
@@ -20,6 +21,8 @@ public class PurchaseService
     private readonly IGameServer _gameServer;
     private User _user;
     private readonly ICurrencyService _currencyService;
+
+    public Action<ProductPVO> onPVOChanged;
 
     public PurchaseService(PurchaseServiceDependencies dependencies)
     {
@@ -44,6 +47,19 @@ public class PurchaseService
     public void InitializeServer(List<ProductPVO> pvos)
     {
         _pvos.AddRange(pvos);
+    }
+
+    private void ApplyPVO(ProductPVO newPVO)
+    {
+        var index = _pvos.FindIndex(x => x.id == newPVO.id);
+        if (index < 0)
+        {
+            return;
+        }
+
+        _pvos[index] = new ProductPVO(newPVO);
+
+        onPVOChanged?.Invoke(newPVO);
     }
 
     public ProductPVO GetProductPVOById(int id)
@@ -103,7 +119,7 @@ public class PurchaseService
 
         if (response.result == NetworkResult.SUCCESS)
         {
-            pvo = response.product;
+            ApplyPVO(response.product);
 
             _user.ApplyPVO(response.user);
 
