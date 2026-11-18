@@ -67,7 +67,7 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
 
         _assetService.LoadPrefab("UIMercenaryDetailPopupSkillScrollItem", prefab =>
         {
-            if (_disposed == false)
+            if (_disposed == true)
             {
                 return;
             }
