@@ -118,6 +118,20 @@ public class ActorWorld : MonoBehaviour
             return;
         }
 
-        _dropItemManager.Spawn(_mapLevel.level, enemy);
+        _dropItemManager.Spawn(_mapLevel.level, enemy, HandleDropItemReturn);
+
+        _enemyManager.Return(enemy);
+    }
+
+    private void HandleDropItemReturn(ActorBase actorBase)
+    {
+        if (actorBase is ActorDIGold gold)
+        {
+            _dropItemManager.Return(gold);
+        }
+        else if (actorBase is ActorDIElement element)
+        {
+            _dropItemManager.Return(element);
+        }
     }
 }

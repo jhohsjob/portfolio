@@ -158,6 +158,7 @@ public class MockPurchaseHandler
 
                 break;
 
+            // todo : 상점 용병 판매 시 AddShard/Acquire 연결
             case RewardType.Mercenary:
                 {
                     if (reward is not MercenaryReward mercenary)

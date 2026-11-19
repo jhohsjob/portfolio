@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,7 +39,7 @@ public class DropItemActorManager : MonoBehaviour
         _dropItemEntryDic[mapLevel.level] = dropItemEntryDic;
     }
 
-    public void Spawn(int mapLevel, Enemy enemy)
+    public void Spawn(int mapLevel, Enemy enemy, Action<ActorBase> onDied)
     {
         var roleId = GetDropItemRoleId(mapLevel, enemy.roleId);
         var role = DropItemManager.instance.GetDropItemById(roleId);
@@ -62,6 +63,8 @@ public class DropItemActorManager : MonoBehaviour
 
         if (dropItem != null)
         {
+            dropItem.onDied += onDied;
+
             _dropItemActorList.Add(dropItem);
         }
     }
@@ -84,7 +87,7 @@ public class DropItemActorManager : MonoBehaviour
             totalRate += dropItemEntry.spawnRate;
         }
 
-        var rnd = Random.Range(0, totalRate);
+        var rnd = UnityEngine.Random.Range(0, totalRate);
         var id = 0;
 
         for (int i = 0; i < dropItemEntries.Count; i++)

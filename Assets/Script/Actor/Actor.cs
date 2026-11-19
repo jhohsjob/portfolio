@@ -2,11 +2,8 @@ using System;
 using UnityEngine;
 
 
-// public abstract class Actor<TRole, TData> : ActorBase where TRole : Role<TData> where TData : RoleDefinition
 public abstract class Actor<TRole> : ActorBase where TRole : RoleBase
 {
-    public event Action<ActorBase> onDied;
-
     protected IMoveBehaviour _moveBehaviour;
     public IMoveBehaviour moveBehaviour => _moveBehaviour;
 
@@ -38,7 +35,6 @@ public abstract class Actor<TRole> : ActorBase where TRole : RoleBase
         {
             _hp.Enter(stat.defensive.maxHP);
             _hp.onChanged += OnHpChanged;
-            // EventHelper.Send(EventName.HpBarConnection, this);
         }
 
         _view.Enter(sortingOrder);
@@ -61,14 +57,13 @@ public abstract class Actor<TRole> : ActorBase where TRole : RoleBase
         _moveBehaviour?.Init(this);
     }
 
-    protected virtual void Die()
+    protected override void Die()
     {
         Unbind();
 
         _moveBehaviour?.Clear();
 
-        onDied?.Invoke(this);
-        onDied = null;
+        base.Die();
 
         _state.Clear();
         _hp.Clear();
@@ -77,7 +72,6 @@ public abstract class Actor<TRole> : ActorBase where TRole : RoleBase
 
         _view.Die();
     }
-
 
     protected virtual void Bind()
     {

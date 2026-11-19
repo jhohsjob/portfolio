@@ -183,6 +183,7 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
         int availableMaxLevel = GetAvailableMaxLevel();
         bool isOwned = _currentMercenary.isOwned;
         bool isGradeMax = _currentMercenary.grade >= GameConfig.MercenaryGradeLimit;
+        var progress = isGradeMax ? (current: 0, required: 0) : _mercenaryService.GetGradeUpProgress(_currentMercenary.grade, _currentMercenary.shardCount);
 
         return new MercenaryViewState
         {
@@ -190,7 +191,8 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
             canLevelUp = isOwned && _currentMercenary.level < availableMaxLevel,
             canLevelReset = isOwned && _currentMercenary.level > 1,
             canGradeUp = isOwned && !isGradeMax && _mercenaryService.CanGradeUp(_currentMercenary.grade, _currentMercenary.grade + 1, _currentMercenary.shardCount),
-            gradeUpCost = isGradeMax ? 0 : _mercenaryService.GetGradeUpCost(_currentMercenary.grade, _currentMercenary.grade + 1),
+            gradeUpProgress = progress.current,
+            gradeUpRequired = progress.required,
         };
     }
 

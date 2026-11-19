@@ -31,20 +31,39 @@ public class MercenaryGradeSystem
 
     public int GetGradeUpCost(int grade, int targetGrade)
     {
-        int count = targetGrade - grade;
-        if (count <= 0 || GameConfig.MercenaryGradeLimit < grade + count)
+        if (targetGrade <= grade || targetGrade > GameConfig.MercenaryGradeLimit)
         {
             return -1;
         }
 
         int amount = 0;
 
-        for  (int i = 0; i < count; i++)
+        for  (int i = 0; i < targetGrade; i++)
         {
-            amount += _grades[grade + i].gradeUpCost;
+            amount += _grades[i].gradeUpCost;
         }
 
         return amount;
+    }
+
+    // 표시용: 현재 등급 → 다음 등급 구간의 (진행도, 필요량)
+    public (int current, int required) GetGradeUpProgress(int grade, int shardCount)
+    {
+        if (grade >= GameConfig.MercenaryGradeLimit)
+        {
+            return (0, 0);
+        }
+
+        int previous = 0;
+        for (int i = 0; i < grade; i++)
+        {
+            previous += _grades[i].gradeUpCost;
+        }
+
+        int required = _grades[grade].gradeUpCost;
+        int current = Mathf.Max(0, shardCount - previous);
+
+        return (current, required);
     }
 
     public MercenaryGradeUpResult CheckGradeUp(int grade, int targetGrade, int shardCount)

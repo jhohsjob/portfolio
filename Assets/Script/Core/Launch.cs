@@ -102,10 +102,6 @@ public class Launch : MonoBehaviour
                 {
                     throw new BootException(step.Name, e);
                 }
-                finally
-                {
-                    _isRunning = false;
-                }
 
                 start += range;
                 bootController.SetProgress(start);
@@ -137,7 +133,7 @@ public class Launch : MonoBehaviour
         }
         finally
         {
-            if (handle.IsValid() == false)
+            if (handle.IsValid() == true)
             {
                 Addressables.Release(handle);
             }

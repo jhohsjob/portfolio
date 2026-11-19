@@ -23,6 +23,8 @@ public abstract class ActorBase : MonoBehaviour
     protected HPController _hp;
     protected ActorView _view;
 
+    public event Action<ActorBase> onDied;
+
     protected virtual void Awake()
     {
         // _skillList = new List<Skill>();
@@ -38,6 +40,12 @@ public abstract class ActorBase : MonoBehaviour
         roleName = role.name;
 
         stat = new ActorStat(role.stat);
+    }
+
+    protected virtual void Die()
+    {
+        onDied?.Invoke(this);
+        onDied = null;
     }
 
     public abstract void Enter(int id, int sortingOrder, Action<ActorBase> onDied);

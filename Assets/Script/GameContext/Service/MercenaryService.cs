@@ -271,6 +271,11 @@ public class MercenaryService
         return _gradeSystem.GetGradeUpCost(grade, targetGrade);
     }
 
+    public (int current, int required) GetGradeUpProgress(int grade, int shardCount)
+    {
+        return _gradeSystem.GetGradeUpProgress(grade, shardCount);
+    }
+
     public async Task<MercenaryGradeUpResult> GradeUp(int id)
     {
         if (_dic.TryGetValue(id, out var mercenary) == false)

@@ -36,21 +36,27 @@ public class MockMercenaryHandler
             return response;
         }
 
-        if (definition.acquire.type == MercenaryAcquireType.CurrencyGold)
+        switch (definition.acquire.type)
         {
-            var gold = _userService.gold;
-            if (gold < definition.acquire.value)
-            {
-                response.result = NetworkResult.E_MERCENARY_NOT_ENOUGH_GOLD;
-                return response;
-            }
+            case MercenaryAcquireType.CurrencyGold:
+                var gold = _userService.gold;
+                if (gold < definition.acquire.value)
+                {
+                    response.result = NetworkResult.E_MERCENARY_NOT_ENOUGH_GOLD;
+                    return response;
+                }
 
-            await _mercenaryService.AcquireAsync(request.mercenaryId);
+                await _mercenaryService.AcquireAsync(request.mercenaryId);
 
-            await _userService.ChangeGold(-definition.acquire.value);
+                await _userService.ChangeGold(-definition.acquire.value);
 
-            response.mercenary = _mercenaryService.GetMercenaryPVOById(request.mercenaryId);
-            response.user = _userService.GetUser();
+                response.mercenary = _mercenaryService.GetMercenaryPVOById(request.mercenaryId);
+                response.user = _userService.GetUser();
+                break;
+
+            default:
+                response.result = NetworkResult.E_MERCENARY_INVALID;
+                break;
         }
 
         return response;

@@ -18,7 +18,8 @@ public struct MercenaryViewState
     public bool canLevelUp { get; set; }
     public bool canLevelReset { get; set; }
     public bool canGradeUp { get; set; }
-    public int gradeUpCost { get; set; }
+    public int gradeUpProgress { get; set; }
+    public int gradeUpRequired { get; set; }
 }
 
 public class UIMercenaryDetailPopup : UIPopup, IBeginDragHandler, IDragHandler, IEndDragHandler
@@ -315,7 +316,7 @@ public class UIMercenaryDetailPopup : UIPopup, IBeginDragHandler, IDragHandler, 
         }
         else
         {
-            _btnGradeUp.text = $"Grade Up\n({mercenary.shardCount} / {state.gradeUpCost})";
+            _btnGradeUp.text = $"Grade Up\n({state.gradeUpProgress} / {state.gradeUpRequired})";
         }
 
         if (_skillScrollReady == true)

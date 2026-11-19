@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿#if UNITY_EDITOR
+using UnityEditor;
+#endif
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
 
 

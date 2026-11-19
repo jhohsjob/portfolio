@@ -1,10 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿#if UNITY_EDITOR
+using UnityEditor;
+#endif
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
 
 
@@ -135,7 +137,7 @@ public class GachaStorage
     }
 
 #if UNITY_EDITOR
-    [MenuItem("CustomMenu/DataDelete_product")]
+    [MenuItem("CustomMenu/DataDelete_gacha")]
     public static void Delete()
     {
         if (File.Exists(_savePath))

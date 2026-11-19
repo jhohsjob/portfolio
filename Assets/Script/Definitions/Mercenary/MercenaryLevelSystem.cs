@@ -14,7 +14,7 @@ public class MercenaryLevelSystem
 
     public int GetAvailableMaxLevel(int level, int userLevel, int gold)
     {
-        int maxAvailableLevel = Math.Min(userLevel, GameConfig.MercenaryLevelLimit);
+        int maxAvailableLevel = Math.Min(Math.Min(userLevel, GameConfig.MercenaryLevelLimit), _levels.Count);
 
         int affordableLevel = level;
 
@@ -37,7 +37,7 @@ public class MercenaryLevelSystem
     public int GetLevelUpCost(int level, int targetLevel)
     {
         int count = targetLevel - level;
-        if (count <= 0)
+        if (count <= 0 || targetLevel > _levels.Count)
         {
             return -1;
         }
