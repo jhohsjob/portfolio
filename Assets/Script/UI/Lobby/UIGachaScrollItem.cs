@@ -14,16 +14,6 @@ public class UIGachaScrollItem : InfiniteScrollItem
         _btn.onClick.AddListener(OnClickItem);
     }
 
-    public override void SetData(int index, object data)
-    {
-        base.SetData(index, data);
-
-        if (data is not Gacha gacha || gacha.scrollUI == null)
-        {
-            return;
-        }
-    }
-
     public void SetUI(GameObject scroll)
     {
         if (scroll == null)

@@ -44,9 +44,9 @@ public class UILobbyMiddleGacha : UILobbyMiddleBase
     private Transform _mainLayer;
 
     [SerializeField]
-    private Button _btnGacah01;
+    private Button _btnGacha01;
     [SerializeField]
-    private Button _btnGacah10;
+    private Button _btnGacha10;
 
     public Func<int> onGetItemCount;
     public Func<int, Gacha> onGetGachaData;
@@ -67,8 +67,8 @@ public class UILobbyMiddleGacha : UILobbyMiddleBase
 
         _gachaScroll.OnScrollStopped += OnScrollStopped;
 
-        _btnGacah01.onClick.AddListener(OnClickGacha01);
-        _btnGacah10.onClick.AddListener(OnClickGacha10);
+        _btnGacha01.onClick.AddListener(OnClickGacha01);
+        _btnGacha10.onClick.AddListener(OnClickGacha10);
     }
 
     public void SetupGachaScroll(GameObject prefab)

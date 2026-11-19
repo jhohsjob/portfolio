@@ -32,7 +32,7 @@ public class UILobbyMiddleBattle : UILobbyMiddleBase
             }
 
             item.SetData(index, itemData);
-            item.SetOnClick(stage => _view.onClikcStageItem?.Invoke(stage));
+            item.SetOnClick(stage => _view.onClickStageItem?.Invoke(stage));
         }
     }
 
@@ -71,7 +71,7 @@ public class UILobbyMiddleBattle : UILobbyMiddleBase
 
     public Func<int> onGetStageCount;
     public Func<int, UIBattleStageScrollItemData> onGetStageData;
-    public Action<Stage> onClikcStageItem;
+    public Action<Stage> onClickStageItem;
 
     public Func<int> onGetMercenaryCount;
     public Func<int, Mercenary> onGetMercenaryData;

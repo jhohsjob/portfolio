@@ -23,14 +23,14 @@ public class UIDebugPresenter
         _context = context;
     }
 
-    private void OnClickUserAddExp()
+    private async void OnClickUserAddExp()
     {
-        _context.user.DebugAddExp();
+        await _context.user.DebugAddExp();
     }
 
-    private void OnClickAddGold()
+    private async void OnClickAddGold()
     {
-        _context.user.DebugAddGold();
+        await _context.user.DebugAddGold();
     }
 }
 #endif

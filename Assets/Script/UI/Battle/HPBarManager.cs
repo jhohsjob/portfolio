@@ -10,7 +10,7 @@ public class HPBarManager : MonoBehaviour
     [SerializeField]
     private Camera _uiCamera;
     [SerializeField]
-    private Transform _poolContianer;
+    private Transform _poolContainer;
     [SerializeField]
     private Transform _activeContianer;
     [SerializeField]
@@ -83,7 +83,7 @@ public class HPBarManager : MonoBehaviour
     {
         for (int i = 0; i < _expandCount; i++)
         {
-            var wait = Instantiate(_original, _poolContianer);
+            var wait = Instantiate(_original, _poolContainer);
             wait.transform.localPosition = Vector3.zero;
             _pool.Enqueue(wait);
         }
@@ -132,7 +132,7 @@ public class HPBarManager : MonoBehaviour
             return;
         }
 
-        hpBar.transform.SetParent(_poolContianer, false);
+        hpBar.transform.SetParent(_poolContainer, false);
         hpBar.transform.localPosition = Vector3.zero;
         hpBar.gameObject.SetActive(false);
 

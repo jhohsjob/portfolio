@@ -52,7 +52,7 @@ public class DropItemManager : Singleton<DropItemManager>
         return role;
     }
 
-    public int CaclIndex(int index)
+    public int CalcIndex(int index)
     {
         if (index < 0)
         {

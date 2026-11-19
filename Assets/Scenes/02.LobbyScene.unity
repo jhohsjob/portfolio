@@ -1454,7 +1454,7 @@ Camera:
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
-  m_TargetEye: 3
+  m_TargetEye: 0
   m_HDR: 1
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
@@ -3768,8 +3768,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UILobbyMiddleGacha
   _gachaScroll: {fileID: 430709727}
   _mainLayer: {fileID: 639987296}
-  _btnGacah01: {fileID: 1638804482}
-  _btnGacah10: {fileID: 1091858134}
+  _btnGacha01: {fileID: 1638804482}
+  _btnGacha10: {fileID: 1091858134}
 --- !u!1 &1233511108
 GameObject:
   m_ObjectHideFlags: 0

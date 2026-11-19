@@ -29,7 +29,10 @@ public class Mercenary : Role<MercenaryDefinition>
             skillDataList.Add(new SkillData(skillDefinition));
         }
 
-        skillDataList.Last().lastData = true;
+        if (skillDataList.Count > 0)
+        {
+            skillDataList.Last().lastData = true;
+        }
     }
 
     public void ApplyPVO(MercenaryPVO pvo)

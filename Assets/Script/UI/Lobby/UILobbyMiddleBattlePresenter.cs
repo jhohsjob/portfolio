@@ -16,7 +16,7 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
 
     protected override void Bind()
     {
-        _view.onClikcStageItem += OnClickStageItem;
+        _view.onClickStageItem += OnClickStageItem;
 
         _view.onGetStageCount = () => _stages.Count;
         _view.onGetStageData = GetStageData;
@@ -27,7 +27,7 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
 
     protected override void Unbind()
     {
-        _view.onClikcStageItem -= OnClickStageItem;
+        _view.onClickStageItem -= OnClickStageItem;
 
         _view.onGetStageCount = null;
         _view.onGetStageData = null;
