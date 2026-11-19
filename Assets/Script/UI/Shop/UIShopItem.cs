@@ -33,7 +33,7 @@ public class UIShopItem : MonoBehaviour
 
         foreach (var item in _items)
         {
-            item.onClickProduct += HandleProductClick;
+            item.onClickProduct -= HandleProductClick;
         }
     }
 
