@@ -83,8 +83,6 @@ public class Launch : MonoBehaviour
             float totalWeight = _steps.Sum(s => s.Weight);
             float start = 0f;
 
-            InitializeClient();
-
             foreach (var step in _steps)
             {
                 token.ThrowIfCancellationRequested();
@@ -114,13 +112,6 @@ public class Launch : MonoBehaviour
         {
             _isRunning = false;
         }
-    }
-
-    private void InitializeClient()
-    {
-        MonsterManager.instance.Init(_context.RoleFactory);
-        ProjectileManager.instance.Init(_context.RoleFactory);
-        DropItemManager.instance.Init(_context.RoleFactory);
     }
 
     private async UniTask InitializeAddressablesAsync(IProgress<float> progress, CancellationToken ct)

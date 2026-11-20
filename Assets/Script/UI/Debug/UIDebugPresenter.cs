@@ -1,14 +1,14 @@
 #if DEBUG_MODE
-
-public class UIDebugContext
-{
-    public User user;
-}
-
 public class UIDebugPresenter
 {
+    public class Deps
+    {
+        public User user;
+    }
+
+
     private UIDebug _view;
-    private UIDebugContext _context;
+    private Deps _deps;
 
     public UIDebugPresenter(UIDebug view)
     {
@@ -18,19 +18,19 @@ public class UIDebugPresenter
         view.onClickAddGold += OnClickAddGold;
     }
 
-    public void initialize(UIDebugContext context)
+    public void initialize(Deps deps)
     {
-        _context = context;
+        _deps = deps;
     }
 
     private async void OnClickUserAddExp()
     {
-        await _context.user.DebugAddExp();
+        await _deps.user.DebugAddExp();
     }
 
     private async void OnClickAddGold()
     {
-        await _context.user.DebugAddGold();
+        await _deps.user.DebugAddGold();
     }
 }
 #endif

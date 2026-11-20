@@ -2,40 +2,41 @@ using System;
 using UnityEngine;
 
 
-public class UILobbyContext
-{
-    public IAssetService assetService;
-    public IDeviceSettings deviceSettings;
-    public User user;
-    public ICurrencyService currencyService;
-    public MercenaryService mercenaryService;
-    public PurchaseService purchaseService;
-    public GachaService gachaService;
-    public StageService stageService;
-    public ISceneService sceneService;
-    public IPopupService popupService;
-}
-
 public class UILobbyPresenter : IDisposable
 {
+    public class Deps
+    {
+        public IAssetService assetService;
+        public IDeviceSettings deviceSettings;
+        public User user;
+        public ICurrencyService currencyService;
+        public MercenaryService mercenaryService;
+        public PurchaseService purchaseService;
+        public GachaService gachaService;
+        public StageService stageService;
+        public ISceneService sceneService;
+        public IPopupService popupService;
+    }
+
+
     private readonly UILobby _view;
-    private readonly UILobbyContext _context;
+    private readonly Deps _deps;
 
     private UILobbyTopPresenter _topPresenter;
     private UILobbyMiddleBasePresenter[] _middlePresenters;
 
-    public UILobbyPresenter(UILobby view, UILobbyContext context)
+    public UILobbyPresenter(UILobby view, Deps deps)
     {
         _view = view;
-        _context = context;
+        _deps = deps;
 
-        _topPresenter = new UILobbyTopPresenter(_view.topView, new UILobbyTopContext
+        _topPresenter = new UILobbyTopPresenter(_view.topView, new UILobbyTopPresenter.Deps
         {
-            deviceSettings = _context.deviceSettings,
-            user = _context.user,
-            currencyService = _context.currencyService,
-            sceneService = _context.sceneService,
-            popupService = _context.popupService,
+            deviceSettings = _deps.deviceSettings,
+            user = _deps.user,
+            currencyService = _deps.currencyService,
+            sceneService = _deps.sceneService,
+            popupService = _deps.popupService,
         });
 
         _middlePresenters = new UILobbyMiddleBasePresenter[_view.MiddleViews.Length];
@@ -43,19 +44,19 @@ public class UILobbyPresenter : IDisposable
         {
             if (_view.MiddleViews[i] is UILobbyMiddleBarrack barrack)
             {
-                _middlePresenters[i] = new UILobbyMiddleBarrackPresenter(barrack, context);
+                _middlePresenters[i] = new UILobbyMiddleBarrackPresenter(barrack, deps);
             }
             else if (_view.MiddleViews[i] is UILobbyMiddleBattle battle)
             {
-                _middlePresenters[i] = new UILobbyMiddleBattlePresenter(battle, context);
+                _middlePresenters[i] = new UILobbyMiddleBattlePresenter(battle, deps);
             }
             else if (_view.MiddleViews[i] is UILobbyMiddleShop shop)
             {
-                _middlePresenters[i] = new UILobbyMiddleShopPresenter(shop, context);
+                _middlePresenters[i] = new UILobbyMiddleShopPresenter(shop, deps);
             }
             else if (_view.MiddleViews[i] is UILobbyMiddleGacha gacha)
             {
-                _middlePresenters[i] = new UILobbyMiddleGachaPresenter(gacha, context);
+                _middlePresenters[i] = new UILobbyMiddleGachaPresenter(gacha, deps);
             }
         }
 

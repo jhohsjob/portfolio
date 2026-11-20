@@ -2,24 +2,25 @@ using System.Reflection;
 using UnityEngine;
 
 
-public class LobbySceneContext
-{
-    public IAssetService assetService;
-    public ISoundService soundService;
-    public IDeviceSettings deviceSettings;
-    public User user;
-    public ICurrencyService currencyService;
-    public MercenaryService mercenaryService;
-    public PurchaseService purchaseService;
-    public GachaService gachaService;
-    public StageService stageService;
-    public ISceneService sceneService;
-    public IPopupService popupService;
-}
-
 public class LobbyScene : MonoBehaviour
 {
-    private LobbySceneContext _context;
+    public sealed class Deps
+    {
+        public IAssetService assetService;
+        public ISoundService soundService;
+        public IDeviceSettings deviceSettings;
+        public User user;
+        public ICurrencyService currencyService;
+        public MercenaryService mercenaryService;
+        public PurchaseService purchaseService;
+        public GachaService gachaService;
+        public StageService stageService;
+        public ISceneService sceneService;
+        public IPopupService popupService;
+    }
+
+
+    private Deps _deps;
 
     [SerializeField]
     private UILobby _uiLobby;
@@ -40,35 +41,35 @@ public class LobbyScene : MonoBehaviour
         _uiLobbyPresenter?.Dispose();
     }
 
-    public void InitDependencies(LobbySceneContext context)
+    public void InitDependencies(Deps context)
     {
-        _context = context;
+        _deps = context;
     }
 
     public void Initialize()
     {
-        _uiLobbyPresenter = new UILobbyPresenter(_uiLobby, new UILobbyContext
+        _uiLobbyPresenter = new UILobbyPresenter(_uiLobby, new UILobbyPresenter.Deps
         {
-            assetService = _context.assetService,
-            deviceSettings = _context.deviceSettings,
-            user = _context.user,
-            currencyService = _context.currencyService,
-            mercenaryService = _context.mercenaryService,
-            purchaseService = _context.purchaseService,
-            gachaService = _context.gachaService,
-            stageService = _context.stageService,
-            sceneService = _context.sceneService,
-            popupService = _context.popupService,
+            assetService = _deps.assetService,
+            deviceSettings = _deps.deviceSettings,
+            user = _deps.user,
+            currencyService = _deps.currencyService,
+            mercenaryService = _deps.mercenaryService,
+            purchaseService = _deps.purchaseService,
+            gachaService = _deps.gachaService,
+            stageService = _deps.stageService,
+            sceneService = _deps.sceneService,
+            popupService = _deps.popupService,
         });
         _uiLobbyPresenter.Initialize();
 
 #if DEBUG_MODE
-        _context.assetService.LoadPrefab("UIDebug", prefab =>
+        _deps.assetService.LoadPrefab("UIDebug", prefab =>
         {
             _uiDebug = Instantiate(prefab).GetComponent<UIDebug>();
-            _uiDebug.Initialize(new UIDebugContext
+            _uiDebug.Initialize(new UIDebugPresenter.Deps
             {
-                user = _context.user
+                user = _deps.user
             });
         });
 #endif

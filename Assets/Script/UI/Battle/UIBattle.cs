@@ -1,5 +1,5 @@
+using Cysharp.Threading.Tasks;
 using System;
-using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -50,11 +50,15 @@ public class UIBattle : MonoBehaviour
         });
     }
 
-    public IEnumerator StartDirection()
+    public async UniTaskVoid StartDirectionAsync()
     {
         _txtDirection.text = "START";
 
-        yield return new WaitForSeconds(1f);
+        bool canceled = await UniTask.Delay(1000, cancellationToken: destroyCancellationToken).SuppressCancellationThrow();
+        if (canceled)
+        {
+            return;
+        }
 
         PanelChange(PanelMode.Main);
     }

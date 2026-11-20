@@ -124,7 +124,14 @@ public class ActorManager : MonoBehaviour, IActorSpawner
         int id = GetNextID(role.id);
         int order = GetNextOrderInLayer(role.roleType);
         var actor = GetActor(role, _actorContainer, pos) as TActor;
-        actor.Enter(id, order, HandleActorDied);
+        if (actor == null)
+        {
+            Debug.LogError($"[ActorManager] Spawn failed. roleId:{role.id}, type:{typeof(TActor).Name} (pool not ready or type mismatch)");
+            return null;
+        }
+
+        actor.onRelease = HandleActorDied;
+        actor.Enter(id, order, null);
 
         return actor;
     }

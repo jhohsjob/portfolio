@@ -71,6 +71,8 @@ public abstract class Actor<TRole> : ActorBase where TRole : RoleBase
         SetID(0);
 
         _view.Die();
+
+        Release();
     }
 
     protected virtual void Bind()

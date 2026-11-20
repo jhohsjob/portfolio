@@ -3,11 +3,11 @@ using System;
 
 public abstract class UILobbyMiddleBasePresenter : IDisposable
 {
-    protected readonly UILobbyContext _context;
+    protected readonly UILobbyPresenter.Deps _deps;
 
-    protected UILobbyMiddleBasePresenter(UILobbyContext context)
+    protected UILobbyMiddleBasePresenter(UILobbyPresenter.Deps deps)
     {
-        _context = context;
+        _deps = deps;
     }
 
     public abstract void Initialize();
@@ -18,7 +18,7 @@ public abstract class UILobbyMiddlePresenter<TView> : UILobbyMiddleBasePresenter
 {
     protected readonly TView _view;
 
-    protected UILobbyMiddlePresenter(TView view, UILobbyContext context) : base(context)
+    protected UILobbyMiddlePresenter(TView view, UILobbyPresenter.Deps deps) : base(deps)
     {
         _view = view;
         Bind();

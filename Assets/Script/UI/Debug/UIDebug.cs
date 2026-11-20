@@ -52,9 +52,9 @@ public class UIDebug : MonoBehaviour
         _root.transform.position = new Vector3(Screen.width - 100f, Screen.height - 100f, 0f);
     }
 
-    public void Initialize(UIDebugContext context)
+    public void Initialize(UIDebugPresenter.Deps deps)
     {
-        _presenter.initialize(context);
+        _presenter.initialize(deps);
     }
 
     private void HandleClickAddUserExp()

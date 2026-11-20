@@ -2,45 +2,46 @@ using System;
 using UnityEngine;
 
 
-public class UIBattleContext
-{
-    public IAssetService assetService;
-    public IPopupService popupService;
-    public ISceneService sceneLoader;
-    public IBattleController battleController;
-    public BattleRewardRuntime battleReward;
-    public DashController dashController;
-    public Action onDashAction;
-    public Action<Vector2> onJoystickAction;
-    public Camera mainCamera;
-}
-
 public class UIBattlePresenter : IDisposable
 {
+    public sealed class Deps
+    {
+        public IAssetService assetService;
+        public ISceneService sceneLoader;
+        public IPopupService popupService;
+        public IBattleController battleController;
+        public BattleRewardRuntime battleReward;
+        public DashController dashController;
+        public Action onDashAction;
+        public Action<Vector2> onJoystickAction;
+        public Camera mainCamera;
+    }
+
+    
     private readonly UIBattle _view;
-    private readonly UIBattleContext _context;
+    private readonly Deps _deps;
 
     private UIBattleTopPresenter _topPresenter;
     private UIDashPresenter _dashPresenter;
     private HPBarManager _hpBarManager;
 
-    public UIBattlePresenter(UIBattle view, UIBattleContext context)
+    public UIBattlePresenter(UIBattle view, Deps deps)
     {
         _view = view;
-        _context = context;
+        _deps = deps;
 
-        _topPresenter = new UIBattleTopPresenter(_view.TopView, new UIBattleTopContext
+        _topPresenter = new UIBattleTopPresenter(_view.TopView, new UIBattleTopPresenter.Deps
         {
-            popupService = context.popupService,
-            sceneLoader = context.sceneLoader,
-            battleController = context.battleController,
-            battleReward = context.battleReward
+            popupService = deps.popupService,
+            sceneLoader = deps.sceneLoader,
+            battleController = deps.battleController,
+            battleReward = deps.battleReward
         });
 
-        _dashPresenter = new UIDashPresenter(_view.DashView, context.dashController, context.onDashAction);
+        _dashPresenter = new UIDashPresenter(_view.DashView, deps.dashController, deps.onDashAction);
 
         _hpBarManager = view.hpBarManager;
-        _hpBarManager.InitDependencies(context.mainCamera, context.assetService);
+        _hpBarManager.InitDependencies(deps.mainCamera, deps.assetService);
 
         Bind();
 
@@ -58,7 +59,7 @@ public class UIBattlePresenter : IDisposable
     private void Bind()
     {
         _view.onClickLobby += OnClickLobby;
-        _view.JoystickView.onJoystickMove += _context.onJoystickAction;
+        _view.JoystickView.onJoystickMove += _deps.onJoystickAction;
 
         EventHelper.AddEventListener(EventName.BattleStatus, OnBattleStatus);
     }
@@ -66,7 +67,7 @@ public class UIBattlePresenter : IDisposable
     private void Unbind()
     {
         _view.onClickLobby -= OnClickLobby;
-        _view.JoystickView.onJoystickMove -= _context.onJoystickAction;
+        _view.JoystickView.onJoystickMove -= _deps.onJoystickAction;
 
         EventHelper.RemoveEventListener(EventName.BattleStatus, OnBattleStatus);
     }
@@ -80,7 +81,7 @@ public class UIBattlePresenter : IDisposable
 
     private void OnClickLobby()
     {
-        _context.sceneLoader.LoadLobbyScene();
+        _deps.sceneLoader.LoadLobbyScene();
     }
 
     private void OnBattleStatus(object sender, object data)
@@ -93,7 +94,7 @@ public class UIBattlePresenter : IDisposable
         switch (status)
         {
             case BattleStatus.Running:
-                IEnumeratorTool.instance.StartCoroutine(_view.StartDirection());
+                _view.StartDirectionAsync().Forget();
                 break;
 
             case BattleStatus.Win:

@@ -78,7 +78,7 @@ public class MockGachaHandler
                 break;
 
             case PurchaseType.Currency:
-                var checkCurrency = CheckCurrency(gacha);
+                var checkCurrency = CheckCurrency(gacha, totalPrice);
                 if (checkCurrency != NetworkResult.SUCCESS)
                 {
                     response.result = checkCurrency;
@@ -104,29 +104,40 @@ public class MockGachaHandler
             switch (reward.type)
             {
                 case RewardType.Mercenary:
-                    if (reward is MercenaryReward mercenaryReward)
+                    if (reward is not MercenaryReward m || _mercenaryService.GetMercenaryPVOById(m.mercenaryId) == null)
                     {
-                        bool success = await _mercenaryService.AddShard(mercenaryReward.mercenaryId, 1);
-                        if (success == false)
-                        {
-                            response.result = NetworkResult.E_MERCENARY_INVALID;
-                            return response;
-                        }
+                        response.result = NetworkResult.E_GACHA_INVALID;
+                        return response;
                     }
                     break;
             }
         }
 
-        if (gacha.purchaseType == PurchaseType.Currency)
+        bool charged = gacha.purchaseType == PurchaseType.Currency && totalPrice > 0;
+        if (charged)
         {
-            switch (gacha.currencyType)
-            {
-                case CurrencyType.Gold:
-                    await _userService.ChangeGold(-totalPrice);
-                    break;
+            await ChangeCurrency(gacha.currencyType, -totalPrice);
+        }
 
-                case CurrencyType.Gem:
-                    await _userService.ChangeGem(-totalPrice);
+        foreach (var reward in rewards)
+        {
+            switch (reward.type)
+            {
+                case RewardType.Mercenary:
+                    if (reward is MercenaryReward m)
+                    {
+                        bool success = await _mercenaryService.AddShard(m.mercenaryId, 1);
+                        if (success == false)
+                        {
+                            if (charged)
+                            {
+                                await ChangeCurrency(gacha.currencyType, totalPrice);
+                            }
+
+                            response.result = NetworkResult.E_MERCENARY_INVALID;
+                            return response;
+                        }
+                    }
                     break;
             }
         }
@@ -140,9 +151,9 @@ public class MockGachaHandler
             switch (reward.type)
             {
                 case RewardType.Mercenary:
-                    if (reward is MercenaryReward mercenaryReward)
+                    if (reward is MercenaryReward m)
                     {
-                        response.mercenaryPVOs[mercenaryReward.mercenaryId] = _mercenaryService.GetMercenaryPVOById(mercenaryReward.mercenaryId);
+                        response.mercenaryPVOs[m.mercenaryId] = _mercenaryService.GetMercenaryPVOById(m.mercenaryId);
                     }
                     break;
             }
@@ -153,32 +164,29 @@ public class MockGachaHandler
         return response;
     }
 
-    private NetworkResult CheckCurrency(GachaDefinition gacha)
+    private NetworkResult CheckCurrency(GachaDefinition gacha, int totalPrice)
     {
-        NetworkResult result = NetworkResult.SUCCESS;
-
         switch (gacha.currencyType)
         {
             case CurrencyType.Gold:
-                if (_userService.gold < gacha.price)
-                {
-                    result = NetworkResult.E_PURCHASE_NOT_ENOUGH_GOLD;
-                }
-                break;
+                return _userService.gold < totalPrice ? NetworkResult.E_GACHA_NOT_ENOUGH_GOLD : NetworkResult.SUCCESS;
 
             case CurrencyType.Gem:
-                if (_userService.gem < gacha.price)
-                {
-                    result = NetworkResult.E_PURCHASE_NOT_ENOUGH_GEM;
-                }
-                break;
+                return _userService.gem < totalPrice ? NetworkResult.E_GACHA_NOT_ENOUGH_GEM : NetworkResult.SUCCESS;
 
             default:
-                result = NetworkResult.E_GACHA_INVALID;
-                break;
+                return NetworkResult.E_GACHA_INVALID;
         }
+    }
 
-        return result;
+    private Task<bool> ChangeCurrency(CurrencyType type, int amount)
+    {
+        return type switch
+        {
+            CurrencyType.Gold => _userService.ChangeGold(amount),
+            CurrencyType.Gem => _userService.ChangeGem(amount),
+            _ => Task.FromResult(false)
+        };
     }
 
     private GachaRewardDefinition DrawReward(List<GachaRewardDefinition> rewards, float totalWeight)

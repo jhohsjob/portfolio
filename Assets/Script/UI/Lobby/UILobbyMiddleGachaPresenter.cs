@@ -7,10 +7,10 @@ public class UILobbyMiddleGachaPresenter : UILobbyMiddlePresenter<UILobbyMiddleG
     private IPopupService _popupService;
     private IReadOnlyList<Gacha> _gachas;
 
-    public UILobbyMiddleGachaPresenter(UILobbyMiddleGacha view, UILobbyContext context) : base(view, context)
+    public UILobbyMiddleGachaPresenter(UILobbyMiddleGacha view, UILobbyPresenter.Deps deps) : base(view, deps)
     {
-        _gachaService = context.gachaService;
-        _popupService = context.popupService;
+        _gachaService = deps.gachaService;
+        _popupService = deps.popupService;
         _gachas = _gachaService.list;
     }
 
@@ -34,7 +34,7 @@ public class UILobbyMiddleGachaPresenter : UILobbyMiddlePresenter<UILobbyMiddleG
 
     public override void Initialize()
     {
-        _context.assetService.LoadPrefab("GachaScrollItem", prefab =>
+        _deps.assetService.LoadPrefab("GachaScrollItem", prefab =>
         {
             _view.SetupGachaScroll(prefab);
         });
@@ -48,7 +48,7 @@ public class UILobbyMiddleGachaPresenter : UILobbyMiddlePresenter<UILobbyMiddleG
     private async void OnClickGacha(int count)
     {
         int id = _gachas[_view.listIndex].id;
-        var resultData = await _context.gachaService.GachaAsync(id, count);
+        var resultData = await _deps.gachaService.GachaAsync(id, count);
 
         if (resultData.result == GachaResult.Success)
         {
@@ -58,7 +58,7 @@ public class UILobbyMiddleGachaPresenter : UILobbyMiddlePresenter<UILobbyMiddleG
                 data: data,
                 dependencies: new UIGachaResultPopupDependencies
                 {
-                    mercenaryService = _context.mercenaryService,
+                    mercenaryService = _deps.mercenaryService,
                     gachaService = _gachaService
                 });
         }

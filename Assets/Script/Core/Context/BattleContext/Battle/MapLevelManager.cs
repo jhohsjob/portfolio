@@ -44,11 +44,12 @@ public class MapLevelManager : MonoBehaviour
         }
     }
 
-    public void Init(IBattleState battleState)
+    public void Init(IBattleState battleState, Stage stage)
+
     {
         _battleState = battleState;
 
-        MapDefinition map = GameSession.instance.currentStage.mapDefinition;
+        MapDefinition map = stage.mapDefinition;
 
         var datas = map.levelDefinitions;
         for (int i = 0; i < datas.Count; i++)

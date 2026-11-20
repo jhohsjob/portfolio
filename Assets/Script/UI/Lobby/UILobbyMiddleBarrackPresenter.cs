@@ -6,9 +6,9 @@ public class UILobbyMiddleBarrackPresenter : UILobbyMiddlePresenter<UILobbyMiddl
     private MercenaryService _mercenaryService;
     private IReadOnlyList<Mercenary> _mercenaries;
 
-    public UILobbyMiddleBarrackPresenter(UILobbyMiddleBarrack view, UILobbyContext context) : base(view, context)
+    public UILobbyMiddleBarrackPresenter(UILobbyMiddleBarrack view, UILobbyPresenter.Deps deps) : base(view, deps)
     {
-        _mercenaryService = context.mercenaryService;
+        _mercenaryService = deps.mercenaryService;
         _mercenaries = _mercenaryService.list;
     }
 
@@ -30,7 +30,7 @@ public class UILobbyMiddleBarrackPresenter : UILobbyMiddlePresenter<UILobbyMiddl
 
     public override void Initialize()
     {
-        _context.assetService.LoadPrefab("BarrackMercenaryScrollItem", prefab =>
+        _deps.assetService.LoadPrefab("BarrackMercenaryScrollItem", prefab =>
         {
             _view.SetupScroll(prefab);
         });
@@ -53,13 +53,13 @@ public class UILobbyMiddleBarrackPresenter : UILobbyMiddlePresenter<UILobbyMiddl
 
     private void OnClickItem(Mercenary mercenary)
     {
-        _context.popupService.ShowPopup<UIMercenaryDetailPopup>(
+        _deps.popupService.ShowPopup<UIMercenaryDetailPopup>(
             address: PopupName.UIMercenaryDetailPopup,
             data: mercenary,
             dependencies: new UIMercenaryDetailPopupDependencies
             {
-                user = _context.user,
-                currencyService = _context.currencyService,
+                user = _deps.user,
+                currencyService = _deps.currencyService,
                 mercenaryService = _mercenaryService,
             });
     }

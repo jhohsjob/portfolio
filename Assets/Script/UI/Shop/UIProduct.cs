@@ -44,7 +44,10 @@ public class UIProduct : MonoBehaviour
     {
         LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
 
-        _purchaseService.onPVOChanged -= HandlePVOChanged;
+        if (_purchaseService != null)
+        {
+            _purchaseService.onPVOChanged -= HandlePVOChanged;
+        }
     }
 
     public void Bind(PurchaseService purchaseService, ProductDefinition definition)
@@ -54,6 +57,10 @@ public class UIProduct : MonoBehaviour
 
         UpdateUI();
 
+        if (_purchaseService != null)
+        {
+            _purchaseService.onPVOChanged -= HandlePVOChanged;
+        }
         _purchaseService.onPVOChanged += HandlePVOChanged;
     }
 

@@ -2,18 +2,23 @@ using System;
 using UnityEngine;
 
 
-public class ActorWorldContext
-{
-    public IBattleState battleState;
-
-    public Transform actorContainer;
-    public Transform enemyTarget;
-    public Func<Vector3> getSpawnPosition;
-}
-
 public class ActorWorld : MonoBehaviour
 {
-    private ActorWorldContext _context;
+    public sealed class Deps
+    {
+        public IBattleState battleState;
+
+        public Transform actorContainer;
+        public Transform enemyTarget;
+        public Func<Vector3> getSpawnPosition;
+
+        public Stage stage;
+        public MonsterManager monsterManager;
+        public DropItemManager dropItemManager;
+    }
+
+
+    private Deps _deps;
 
     private ActorManager _actorManager;
     private EnemyActorManager _enemyManager;
@@ -24,9 +29,9 @@ public class ActorWorld : MonoBehaviour
 
     private MapLevel _mapLevel;
 
-    public void Init(ActorWorldContext context/*BattleScene battleScene, BattleManager battleManager, Player player*/)
+    public void Init(Deps deps)
     {
-        _context = context;
+        _deps = deps;
 
         _actorManager = new GameObject("ActorManager").AddComponent<ActorManager>();
         _enemyManager = new GameObject("EnemyManager").AddComponent<EnemyActorManager>();
@@ -40,10 +45,10 @@ public class ActorWorld : MonoBehaviour
         _dropItemManager.transform.SetParent(transform);
         _mapLevelManager.transform.SetParent(transform);
 
-        _actorManager.Init(context.actorContainer);
-        _enemyManager.Init(context.getSpawnPosition, context.enemyTarget, _actorManager);
-        _dropItemManager.Init(_actorManager);
-        _mapLevelManager.Init(context.battleState);
+        _actorManager.Init(deps.actorContainer);
+        _enemyManager.Init(deps.getSpawnPosition, deps.enemyTarget, _actorManager, deps.monsterManager);
+        _dropItemManager.Init(_actorManager, deps.dropItemManager);
+        _mapLevelManager.Init(deps.battleState, deps.stage);
 
         transform.position = new Vector3(-1000f, -1000f, -1000f);
     }
@@ -76,7 +81,7 @@ public class ActorWorld : MonoBehaviour
 
     private void HandleSpawn(int count)
     {
-        if (_context.battleState.IsRunning() == false)
+        if (_deps.battleState.IsRunning() == false)
         {
             return;
         }
@@ -100,12 +105,12 @@ public class ActorWorld : MonoBehaviour
     {
         foreach (var spawnInfo in mapLevel.spawnInfos)
         {
-            var monster = MonsterManager.instance.GetMonsterById(spawnInfo.roleId);
+            var monster = _deps.monsterManager.GetMonsterById(spawnInfo.roleId);
             _actorManager.InitPool(monster);
 
             foreach (var dropItemRoleId in spawnInfo.dropItemRoleIds)
             {
-                var dropItem = DropItemManager.instance.GetDropItemById(dropItemRoleId);
+                var dropItem = _deps.dropItemManager.GetDropItemById(dropItemRoleId);
                 _actorManager.InitPool(dropItem);
             }
         }

@@ -1,19 +1,10 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
 
-public class SkillContext
-{
-    public IBattleState battleState;
-    public IActorSpawner actorSpawner;
-    public Func<int, Projectile> GetProjectile;
-    public Func<Vector3, Vector3, float, float, Transform> GetNearestEnemy;
-}
-
 public class Skill : MonoBehaviour
 {
-    protected SkillContext _context;
+    protected IBattleEnvironment _env;
 
     protected ActorBase _actor;
 
@@ -39,7 +30,7 @@ public class Skill : MonoBehaviour
             return;
         }
 
-        if (_context.battleState.IsRunning() == false)
+        if (_env.state.IsRunning() == false)
         {
             return;
         }
@@ -54,10 +45,10 @@ public class Skill : MonoBehaviour
         }
     }
 
-    public virtual void Init(ActorBase actor, SkillData data, SkillContext context)
+    public virtual void Init(ActorBase actor, SkillData data, IBattleEnvironment env)
     {
         _actor = actor;
-        _context = context;
+        _env = env;
 
         transform.SetParent(_actor.transform, false);
         transform.localPosition = Vector3.zero;
@@ -73,8 +64,8 @@ public class Skill : MonoBehaviour
 
         foreach (var item in _projectileData)
         {
-            var role = ProjectileManager.instance.GetProjectileById(item.id);
-            _context.actorSpawner.InitPool(role);
+            var role = _env.GetProjectile(item.id);
+            _env.spawner.InitPool(role);
         }
 
         _isUsed = false;
@@ -95,9 +86,9 @@ public class Skill : MonoBehaviour
     {
         for (int i = 0; i < _fireCount; i++)
         {
-            var role = _context.GetProjectile(_projectileData[0].id);
+            var role = _env.GetProjectile(_projectileData[0].id);
             var position = _actor.muzzlePos;
-            var projectile = _context.actorSpawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
+            var projectile = _env.spawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
             projectile.Shot(_actor);
 
             yield return new WaitForSeconds(_shotDelay);

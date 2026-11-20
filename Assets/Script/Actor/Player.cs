@@ -4,17 +4,16 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 
-public class PlayerContext
-{
-    public IBattleState battleState;
-    public IAssetService assetService;
-    public IActorSpawner actorSpawner;
-    public Func<Vector3, Vector3, float, float, Transform> GetNearestEnemy;
-}
-
 public class Player : Actor<Mercenary>
 {
-    private PlayerContext _context;
+    public class Deps
+    {
+        public IAssetService assetService;
+        public IBattleEnvironment env;
+    }
+
+
+    private Deps _deps;
 
     private ElementController _element;
     public ElementController element => _element;
@@ -61,9 +60,9 @@ public class Player : Actor<Mercenary>
         base.Update();
     }
 
-    public void InitDependencies(PlayerContext context)
+    public void InitDependencies(Deps deps)
     {
-        _context = context;
+        _deps = deps;
         _dash.InitDependencies(this);
     }
 
@@ -76,7 +75,7 @@ public class Player : Actor<Mercenary>
             return;
         }
 
-        _context.assetService.LoadMaterial("DashMat", mat =>
+        _deps.assetService.LoadMaterial("DashMat", mat =>
         {
             var dashView = _view.GetView<ActorDashView>();
             dashView.SetMaterial(mat);
@@ -117,13 +116,7 @@ public class Player : Actor<Mercenary>
         {
             var skill = (new GameObject(skillData.name)).AddComponent(skillData.behaviourType) as Skill;
             skill.transform.SetParent(transform, false);
-            skill.Init(this, skillData, new SkillContext
-            {
-                battleState = _context.battleState,
-                actorSpawner = _context.actorSpawner,
-                GetProjectile = id => ProjectileManager.instance.GetProjectileById(id),
-                GetNearestEnemy = _context.GetNearestEnemy
-            });
+            skill.Init(this, skillData, _deps.env);
 
             skills.Add(skill);
         }
@@ -154,7 +147,7 @@ public class Player : Actor<Mercenary>
     // PlayerInput Send Messages
     public void OnMove(InputValue value)
     {
-        if (_context.battleState.IsRunning() == false)
+        if (_deps.env.state.IsRunning() == false)
         {
             return;
         }

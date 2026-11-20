@@ -1,24 +1,25 @@
 using System;
 
 
-public class UILobbyTopContext
-{
-    public IDeviceSettings deviceSettings;
-    public User user;
-    public ICurrencyService currencyService;
-    public ISceneService sceneService;
-    public IPopupService popupService;
-}
-
 public class UILobbyTopPresenter : IDisposable
 {
-    private readonly UILobbyTop _view;
-    private readonly UILobbyTopContext _context;
+    public sealed class Deps
+    {
+        public IDeviceSettings deviceSettings;
+        public User user;
+        public ICurrencyService currencyService;
+        public ISceneService sceneService;
+        public IPopupService popupService;
+    }
 
-    public UILobbyTopPresenter(UILobbyTop view, UILobbyTopContext context)
+
+    private readonly UILobbyTop _view;
+    private readonly Deps _deps;
+
+    public UILobbyTopPresenter(UILobbyTop view, Deps deps)
     {
         _view = view;
-        _context = context;
+        _deps = deps;
 
         Bind();
     }
@@ -32,34 +33,34 @@ public class UILobbyTopPresenter : IDisposable
     {
         _view.onClickSetting += OnClickSetting;
 
-        _context.currencyService.onChanged += OnChangeCurrency;
-        _context.user.OnExpChanged += OnUpdateUserExp;
+        _deps.currencyService.onChanged += OnChangeCurrency;
+        _deps.user.OnExpChanged += OnUpdateUserExp;
     }
 
     private void Unbind()
     {
         _view.onClickSetting -= OnClickSetting;
 
-        _context.currencyService.onChanged -= OnChangeCurrency;
-        _context.user.OnExpChanged -= OnUpdateUserExp;
+        _deps.currencyService.onChanged -= OnChangeCurrency;
+        _deps.user.OnExpChanged -= OnUpdateUserExp;
     }
 
     public void Initialize()
     {
-        _view.SetLevelText(_context.user.level);
-        var currency = _context.currencyService;
+        _view.SetLevelText(_deps.user.level);
+        var currency = _deps.currencyService;
         _view.SetGoldText(currency.Get(CurrencyType.Gold));
         _view.SetGemText(currency.Get(CurrencyType.Gem));
     }
 
     private void OnClickSetting()
     {
-        _context.popupService.ShowPopup<UISettingPopup>(
+        _deps.popupService.ShowPopup<UISettingPopup>(
             address: PopupName.UISettingPopup,
             dependencies: new UISettingPopupDependencies
             {
-                deviceSettings = _context.deviceSettings,
-                sceneService = _context.sceneService
+                deviceSettings = _deps.deviceSettings,
+                sceneService = _deps.sceneService
             });
     }
 

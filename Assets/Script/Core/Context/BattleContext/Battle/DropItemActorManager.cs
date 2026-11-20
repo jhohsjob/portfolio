@@ -13,13 +13,17 @@ public class DropItemActorManager : MonoBehaviour
 
     private IActorSpawner _actorSpawner;
 
+    private DropItemManager _dropItems;
+
     private Dictionary<int, Dictionary<int, List<SpawnDefinition.DropItemEntry>>> _dropItemEntryDic = new();
 
     private List<ActorBase> _dropItemActorList = new ();
 
-    public void Init(IActorSpawner _ctorSpawner)
+    public void Init(IActorSpawner _ctorSpawner, DropItemManager dropItems)
     {
         _actorSpawner = _ctorSpawner;
+
+        _dropItems = dropItems;
     }
 
     public void SetSpawnList(MapLevel mapLevel)
@@ -42,7 +46,7 @@ public class DropItemActorManager : MonoBehaviour
     public void Spawn(int mapLevel, Enemy enemy, Action<ActorBase> onDied)
     {
         var roleId = GetDropItemRoleId(mapLevel, enemy.roleId);
-        var role = DropItemManager.instance.GetDropItemById(roleId);
+        var role = _dropItems.GetDropItemById(roleId);
         var position = enemy.diePos;
 
         ActorBase dropItem = null;

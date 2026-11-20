@@ -1,6 +1,6 @@
+using Cysharp.Threading.Tasks;
 using System;
-using System.Collections;
-using UnityEngine;
+using System.Threading;
 
 
 public class BattleFlow
@@ -22,19 +22,22 @@ public class BattleFlow
         _stage = stage;
     }
 
-    public void Start()
+    public void Start(CancellationToken ct)
     {
-        IEnumeratorTool.instance.StartCoroutine(CoStart());
+        StartAsync(ct).Forget();
     }
 
-    private IEnumerator CoStart()
+    private async UniTaskVoid StartAsync(CancellationToken ct)
     {
         _battleController.SetStatus(BattleStatus.Ready);
 
-        yield return new WaitForSeconds(GAME_START_DELAY);
+        bool canceled = await UniTask.Delay(TimeSpan.FromSeconds(GAME_START_DELAY), cancellationToken: ct).SuppressCancellationThrow();
+        if (canceled)
+        {
+            return;
+        }
 
         _stageRunner.Run(_stage, HandleStageCleared);
-
         _battleController.SetStatus(BattleStatus.Running);
     }
 

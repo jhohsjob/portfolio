@@ -9,9 +9,9 @@ public class UILobbyMiddleShopPresenter : UILobbyMiddlePresenter<UILobbyMiddleSh
     private bool _isInitialized = false;
     private bool _isPurchasing = false;
 
-    public UILobbyMiddleShopPresenter(UILobbyMiddleShop view, UILobbyContext context) : base(view, context)
+    public UILobbyMiddleShopPresenter(UILobbyMiddleShop view, UILobbyPresenter.Deps deps) : base(view, deps)
     {
-        _shopDefinitions = context.purchaseService.shopItemList;
+        _shopDefinitions = deps.purchaseService.shopItemList;
     }
 
     protected override void Bind()
@@ -53,7 +53,7 @@ public class UILobbyMiddleShopPresenter : UILobbyMiddlePresenter<UILobbyMiddleSh
                 continue;
             }
 
-            uiItem.Bind(_context.purchaseService, definition);
+            uiItem.Bind(_deps.purchaseService, definition);
 
             uiItem.onProductClick += OnProductClickRequest;
             _createdUiItems.Add(uiItem);
@@ -80,7 +80,7 @@ public class UILobbyMiddleShopPresenter : UILobbyMiddlePresenter<UILobbyMiddleSh
         }
         _isPurchasing = true;
 
-        var result = await _context.purchaseService.Purchase(product.id);
+        var result = await _deps.purchaseService.Purchase(product.id);
 
         string productName = LocalManager.GetShopString(product.GetNameKey());
         string message = string.Empty;
@@ -102,7 +102,7 @@ public class UILobbyMiddleShopPresenter : UILobbyMiddlePresenter<UILobbyMiddleSh
 
     private void ShowResultPopup(PurchaseResult result, string message)
     {
-        _context.popupService.ShowPopup<UIProductResultPopup>(PopupName.UIProductResultPopup, new UIProductResultData
+        _deps.popupService.ShowPopup<UIProductResultPopup>(PopupName.UIProductResultPopup, new UIProductResultData
         {
             result = result,
             message = message

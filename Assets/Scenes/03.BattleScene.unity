@@ -205,7 +205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HPBarManager
   _uiCamera: {fileID: 420921821}
-  _poolContianer: {fileID: 1536745987}
+  _poolContainer: {fileID: 1536745987}
   _activeContianer: {fileID: 8229230}
   _rt: {fileID: 8229230}
   _expandCount: 10
@@ -2041,7 +2041,7 @@ Camera:
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
-  m_TargetEye: 3
+  m_TargetEye: 0
   m_HDR: 1
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0

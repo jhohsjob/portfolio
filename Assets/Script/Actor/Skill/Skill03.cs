@@ -8,9 +8,9 @@ public class Skill03 : Skill
     {
         for (int i = 0; i < _fireCount; i++)
         {
-            var role = _context.GetProjectile(_projectileData[0].id);
+            var role = _env.GetProjectile(_projectileData[0].id);
             var position = _actor.muzzlePos;
-            var projectile = _context.actorSpawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
+            var projectile = _env.spawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
             projectile.Shot(_actor);
             projectile.onDied += HandleDied;
 
@@ -22,9 +22,9 @@ public class Skill03 : Skill
 
     private void HandleDied(ActorBase actor)
     {
-        var role = _context.GetProjectile(_projectileData[1].id);
+        var role = _env.GetProjectile(_projectileData[1].id);
         var position = actor.transform.position;
-        var projectile = _context.actorSpawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
+        var projectile = _env.spawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
         projectile.Shot(_actor);
     }
 }

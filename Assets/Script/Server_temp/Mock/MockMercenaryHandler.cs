@@ -159,7 +159,7 @@ public class MockMercenaryHandler
             response.result = NetworkResult.E_MERCENARY_NOT_OWNED;
             return response;
         }
-        var cost = _mercenaryService.GetGradeUpCost(pvo.grade, request.targetGrade);
+        // var cost = _mercenaryService.GetGradeUpCost(pvo.grade, request.targetGrade);
         var checkResult = _mercenaryService.CheckGradeUp(pvo.grade, request.targetGrade, pvo.shardCount);
         if (checkResult != NetworkResult.SUCCESS)
         {

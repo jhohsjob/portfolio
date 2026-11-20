@@ -14,16 +14,16 @@ public class MultiShotSkill : Skill
         {
             for (int j = 0; j < _multiShotCount; j++)
             {
-                var role = _context.GetProjectile(projectileId);
+                var role = _env.GetProjectile(projectileId);
                 var position = _actor.muzzlePos;
-                var projectile = _context.actorSpawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
+                var projectile = _env.spawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
 
                 float angle = startAngle + _spreadAngle * j;
                 Vector3 dir = Quaternion.Euler(0, 0, angle) * _actor.muzzleDir;
 
                 if (projectile.moveBehaviour is HomingMove homing)
                 {
-                    var target = _context.GetNearestEnemy(projectile.transform.position, projectile.dir, 10f, 120f);
+                    var target = _env.GetNearestEnemy(projectile.transform.position, projectile.dir, 10f, 120f);
                     homing.Setup(target);
                 }
                 projectile.Shot(_actor, dir);

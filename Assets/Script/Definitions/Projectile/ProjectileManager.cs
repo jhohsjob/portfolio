@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 
 
-public class ProjectileManager : Singleton<ProjectileManager>
+public class ProjectileManager
 {
     private RoleFactory _factory;
 
@@ -9,19 +10,26 @@ public class ProjectileManager : Singleton<ProjectileManager>
     private List<Projectile> _list = new();
     public IReadOnlyList<Projectile> list => _list;
 
-    public void Init(RoleFactory factory)
+    public ProjectileManager(RoleFactory factory)
     {
         _factory = factory;
     }
 
-    public void Setup(Dictionary<int, ProjectileDefinition> ProjectileDatas)
+    public void Setup(Dictionary<int, ProjectileDefinition> projectileDefinitions)
     {
-        foreach (var data in ProjectileDatas)
+        if (_factory == null)
         {
-            var projectile = (Projectile)_factory.Create(data.Value);
-            _dic.Add(data.Key, projectile);
+            throw new InvalidOperationException("ProjectileManager.Init must be called before Setup");
         }
-        _list.AddRange(_dic.Values);
+
+        var dic = new Dictionary<int, Projectile>(projectileDefinitions.Count);
+        foreach (var data in projectileDefinitions)
+        {
+            dic.Add(data.Key, (Projectile)_factory.Create(data.Value));
+        }
+
+        _dic = dic;
+        _list = new List<Projectile>(dic.Values);
     }
 
     public Projectile GetProjectileByIndex(int index)

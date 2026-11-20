@@ -17,18 +17,16 @@ public abstract class ActorBase : MonoBehaviour
     public Vector3 muzzlePos => _view != null ? _view.muzzlePos : Vector3.zero;
     public Vector3 muzzleDir => _view != null ? _view.muzzleDir : Vector3.zero;
 
-    // public List<Skill> _skillList { get; set; }
     protected ActorStateModel _state;
     public ActorStateModel state => _state;
     protected HPController _hp;
     protected ActorView _view;
 
     public event Action<ActorBase> onDied;
+    public Action<ActorBase> onRelease;
 
     protected virtual void Awake()
     {
-        // _skillList = new List<Skill>();
-
         _state = new ActorStateModel();
         _hp = new HPController();
         _view = gameObject.AddComponent<ActorView>();
@@ -46,6 +44,13 @@ public abstract class ActorBase : MonoBehaviour
     {
         onDied?.Invoke(this);
         onDied = null;
+    }
+
+    protected void Release()
+    {
+        var release = onRelease;
+        onRelease = null;
+        release?.Invoke(this);
     }
 
     public abstract void Enter(int id, int sortingOrder, Action<ActorBase> onDied);

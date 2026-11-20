@@ -47,6 +47,10 @@ public class GameContext : IDisposable
     public IPopupService PopupService { get; }
     public GameDataLoader GameDataLoader { get; }
 
+    public MonsterManager MonsterManager { get; }
+    public ProjectileManager ProjectileManager { get; }
+    public DropItemManager DropItemManager { get; }
+
     private bool _disposed;
 
     public GameContext(AppContext app)
@@ -67,6 +71,12 @@ public class GameContext : IDisposable
         CurrencyService = new CurrencyService(User);
 
         RoleFactory = new RoleFactory();
+
+
+        MonsterManager = new MonsterManager(RoleFactory);
+        ProjectileManager = new ProjectileManager(RoleFactory);
+        DropItemManager = new DropItemManager(RoleFactory);
+
 
         MercenaryService = new MercenaryService(new MercenaryServiceDependencies
         {
@@ -100,7 +110,7 @@ public class GameContext : IDisposable
             container = app.PopupContainer
         });
 
-        SceneService = new SceneService(new SceneServiceContext
+        SceneService = new SceneService(new SceneService.Deps
         {
             assetService = AssetService,
             soundService = SoundService,
@@ -112,9 +122,13 @@ public class GameContext : IDisposable
             gachaService = GachaService,
             stageService = StageService,
             popupService = PopupService,
+
+            monsterManager = MonsterManager,
+            projectileManager = ProjectileManager,
+            dropItemManager = DropItemManager,
         });
 
-        GameDataLoader = new GameDataLoader(new GameDataLoaderContext
+        GameDataLoader = new GameDataLoader(new GameDataLoader.Deps
         {
             assetService = AssetService,
             soundService = SoundService,
@@ -124,6 +138,10 @@ public class GameContext : IDisposable
             purchaseService = PurchaseService,
             gachaService = GachaService,
             stageService = StageService,
+
+            monsterManager = MonsterManager,
+            projectileManager = ProjectileManager,
+            dropItemManager = DropItemManager,
         });
     }
 

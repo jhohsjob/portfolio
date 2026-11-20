@@ -1,20 +1,24 @@
 using UnityEngine;
 
 
-public class BattleSceneContext
-{
-    public IAssetService assetService;
-    public IPopupService popupService;
-    public ISceneService sceneLoader;
-    public ICurrencyService currencyService;
-    public StageService stageService;
-    public User user;
-}
-
 public class BattleScene : MonoBehaviour
 {
-    private BattleSceneContext _context;
-    private BattleManager _battleManager;
+    public sealed class Deps
+    {
+        public IAssetService assetService;
+        public User user;
+        public StageService stageService;
+        public ISceneService sceneLoader;
+        public IPopupService popupService;
+
+        public MonsterManager monsterManager;
+        public ProjectileManager projectileManager;
+        public DropItemManager dropItemManager;
+        public BattleRequest request;
+    }
+
+    private Deps _deps;
+    private BattleContext _battleContext;
 
     [SerializeField]
     private UIBattle _uiBattle;
@@ -37,16 +41,17 @@ public class BattleScene : MonoBehaviour
     private void OnDestroy()
     {
         _uiBattlePresenter?.Dispose();
+        _battleContext?.Dispose();
     }
 
-    public void InitDependencies(BattleSceneContext context)
+    public void InitDependencies(Deps deps)
     {
-        _context = context;
+        _deps = deps;
     }
 
     public void Initialize()
     {
-        InitializeBattleManager();
+        InitializeBattleContext();
 
         InitializeUIBattle();
 
@@ -54,33 +59,35 @@ public class BattleScene : MonoBehaviour
 
         InitializeMap();
         
-        _battleManager.StartBattle();
+        _battleContext.Start();
     }
 
-    private void InitializeBattleManager()
+    private void InitializeBattleContext()
     {
-        var go = new GameObject("BattleManager");
-        _battleManager = go.AddComponent<BattleManager>();
-        _battleManager.Initialize(new BattleManagerContext
+        _battleContext = new BattleContext(new BattleContext.Deps
         {
-            user = _context.user,
-            stageService = _context.stageService,
-            currencyService = _context.currencyService,
+            request = _deps.request,
+            user = _deps.user,
+            stageService = _deps.stageService,
+            monsterManager = _deps.monsterManager,
+            projectileManager = _deps.projectileManager,
+            dropItemManager = _deps.dropItemManager,
             actorContainer = _actorContainer,
             playerTransform = _player.transform,
-            getSpawnPosition = GetEnemySpawnPosition
+            getSpawnPosition = GetEnemySpawnPosition,
+            worldParent = transform,
         });
     }
 
     private void InitializeUIBattle()
     {
-        _uiBattlePresenter = new UIBattlePresenter(_uiBattle, new UIBattleContext
+        _uiBattlePresenter = new UIBattlePresenter(_uiBattle, new UIBattlePresenter.Deps
         {
-            assetService = _context.assetService,
-            popupService = _context.popupService,
-            sceneLoader = _context.sceneLoader,
-            battleController = _battleManager.battleController,
-            battleReward = _battleManager.battleReward,
+            assetService = _deps.assetService,
+            sceneLoader = _deps.sceneLoader,
+            popupService = _deps.popupService,
+            battleController = _battleContext.controller,
+            battleReward = _battleContext.reward,
             dashController = _player.dash,
             onDashAction = _player.HandleDashAction,
             onJoystickAction = _player.HandleJoystickAction,
@@ -91,32 +98,30 @@ public class BattleScene : MonoBehaviour
 
     private void InitializePlayer()
     {
-        _player.InitDependencies(new PlayerContext()
+        _player.InitDependencies(new Player.Deps
         {
-            battleState = _battleManager.battleState,
-            assetService = _context.assetService,
-            actorSpawner = _battleManager.actorSpawner,
-            GetNearestEnemy = _battleManager.GetNearestEnemy
+            assetService = _deps.assetService,
+            env = _battleContext
         });
 
-        var mercenary = GameSession.instance.currentMercenary;
+        var mercenary = _battleContext.mercenary;
         _player.Init(mercenary);
         if (_player.moveBehaviour is DirectionMove direction)
         {
             direction.Setup(_player.inputSource, _map.GetBounds);
         }
-        int nextId = _battleManager.GetNextActorID(mercenary.id);
-        int sortingOrder = _battleManager.GetNextOrderInLayer(mercenary.roleType);
+        int nextId = _battleContext.GetNextActorID(mercenary.id);
+        int sortingOrder = _battleContext.GetNextOrderInLayer(mercenary.roleType);
         _player.Enter(nextId, sortingOrder, HandlePlayerDied);
 
         _playerCamera.Init(_uiBattle.GetTopUIHeight(), GetMapBounds);
 
-        _player.onGoldCollected += _battleManager.HandleGoldCollected;
+        _player.onGoldCollected += _battleContext.HandleGoldCollected;
     }
 
     private void InitializeMap()
     {
-        _map.Init(_battleManager.GetMapOriginal());
+        _map.Init(_battleContext.GetMapOriginal());
     }
 
     public Bounds GetMapBounds()
@@ -136,6 +141,6 @@ public class BattleScene : MonoBehaviour
             return;
         }
 
-        _battleManager.LoseEndBattle();
+        _battleContext.Lose();
     }
 }

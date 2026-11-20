@@ -6,11 +6,11 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
     private List<Stage> _stages;
     private List<Mercenary> _mercenaries;
 
-    public UILobbyMiddleBattlePresenter(UILobbyMiddleBattle view, UILobbyContext context) : base(view, context)
+    public UILobbyMiddleBattlePresenter(UILobbyMiddleBattle view, UILobbyPresenter.Deps deps) : base(view, deps)
     {
-        _mercenaries = new List<Mercenary>(context.mercenaryService.list);
+        _mercenaries = new List<Mercenary>(deps.mercenaryService.list);
 
-        _stages = new List<Stage>(_context.stageService.list);
+        _stages = new List<Stage>(_deps.stageService.list);
         _stages.Reverse();
     }
 
@@ -38,14 +38,14 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
 
     public override void Initialize()
     {
-        int stageListIndex = _context.stageService.GetStageIndexById(_context.user.lastPlayStageId);
-        _context.assetService.LoadPrefab("BattleStageScrollItem", prefab =>
+        int stageListIndex = _deps.stageService.GetStageIndexById(_deps.user.lastPlayStageId);
+        _deps.assetService.LoadPrefab("BattleStageScrollItem", prefab =>
         {
             _view.SetupStageScroll(prefab, stageListIndex);
         });
 
-        int mercenaryListIndex = _mercenaries.FindIndex(x => x.id == _context.user.lastPlayMercenaryId);
-        _context.assetService.LoadPrefab("BattleMercenaryScrollItem", prefab =>
+        int mercenaryListIndex = _mercenaries.FindIndex(x => x.id == _deps.user.lastPlayMercenaryId);
+        _deps.assetService.LoadPrefab("BattleMercenaryScrollItem", prefab =>
         {
             _view.SetupMercenaryScroll(prefab, mercenaryListIndex);
         });
@@ -61,7 +61,7 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
         return new UIBattleStageScrollItemData
         {
             stage = _stages[index],
-            state = _context.stageService.IsStageStateByIndex(index, _context.user.lastPlayStageId)
+            state = _deps.stageService.IsStageStateByIndex(index, _deps.user.lastPlayStageId)
         };
     }
 
@@ -77,16 +77,13 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
 
         if (mercenary.isOwned == false)
         {
-            _context.popupService.ShowCommonPopup(LocalManager.GetCommonString("notice"),
+            _deps.popupService.ShowCommonPopup(LocalManager.GetCommonString("notice"),
                                                   LocalManager.GetCommonString("mercenary_lock"));
             return;
         }
 
-        _context.user.SetMercenary(mercenary.id);
+        _deps.user.SetMercenary(mercenary.id);
 
-        GameSession.instance.SetMercenary(mercenary);
-        GameSession.instance.SetStage(stage);
-
-        _context.sceneService.LoadBattleScene();
+        _deps.sceneService.LoadBattleScene(new BattleRequest(stage, mercenary));
     }
 }

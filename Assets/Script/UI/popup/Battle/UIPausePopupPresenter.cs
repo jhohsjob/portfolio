@@ -2,12 +2,12 @@ using System;
 using UnityEngine;
 
 
-public class UIPausePopupContext
+public class UIPausePopupData
 {
     public Action onResumeBattle { get; }
     public ISceneService sceneLoader { get; }
 
-    public UIPausePopupContext(Action onResumeBattle, ISceneService sceneLoader)
+    public UIPausePopupData(Action onResumeBattle, ISceneService sceneLoader)
     {
         this.onResumeBattle = onResumeBattle;
         this.sceneLoader = sceneLoader;
@@ -17,12 +17,12 @@ public class UIPausePopupContext
 public class UIPausePopupPresenter : IDisposable
 {
     private readonly UIPausePopup _view;
-    private readonly UIPausePopupContext _context;
+    private readonly UIPausePopupData _data;
 
-    public UIPausePopupPresenter(UIPausePopup view, UIPausePopupContext context)
+    public UIPausePopupPresenter(UIPausePopup view, UIPausePopupData data)
     {
         _view = view;
-        _context = context;
+        _data = data;
 
         Bind();
     }
@@ -49,11 +49,11 @@ public class UIPausePopupPresenter : IDisposable
     {
         Time.timeScale = 1f;
 
-        _context.sceneLoader.LoadLobbyScene();
+        _data.sceneLoader.LoadLobbyScene();
     }
 
     private void OnClickResume()
     {
-        _context.onResumeBattle?.Invoke();
+        _data.onResumeBattle?.Invoke();
     }
 }

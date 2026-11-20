@@ -7,9 +7,9 @@ public class Skill02 : Skill
     private ActorProjectile[] _slot;
     private float[] _slotAngles;
 
-    public override void Init(ActorBase actor, SkillData data, SkillContext context)
+    public override void Init(ActorBase actor, SkillData data, IBattleEnvironment env)
     {
-        base.Init(actor, data, context);
+        base.Init(actor, data, env);
 
         _slot = new ActorProjectile[_fireCount];
 
@@ -28,7 +28,7 @@ public class Skill02 : Skill
             return;
         }
 
-        if (_context.battleState.IsRunning() == false)
+        if (_env.state.IsRunning() == false)
         {
             return;
         }
@@ -57,9 +57,9 @@ public class Skill02 : Skill
             yield break;
         }
 
-        var role = _context.GetProjectile(_projectileData[0].id);
+        var role = _env.GetProjectile(_projectileData[0].id);
         var position = _actor.muzzlePos;
-        var projectile = _context.actorSpawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
+        var projectile = _env.spawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
         if (projectile.moveBehaviour is OrbitMove orbit)
         {
             orbit.Setup(_actor.transform, 1f, _slotAngles[index], 1f);

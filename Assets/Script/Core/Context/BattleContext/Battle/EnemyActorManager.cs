@@ -9,6 +9,8 @@ public class EnemyActorManager : MonoBehaviour
     private Transform _enemyTarget;
     private IActorSpawner _actorSpawner;
 
+    private MonsterManager _monsterManager;
+
     private List<int> _spawnRoleId = new List<int>();
     private List<int> _spawnRoleRate = new List<int>();
 
@@ -19,11 +21,13 @@ public class EnemyActorManager : MonoBehaviour
     private int _dieCount = 0;
     public int dieCount => _dieCount;
 
-    public void Init(Func<Vector3> getRandomPos, Transform enemyTarget, IActorSpawner actorSpawner)
+    public void Init(Func<Vector3> getRandomPos, Transform enemyTarget, IActorSpawner actorSpawner, MonsterManager monsterManager)
     {
         _getRandomPos = getRandomPos;
         _enemyTarget = enemyTarget;
         _actorSpawner = actorSpawner;
+
+        _monsterManager = monsterManager;
     }
 
     public void SetSpawnList(MapLevel mapLevel)
@@ -45,7 +49,7 @@ public class EnemyActorManager : MonoBehaviour
     public void Spawn(Action<ActorBase> onDied)
     {
         var roleId = GetSpawnRoleId();
-        var role = MonsterManager.instance.GetMonsterById(roleId);
+        var role = _monsterManager.GetMonsterById(roleId);
         var position = _getRandomPos();
 
         var enemy = _actorSpawner.Spawn<Enemy, MonsterDefinition>(role, position);

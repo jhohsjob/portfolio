@@ -9,50 +9,61 @@ public interface ISceneService
 {
     void LoadBootScene();
     void LoadLobbyScene();
-    void LoadBattleScene();
+    void LoadBattleScene(BattleRequest request);
     void Dispose();
 }
 
 public static class SceneNames
 {
-    public const string Boot = "01.BootScene";   // 실제 빌드 세팅의 씬 이름으로 맞추세요
+    public const string Boot = "01.BootScene";
     public const string Lobby = "02.LobbyScene";
     public const string Battle = "03.BattleScene";
 }
 
-public class SceneServiceContext
-{
-    public IAssetService assetService;
-    public ISoundService soundService;
-    public IDeviceSettings deviceSettings;
-    public User user;
-    public ICurrencyService currencyService;
-    public MercenaryService mercenaryService;
-    public PurchaseService purchaseService;
-    public GachaService gachaService;
-    public StageService stageService;
-    public IPopupService popupService;
-}
-
 public class SceneService : ISceneService, IDisposable
 {
-    private SceneServiceContext _context;
+    public sealed class Deps
+    {
+        public IAssetService assetService;
+        public ISoundService soundService;
+        public IDeviceSettings deviceSettings;
+        public User user;
+        public ICurrencyService currencyService;
+        public MercenaryService mercenaryService;
+        public PurchaseService purchaseService;
+        public GachaService gachaService;
+        public StageService stageService;
+        public IPopupService popupService;
+
+        public MonsterManager monsterManager;
+        public ProjectileManager projectileManager;
+        public DropItemManager dropItemManager;
+    }
+
+
+    private BattleRequest _battleRequest;
+
+    private Deps _deps;
 
     private readonly CancellationTokenSource _cts = new();
 
     private bool _isLoading;
     private bool _disposed;
 
-    public SceneService(SceneServiceContext context)
+    public SceneService(Deps context)
     {
-        _context = context;
+        _deps = context;
     }
 
     public void LoadBootScene() => TransitionAsync(SceneNames.Boot, inject: null, bgm: null).Forget();
 
     public void LoadLobbyScene() => TransitionAsync(SceneNames.Lobby, InjectLobbyScene, SoundId.BGM_LOBBY).Forget();
 
-    public void LoadBattleScene() => TransitionAsync(SceneNames.Battle, InjectBattleScene, SoundId.BGM_BATTLE).Forget();
+    public void LoadBattleScene(BattleRequest request)
+    {
+        _battleRequest = request;
+        TransitionAsync(SceneNames.Battle, InjectBattleScene, SoundId.BGM_BATTLE).Forget();
+    }
 
     public void Dispose()
     {
@@ -84,10 +95,10 @@ public class SceneService : ISceneService, IDisposable
 
         try
         {
-            _context.soundService.StopBGM();
+            _deps.soundService.StopBGM();
             await UniTask.Yield(ct);
 
-            _context.popupService.CloseAllPopup();
+            _deps.popupService.CloseAllPopup();
             await UniTask.Yield(ct);
 
             var op = SceneManager.LoadSceneAsync(sceneName);
@@ -104,7 +115,7 @@ public class SceneService : ISceneService, IDisposable
 
             if (bgm.HasValue)
             {
-                _context.soundService.PlayBGM(bgm.Value);
+                _deps.soundService.PlayBGM(bgm.Value);
             }
         }
         catch (OperationCanceledException)
@@ -129,19 +140,20 @@ public class SceneService : ISceneService, IDisposable
             return;
         }
 
-        lobbyScene.InitDependencies(new LobbySceneContext
+        lobbyScene.InitDependencies(new LobbyScene.Deps
         {
-            assetService = _context.assetService,
-            soundService = _context.soundService,
-            deviceSettings = _context.deviceSettings,
-            user = _context.user,
-            currencyService = _context.currencyService,
-            mercenaryService = _context.mercenaryService,
-            purchaseService = _context.purchaseService,
-            gachaService = _context.gachaService,
-            stageService = _context.stageService,
+            assetService = _deps.assetService,
+            soundService = _deps.soundService,
+            deviceSettings = _deps.deviceSettings,
+            user = _deps.user,
+            currencyService = _deps.currencyService,
+            mercenaryService = _deps.mercenaryService,
+            purchaseService = _deps.purchaseService,
+            gachaService = _deps.gachaService,
+            stageService = _deps.stageService,
             sceneService = this,
-            popupService = _context.popupService,
+            popupService = _deps.popupService,
+
         });
         lobbyScene.Initialize();
     }
@@ -155,14 +167,18 @@ public class SceneService : ISceneService, IDisposable
             return;
         }
 
-        battleScene.InitDependencies(new BattleSceneContext
+        battleScene.InitDependencies(new BattleScene.Deps
         {
-            assetService = _context.assetService,
-            user = _context.user,
+            assetService = _deps.assetService,
+            user = _deps.user,
             sceneLoader = this,
-            currencyService = _context.currencyService,
-            stageService = _context.stageService,
-            popupService = _context.popupService,
+            stageService = _deps.stageService,
+            popupService = _deps.popupService,
+
+            monsterManager = _deps.monsterManager,
+            projectileManager = _deps.projectileManager,
+            dropItemManager = _deps.dropItemManager,
+            request = _battleRequest,
         });
         battleScene.Initialize();
     }

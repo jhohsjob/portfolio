@@ -1,23 +1,24 @@
 using System.Collections.Generic;
 
 
-public class UIBattleTopContext
-{
-    public IPopupService popupService;
-    public ISceneService sceneLoader;
-    public IBattleController battleController;
-    public BattleRewardRuntime battleReward;
-}
-
 public class UIBattleTopPresenter
 {
-    private readonly UIBattleTop _view;
-    private readonly UIBattleTopContext _context;
+    public class Deps
+    {
+        public IPopupService popupService;
+        public ISceneService sceneLoader;
+        public IBattleController battleController;
+        public BattleRewardRuntime battleReward;
+    }
 
-    public UIBattleTopPresenter(UIBattleTop view, UIBattleTopContext context)
+
+    private readonly UIBattleTop _view;
+    private readonly Deps _deps;
+
+    public UIBattleTopPresenter(UIBattleTop view, Deps deps)
     {
         _view = view;
-        _context = context;
+        _deps = deps;
 
         Bind();
     }
@@ -31,7 +32,7 @@ public class UIBattleTopPresenter
     {
         _view.onClickPause += OnClickPause;
 
-        _context.battleReward.onGoldChanged += OnGoldChanged;
+        _deps.battleReward.onGoldChanged += OnGoldChanged;
 
         EventHelper.AddEventListener(EventName.AddElement, OnAddElement);
     }
@@ -40,7 +41,7 @@ public class UIBattleTopPresenter
     {
         _view.onClickPause -= OnClickPause;
 
-        _context.battleReward.onGoldChanged -= OnGoldChanged;
+        _deps.battleReward.onGoldChanged -= OnGoldChanged;
         
         EventHelper.RemoveEventListener(EventName.AddElement, OnAddElement);
     }
@@ -52,10 +53,10 @@ public class UIBattleTopPresenter
 
     private void OnClickPause()
     {
-        _context.battleController.SetStatus(BattleStatus.Paused);
+        _deps.battleController.SetStatus(BattleStatus.Paused);
 
-        var popupData = new UIPausePopupContext(OnBattleResume, _context.sceneLoader);
-        _context.popupService.ShowPopup<UIPausePopup>(
+        var popupData = new UIPausePopupData(OnBattleResume, _deps.sceneLoader);
+        _deps.popupService.ShowPopup<UIPausePopup>(
             address: PopupName.UIPausePopup,
             data: popupData,
             onLoadedCallback: popup =>
@@ -71,7 +72,7 @@ public class UIBattleTopPresenter
 
     private void OnBattleResume()
     {
-        _context.battleController.SetStatus(BattleStatus.Running);
+        _deps.battleController.SetStatus(BattleStatus.Running);
     }
 
     private void OnGoldChanged(int gold)

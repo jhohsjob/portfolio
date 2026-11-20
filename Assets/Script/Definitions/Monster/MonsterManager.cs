@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 
 
-public class MonsterManager : Singleton<MonsterManager>
+public class MonsterManager
 {
     private RoleFactory _factory;
 
@@ -9,19 +10,26 @@ public class MonsterManager : Singleton<MonsterManager>
     private List<Monster> _list = new();
     public IReadOnlyList<Monster> list => _list;
 
-    public void Init(RoleFactory factory)
+    public MonsterManager(RoleFactory factory)
     {
         _factory = factory;
     }
 
-    public void Setup(Dictionary<int, MonsterDefinition> MonsterDefinitions)
+    public void Setup(Dictionary<int, MonsterDefinition> monsterDefinitions)
     {
-        foreach (var data in MonsterDefinitions)
+        if (_factory == null)
         {
-            var monster = (Monster)_factory.Create(data.Value);
-            _dic.Add(data.Key, monster);
+            throw new InvalidOperationException("MonsterManager.Init must be called before Setup");
         }
-        _list.AddRange(_dic.Values);
+
+        var dic = new Dictionary<int, Monster>(monsterDefinitions.Count);
+        foreach (var data in monsterDefinitions)
+        {
+            dic.Add(data.Key, (Monster)_factory.Create(data.Value));
+        }
+
+        _dic = dic;
+        _list = new List<Monster>(dic.Values);
     }
 
     public Monster GetMonsterByIndex(int index)
