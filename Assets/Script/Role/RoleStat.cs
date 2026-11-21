@@ -46,7 +46,7 @@ public class RoleStat
 
 
         // Defensive
-        defensive.maxHP = _definition.defensive.maxHP.value + _definition.defensive.maxHP.growth * growth;
+        defensive.maxHp = _definition.defensive.maxHp.value + _definition.defensive.maxHp.growth * growth;
 
         defensive.defense = _definition.defensive.defense.value + _definition.defensive.defense.growth * growth;
 
@@ -99,11 +99,11 @@ public class DefensiveRoleStat : IStat
 {
     private static readonly StatType[] _types =
     {
-        StatType.MaxHP,
+        StatType.MaxHp,
         StatType.Defense
     };
 
-    public float maxHP { get; internal set; }
+    public float maxHp { get; internal set; }
     public float defense { get; internal set; }
 
     public IReadOnlyList<StatType> GetAllType()
@@ -115,7 +115,7 @@ public class DefensiveRoleStat : IStat
     {
         return type switch
         {
-            StatType.MaxHP => maxHP,
+            StatType.MaxHp => maxHp,
             StatType.Defense => defense,
             _ => 0f
         };

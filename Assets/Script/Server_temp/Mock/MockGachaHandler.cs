@@ -6,29 +6,29 @@ using System.Threading.Tasks;
 
 public class MockGachaHandler
 {
-    private MockGachaService _gachaService;
-    private MockUserService _userService;
-    private MockMercenaryService _mercenaryService; 
+    private MockGachaDomain _gachaDomain;
+    private MockUserDomain _userDomain;
+    private MockMercenaryDomain _mercenaryDomain; 
 
-    public MockGachaHandler(MockGachaService gacha, MockUserService user, MockMercenaryService mercenary)
+    public MockGachaHandler(MockGachaDomain gacha, MockUserDomain user, MockMercenaryDomain mercenary)
     {
-        _gachaService = gacha;
-        _userService = user;
-        _mercenaryService = mercenary;
+        _gachaDomain = gacha;
+        _userDomain = user;
+        _mercenaryDomain = mercenary;
     }
 
     public async Task<GachaResponse> GachaAsync(GachaRequest request)
     {
         GachaResponse response = new();
 
-        var gacha = _gachaService.GetGachaDefinitionById(request.gachaId);
+        var gacha = _gachaDomain.GetGachaDefinitionById(request.gachaId);
         if (gacha == null)
         {
             response.result = NetworkResult.E_GACHA_INVALID_ID;
             return response;
         }
 
-        var pvo = _gachaService.GetGachaPVOById(gacha.id);
+        var pvo = _gachaDomain.GetGachaPVOById(gacha.Id);
         if (pvo == null)
         {
             response.result = NetworkResult.E_GACHA_INVALID;
@@ -104,7 +104,7 @@ public class MockGachaHandler
             switch (reward.type)
             {
                 case RewardType.Mercenary:
-                    if (reward is not MercenaryReward m || _mercenaryService.GetMercenaryPVOById(m.mercenaryId) == null)
+                    if (reward is not MercenaryReward m || _mercenaryDomain.GetMercenaryPVOById(m.mercenaryId) == null)
                     {
                         response.result = NetworkResult.E_GACHA_INVALID;
                         return response;
@@ -126,7 +126,7 @@ public class MockGachaHandler
                 case RewardType.Mercenary:
                     if (reward is MercenaryReward m)
                     {
-                        bool success = await _mercenaryService.AddShard(m.mercenaryId, 1);
+                        bool success = await _mercenaryDomain.AddShard(m.mercenaryId, 1);
                         if (success == false)
                         {
                             if (charged)
@@ -143,7 +143,7 @@ public class MockGachaHandler
         }
 
         response.gachaPVO = pvo;
-        response.userPVO = _userService.GetUser();
+        response.userPVO = _userDomain.GetUser();
 
         response.mercenaryPVOs = new();
         foreach (var reward in rewards)
@@ -153,7 +153,7 @@ public class MockGachaHandler
                 case RewardType.Mercenary:
                     if (reward is MercenaryReward m)
                     {
-                        response.mercenaryPVOs[m.mercenaryId] = _mercenaryService.GetMercenaryPVOById(m.mercenaryId);
+                        response.mercenaryPVOs[m.mercenaryId] = _mercenaryDomain.GetMercenaryPVOById(m.mercenaryId);
                     }
                     break;
             }
@@ -169,10 +169,10 @@ public class MockGachaHandler
         switch (gacha.currencyType)
         {
             case CurrencyType.Gold:
-                return _userService.gold < totalPrice ? NetworkResult.E_GACHA_NOT_ENOUGH_GOLD : NetworkResult.SUCCESS;
+                return _userDomain.gold < totalPrice ? NetworkResult.E_GACHA_NOT_ENOUGH_GOLD : NetworkResult.SUCCESS;
 
             case CurrencyType.Gem:
-                return _userService.gem < totalPrice ? NetworkResult.E_GACHA_NOT_ENOUGH_GEM : NetworkResult.SUCCESS;
+                return _userDomain.gem < totalPrice ? NetworkResult.E_GACHA_NOT_ENOUGH_GEM : NetworkResult.SUCCESS;
 
             default:
                 return NetworkResult.E_GACHA_INVALID;
@@ -183,8 +183,8 @@ public class MockGachaHandler
     {
         return type switch
         {
-            CurrencyType.Gold => _userService.ChangeGold(amount),
-            CurrencyType.Gem => _userService.ChangeGem(amount),
+            CurrencyType.Gold => _userDomain.ChangeGold(amount),
+            CurrencyType.Gem => _userDomain.ChangeGem(amount),
             _ => Task.FromResult(false)
         };
     }

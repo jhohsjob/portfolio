@@ -102,7 +102,7 @@ public class GachaStorage
         {
             pvos.Add(new GachaPVO
             {
-                id = gacha.id,
+                id = gacha.Id,
                 gachaCount = 0,
             });
         }

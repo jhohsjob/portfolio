@@ -31,10 +31,10 @@ public abstract class Actor<TRole> : ActorBase where TRole : RoleBase
         _state.SetState(ActorState.Idle);
         _state.onStateChanged += OnStateChanged;
 
-        if (stat.defensive.maxHP > 0f)
+        if (stat.defensive.maxHp > 0f)
         {
-            _hp.Enter(stat.defensive.maxHP);
-            _hp.onChanged += OnHpChanged;
+            _hpState.Enter(stat.defensive.maxHp);
+            _hpState.onChanged += OnHpChanged;
         }
 
         _view.Enter(sortingOrder);
@@ -42,7 +42,7 @@ public abstract class Actor<TRole> : ActorBase where TRole : RoleBase
 
     public override void BeHit(float damage)
     {
-        _hp?.Damage(damage);
+        _hpState?.Damage(damage);
 
         _view.PlayFlash();
     }
@@ -66,7 +66,7 @@ public abstract class Actor<TRole> : ActorBase where TRole : RoleBase
         base.Die();
 
         _state.Clear();
-        _hp.Clear();
+        _hpState.Clear();
 
         SetID(0);
 
@@ -92,9 +92,9 @@ public abstract class Actor<TRole> : ActorBase where TRole : RoleBase
 
     private void SetID(int id)
     {
-        ID = id;
+        Id = id;
 
-        gameObject.name = roleName + "_" + ID;
+        gameObject.name = roleName + "_" + Id;
     }
 
     public override void ResetCollider(float time = 0.5f)
@@ -117,10 +117,10 @@ public abstract class Actor<TRole> : ActorBase where TRole : RoleBase
         _view.SetFlip(dir);
     }
 
-    public virtual void OnHpChanged(ChangeHPData data)
+    public virtual void OnHpChanged(ChangeHpData data)
     {
         _view.SetHp(data);
-        if (data.remainHP == 0)
+        if (data.remainHp == 0)
         {
             _state.SetState(ActorState.Die);
         }
@@ -140,7 +140,7 @@ public abstract class Actor<TRole> : ActorBase where TRole : RoleBase
     {
         if (isVisible == true)
         {
-            var data = _hp.GetCurrentData();
+            var data = _hpState.GetCurrentData();
             _view.SetHp(data);
         }
     }

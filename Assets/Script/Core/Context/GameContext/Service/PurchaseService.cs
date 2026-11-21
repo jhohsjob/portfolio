@@ -39,7 +39,7 @@ public class PurchaseService
         {
             foreach (var productItem in shopItem.productItems)
             {
-                _products.Add(productItem.id, productItem);
+                _products.Add(productItem.Id, productItem);
             }
         }
     }
@@ -74,7 +74,7 @@ public class PurchaseService
             return PurchaseResult.InvalidId;
         }
 
-        var pvo = _pvos.Find(x => x.id == product.id);
+        var pvo = _pvos.Find(x => x.id == product.Id);
         if (pvo == null)
         {
             return PurchaseResult.Invalid;

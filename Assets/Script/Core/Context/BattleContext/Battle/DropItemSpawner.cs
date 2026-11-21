@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class DropItemActorManager : MonoBehaviour
+public class DropItemSpawner : MonoBehaviour
 {
     private struct DropInfo
     {
@@ -13,15 +13,15 @@ public class DropItemActorManager : MonoBehaviour
 
     private IActorSpawner _actorSpawner;
 
-    private DropItemManager _dropItems;
+    private DropItemCatalog _dropItems;
 
     private Dictionary<int, Dictionary<int, List<SpawnDefinition.DropItemEntry>>> _dropItemEntryDic = new();
 
     private List<ActorBase> _dropItemActorList = new ();
 
-    public void Init(IActorSpawner _ctorSpawner, DropItemManager dropItems)
+    public void Init(IActorSpawner actorSpawner, DropItemCatalog dropItems)
     {
-        _actorSpawner = _ctorSpawner;
+        _actorSpawner = actorSpawner;
 
         _dropItems = dropItems;
     }
@@ -52,13 +52,13 @@ public class DropItemActorManager : MonoBehaviour
         ActorBase dropItem = null;
         switch (role)
         {
-            case DIElement diElement:
+            case DropItemElement diElement:
                 {
                     dropItem = _actorSpawner.Spawn<ActorDIElement, DIElementDefinition>(diElement, position);
                 }
                 break;
 
-            case DIGold diGold:
+            case DropItemGold diGold:
                 {
                     dropItem = _actorSpawner.Spawn<ActorDIGold, DIGoldDefinition>(diGold, position);
                 }

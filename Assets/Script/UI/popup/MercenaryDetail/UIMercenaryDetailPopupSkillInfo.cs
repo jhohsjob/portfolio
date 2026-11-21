@@ -26,7 +26,7 @@ public class UIMercenaryDetailPopupSkillInfo : MonoBehaviour
     {
         gameObject.SetActive(true);
 
-        CaclPos(itemTransform);
+        CalcPos(itemTransform);
     }
 
     public void Hide()
@@ -41,7 +41,7 @@ public class UIMercenaryDetailPopupSkillInfo : MonoBehaviour
         _txtDescription.text = skillData.description;
     }
 
-    private void CaclPos(Transform itemTransform)
+    private void CalcPos(Transform itemTransform)
     {
         var pos = itemTransform.position;
 

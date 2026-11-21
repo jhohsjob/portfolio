@@ -47,9 +47,9 @@ public class GameContext : IDisposable
     public IPopupService PopupService { get; }
     public GameDataLoader GameDataLoader { get; }
 
-    public MonsterManager MonsterManager { get; }
-    public ProjectileManager ProjectileManager { get; }
-    public DropItemManager DropItemManager { get; }
+    public MonsterCatalog MonsterCatalog { get; }
+    public ProjectileCatalog ProjectileCatalog { get; }
+    public DropItemCatalog DropItemCatalog { get; }
 
     private bool _disposed;
 
@@ -73,9 +73,9 @@ public class GameContext : IDisposable
         RoleFactory = new RoleFactory();
 
 
-        MonsterManager = new MonsterManager(RoleFactory);
-        ProjectileManager = new ProjectileManager(RoleFactory);
-        DropItemManager = new DropItemManager(RoleFactory);
+        MonsterCatalog = new MonsterCatalog(RoleFactory);
+        ProjectileCatalog = new ProjectileCatalog(RoleFactory);
+        DropItemCatalog = new DropItemCatalog(RoleFactory);
 
 
         MercenaryService = new MercenaryService(new MercenaryServiceDependencies
@@ -123,9 +123,9 @@ public class GameContext : IDisposable
             stageService = StageService,
             popupService = PopupService,
 
-            monsterManager = MonsterManager,
-            projectileManager = ProjectileManager,
-            dropItemManager = DropItemManager,
+            monsterCatalog = MonsterCatalog,
+            projectileCatalog = ProjectileCatalog,
+            dropItemCatalog = DropItemCatalog,
         });
 
         GameDataLoader = new GameDataLoader(new GameDataLoader.Deps
@@ -139,9 +139,9 @@ public class GameContext : IDisposable
             gachaService = GachaService,
             stageService = StageService,
 
-            monsterManager = MonsterManager,
-            projectileManager = ProjectileManager,
-            dropItemManager = DropItemManager,
+            monsterCatalog = MonsterCatalog,
+            projectileCatalog = ProjectileCatalog,
+            dropItemCatalog = DropItemCatalog,
         });
     }
 

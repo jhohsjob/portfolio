@@ -22,7 +22,7 @@ public class UIGachaResultPopupRewardItem : InfiniteScrollItem
 
         _mercenary = (MercenaryDefinition)data;
 
-        _txtName.text = LocalManager.GetMercenaryString(_mercenary.GetNameKey());
+        _txtName.text = LocalizationHelper.GetMercenaryString(_mercenary.GetNameKey());
         _icon.sprite = _mercenary.icon;
     }
 }

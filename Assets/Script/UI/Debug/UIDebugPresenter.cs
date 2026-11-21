@@ -18,7 +18,7 @@ public class UIDebugPresenter
         view.onClickAddGold += OnClickAddGold;
     }
 
-    public void initialize(Deps deps)
+    public void Initialize(Deps deps)
     {
         _deps = deps;
     }

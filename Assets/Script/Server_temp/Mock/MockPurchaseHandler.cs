@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 public class MockPurchaseHandler
 {
     private MockPurchaseService _purchaseService;
-    private MockUserService _userService;
+    private MockUserDomain _userService;
 
-    public MockPurchaseHandler(MockPurchaseService purchase, MockUserService user)
+    public MockPurchaseHandler(MockPurchaseService purchase, MockUserDomain user)
     {
         _purchaseService = purchase;
         _userService = user;
@@ -23,7 +23,7 @@ public class MockPurchaseHandler
             return response;
         }
 
-        var pvo = _purchaseService.GetProductPVOById(product.id);
+        var pvo = _purchaseService.GetProductPVOById(product.Id);
         if (pvo == null)
         {
             response.result = NetworkResult.E_PURCHASE_INVALID;
@@ -75,9 +75,9 @@ public class MockPurchaseHandler
             await GrantReward(reward);
         }
 
-        await _purchaseService.AddPurchaseCount(product.id, 1);
+        await _purchaseService.AddPurchaseCount(product.Id, 1);
 
-        response.product = _purchaseService.GetProductPVOById(product.id);
+        response.product = _purchaseService.GetProductPVOById(product.Id);
         response.user = _userService.GetUser();
 
         return response;

@@ -102,7 +102,7 @@ public class ProductStorage
         {
             pvos.Add(new ProductPVO
             {
-                id = product.id,
+                id = product.Id,
                 purchaseCount = 0,
                 lastPurchaseTime = 0,
                 lastResetTime = 0

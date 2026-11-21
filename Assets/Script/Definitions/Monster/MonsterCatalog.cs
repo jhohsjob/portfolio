@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 
-public class MonsterManager
+public class MonsterCatalog
 {
     private RoleFactory _factory;
 
@@ -10,7 +10,7 @@ public class MonsterManager
     private List<Monster> _list = new();
     public IReadOnlyList<Monster> list => _list;
 
-    public MonsterManager(RoleFactory factory)
+    public MonsterCatalog(RoleFactory factory)
     {
         _factory = factory;
     }
@@ -52,7 +52,7 @@ public class MonsterManager
         return _dic[id];
     }
 
-    public int CaclIndex(int index)
+    public int CalcIndex(int index)
     {
         if (index < 0)
         {

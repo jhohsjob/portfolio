@@ -115,7 +115,7 @@ public enum StatType : long
     CriticalChance = Offensive | (1L << 9),
     CriticalDamage = Offensive | (1L << 10),
 
-    MaxHP = Defensive | (1L << 24),
+    MaxHp = Defensive | (1L << 24),
     Defense = Defensive | (1L << 25),
 
     MoveSpeed = Utility | (1L << 40),

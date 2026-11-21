@@ -43,7 +43,7 @@ public class IDGenerator
     }
 }
 
-public class ActorManager : MonoBehaviour, IActorSpawner
+public class ActorSpawner : MonoBehaviour, IActorSpawner
 {
     private Transform _actorContainer;
     private ActorFactory _actorFactory = null;
@@ -73,11 +73,11 @@ public class ActorManager : MonoBehaviour, IActorSpawner
     {
         var container = new GameObject(role.name + "Container");
         container.transform.SetParent(transform, false);
-        _container.Add(role.id, container);
+        _container.Add(role.Id, container);
 
-        _pool.Add(role.id, new Queue<ActorBase>());
+        _pool.Add(role.Id, new Queue<ActorBase>());
 
-        _idGenSet.Add(role.id, new IDGenerator(role.id));
+        _idGenSet.Add(role.Id, new IDGenerator(role.Id));
 
         AddPool(role);
     }
@@ -86,23 +86,23 @@ public class ActorManager : MonoBehaviour, IActorSpawner
     {
         for (int i = 0; i < 10; i++)
         {
-            var actor = _actorFactory.CreateActor(role, _container[role.id].transform);
-            _pool[role.id].Enqueue(actor);
+            var actor = _actorFactory.CreateActor(role, _container[role.Id].transform);
+            _pool[role.Id].Enqueue(actor);
         }
     }
 
     private ActorBase GetActor<TDef>(Role<TDef> role, Transform parent, Vector3 position) where TDef : RoleDefinition
     {
-        if (_pool.ContainsKey(role.id) == false)
+        if (_pool.ContainsKey(role.Id) == false)
         {
             return null;
         }
-        if (_pool[role.id].Count == 0)
+        if (_pool[role.Id].Count == 0)
         {
             AddPool(role);
         }
 
-        var result = _pool[role.id].Dequeue();
+        var result = _pool[role.Id].Dequeue();
         result.transform.SetParent(parent, false);
         result.transform.localPosition = position;
         
@@ -111,7 +111,7 @@ public class ActorManager : MonoBehaviour, IActorSpawner
 
     public void InitPool(RoleBase role)
     {
-        if (role == null || _pool.ContainsKey(role.id))
+        if (role == null || _pool.ContainsKey(role.Id))
         {
             return;
         }
@@ -121,12 +121,12 @@ public class ActorManager : MonoBehaviour, IActorSpawner
 
     public TActor Spawn<TActor, TDef>(Role<TDef> role, Vector3 pos) where TActor : ActorBase where TDef : RoleDefinition
     {
-        int id = GetNextID(role.id);
+        int id = GetNextID(role.Id);
         int order = GetNextOrderInLayer(role.roleType);
         var actor = GetActor(role, _actorContainer, pos) as TActor;
         if (actor == null)
         {
-            Debug.LogError($"[ActorManager] Spawn failed. roleId:{role.id}, type:{typeof(TActor).Name} (pool not ready or type mismatch)");
+            Debug.LogError($"[ActorManager] Spawn failed. roleId:{role.Id}, type:{typeof(TActor).Name} (pool not ready or type mismatch)");
             return null;
         }
 

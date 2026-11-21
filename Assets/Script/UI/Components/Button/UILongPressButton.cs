@@ -21,7 +21,7 @@ public class UILongPressButton : MonoBehaviour, IPointerDownHandler, IPointerUpH
 
     public event Action onClick;
     public event Action onLongPressStart;
-    public event Action onLongPressLevelUp;
+    public event Action onLongPressTick;
     public event Action onLongPressEnd;
 
     public void OnPointerDown(PointerEventData eventData)
@@ -77,7 +77,7 @@ public class UILongPressButton : MonoBehaviour, IPointerDownHandler, IPointerUpH
 
         while (_isPointerDown)
         {
-            onLongPressLevelUp?.Invoke();
+            onLongPressTick?.Invoke();
 
             yield return new WaitForSeconds(_repeatInterval);
         }

@@ -112,7 +112,7 @@ MonoBehaviour:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 919ca2c534bd7e4489af80b0ebcd2f26
-    m_Address: HPBar
+    m_Address: HpBar
     m_ReadOnly: 0
     m_SerializedLabels:
     - Preload

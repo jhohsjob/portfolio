@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 
-public class BootController
+public class BootProgress
 {
     private const float _smoothSpeed = 3f;
 

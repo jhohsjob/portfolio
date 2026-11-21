@@ -39,22 +39,22 @@ public class UILobbyPresenter : IDisposable
             popupService = _deps.popupService,
         });
 
-        _middlePresenters = new UILobbyMiddleBasePresenter[_view.MiddleViews.Length];
-        for (int i = 0; i < _view.MiddleViews.Length; i++)
+        _middlePresenters = new UILobbyMiddleBasePresenter[_view.middleViews.Length];
+        for (int i = 0; i < _view.middleViews.Length; i++)
         {
-            if (_view.MiddleViews[i] is UILobbyMiddleBarrack barrack)
+            if (_view.middleViews[i] is UILobbyMiddleBarrack barrack)
             {
                 _middlePresenters[i] = new UILobbyMiddleBarrackPresenter(barrack, deps);
             }
-            else if (_view.MiddleViews[i] is UILobbyMiddleBattle battle)
+            else if (_view.middleViews[i] is UILobbyMiddleBattle battle)
             {
                 _middlePresenters[i] = new UILobbyMiddleBattlePresenter(battle, deps);
             }
-            else if (_view.MiddleViews[i] is UILobbyMiddleShop shop)
+            else if (_view.middleViews[i] is UILobbyMiddleShop shop)
             {
                 _middlePresenters[i] = new UILobbyMiddleShopPresenter(shop, deps);
             }
-            else if (_view.MiddleViews[i] is UILobbyMiddleGacha gacha)
+            else if (_view.middleViews[i] is UILobbyMiddleGacha gacha)
             {
                 _middlePresenters[i] = new UILobbyMiddleGachaPresenter(gacha, deps);
             }
@@ -101,7 +101,7 @@ public class UILobbyPresenter : IDisposable
     {
         if (index >= _view.menuCount || index >= _view.GetMiddleCount())
         {
-            Debug.Log("menu miss match");
+            Debug.Log("menu mismatch");
             return;
         }
 

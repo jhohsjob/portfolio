@@ -5,7 +5,7 @@ public class Stage
 {
     private StageDefinition _definition;
 
-    public int id => _definition.id;
+    public int id => _definition.Id;
     public string name => _definition.stageName;
     public MapDefinition mapDefinition => _definition.mapDefinition;
     private StageClearConditionRuntime _clearCondition;

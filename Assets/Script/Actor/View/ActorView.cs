@@ -17,7 +17,7 @@ public class ActorView : MonoBehaviour
     private Animator _animator;
     private FlashShader _flashShader;
     private Collider2D _collider;
-    private HPBar _hpBar;
+    private HpBar _hpBar;
 
     private bool _isVisible;
 
@@ -40,7 +40,7 @@ public class ActorView : MonoBehaviour
 
     public void Initialize(ActorBase actor, RoleBase role)
     {
-        id = role.id;
+        id = role.Id;
 
         var body = Instantiate(role.original, transform);
         body.transform.localScale = Vector3.one / 2f;
@@ -65,7 +65,7 @@ public class ActorView : MonoBehaviour
         EnableAnimation(false);
         SetCollider(false);
 
-        useHp = actor.stat.defensive.maxHP > 0f;
+        useHp = actor.stat.defensive.maxHp > 0f;
     }
 
     public void Bind()
@@ -180,12 +180,12 @@ public class ActorView : MonoBehaviour
         }
     }
 
-    public void SetHpBar(HPBar hpBar)
+    public void SetHpBar(HpBar hpBar)
     {
         _hpBar = hpBar;
     }
 
-    public void SetHp(ChangeHPData data)
+    public void SetHp(ChangeHpData data)
     {
         _hpBar?.SetHp(data);
     }

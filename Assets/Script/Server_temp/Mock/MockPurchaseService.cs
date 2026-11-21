@@ -21,7 +21,7 @@ public class MockPurchaseService
         {
             foreach (var productItem in shopItem.productItems)
             {
-                _products.Add(productItem.id, productItem);
+                _products.Add(productItem.Id, productItem);
             }
         }
 

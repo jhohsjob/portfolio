@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 
 
-public class DashController
+public class DashAbility
 {
     private ActorBase _actor;
 

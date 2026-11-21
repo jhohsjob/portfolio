@@ -44,7 +44,7 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
             _view.SetupStageScroll(prefab, stageListIndex);
         });
 
-        int mercenaryListIndex = _mercenaries.FindIndex(x => x.id == _deps.user.lastPlayMercenaryId);
+        int mercenaryListIndex = _mercenaries.FindIndex(x => x.Id == _deps.user.lastPlayMercenaryId);
         _deps.assetService.LoadPrefab("BattleMercenaryScrollItem", prefab =>
         {
             _view.SetupMercenaryScroll(prefab, mercenaryListIndex);
@@ -61,7 +61,7 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
         return new UIBattleStageScrollItemData
         {
             stage = _stages[index],
-            state = _deps.stageService.IsStageStateByIndex(index, _deps.user.lastPlayStageId)
+            state = _deps.stageService.GetStageState(index, _deps.user.lastPlayStageId)
         };
     }
 
@@ -77,12 +77,12 @@ public class UILobbyMiddleBattlePresenter : UILobbyMiddlePresenter<UILobbyMiddle
 
         if (mercenary.isOwned == false)
         {
-            _deps.popupService.ShowCommonPopup(LocalManager.GetCommonString("notice"),
-                                                  LocalManager.GetCommonString("mercenary_lock"));
+            _deps.popupService.ShowCommonPopup(LocalizationHelper.GetCommonString("notice"),
+                                                  LocalizationHelper.GetCommonString("mercenary_lock"));
             return;
         }
 
-        _deps.user.SetMercenary(mercenary.id);
+        _deps.user.SetMercenary(mercenary.Id);
 
         _deps.sceneService.LoadBattleScene(new BattleRequest(stage, mercenary));
     }

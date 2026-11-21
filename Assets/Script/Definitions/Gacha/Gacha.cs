@@ -4,7 +4,7 @@ public class Gacha
 {
     private GachaDefinition _definition;
 
-    public int id => _definition.id;
+    public int id => _definition.Id;
 
     public CurrencyType currencyType => _definition.currencyType;
     public int price => _definition.price;

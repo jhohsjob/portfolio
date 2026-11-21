@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
-public class MockGachaService
+public class MockGachaDomain
 {
     private readonly GachaStorage _gachaStorage;
 
     private Dictionary<int, GachaDefinition> _gachas = new();
 
-    public MockGachaService()
+    public MockGachaDomain()
     {
         _gachaStorage = new();
     }

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
-public class MockUserService
+public class MockUserDomain
 {
     private readonly UserStorage _userStorage;
     private UserLevelSystem _levelSystem;
@@ -11,7 +11,7 @@ public class MockUserService
     public int gold => _userStorage.pvo.gold;
     public int gem => _userStorage.pvo.gem;
 
-    public MockUserService(IAssetService assetService)
+    public MockUserDomain(IAssetService assetService)
     {
         _userStorage = new UserStorage(assetService);
         _levelSystem = new UserLevelSystem();

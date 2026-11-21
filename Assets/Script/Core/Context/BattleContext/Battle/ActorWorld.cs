@@ -13,19 +13,19 @@ public class ActorWorld : MonoBehaviour
         public Func<Vector3> getSpawnPosition;
 
         public Stage stage;
-        public MonsterManager monsterManager;
-        public DropItemManager dropItemManager;
+        public MonsterCatalog monsterCatalog;
+        public DropItemCatalog dropItemCatalog;
     }
 
 
     private Deps _deps;
 
-    private ActorManager _actorManager;
-    private EnemyActorManager _enemyManager;
-    private DropItemActorManager _dropItemManager;
+    private ActorSpawner _actorSpawner;
+    private EnemySpawner _enemySpawner;
+    private DropItemSpawner _dropItemSpawner;
     private MapLevelManager _mapLevelManager;
 
-    public IActorSpawner actorSpawner => _actorManager;
+    public IActorSpawner actorSpawner => _actorSpawner;
 
     private MapLevel _mapLevel;
 
@@ -33,21 +33,21 @@ public class ActorWorld : MonoBehaviour
     {
         _deps = deps;
 
-        _actorManager = new GameObject("ActorManager").AddComponent<ActorManager>();
-        _enemyManager = new GameObject("EnemyManager").AddComponent<EnemyActorManager>();
-        _dropItemManager = new GameObject("DropItemManager").AddComponent<DropItemActorManager>();
+        _actorSpawner = new GameObject("ActorSpawner").AddComponent<ActorSpawner>();
+        _enemySpawner = new GameObject("EnemySpawner").AddComponent<EnemySpawner>();
+        _dropItemSpawner = new GameObject("DropItemSpawner").AddComponent<DropItemSpawner>();
         _mapLevelManager = new GameObject("MapLevelManager").AddComponent<MapLevelManager>();
 
         Bind();
 
-        _actorManager.transform.SetParent(transform);
-        _enemyManager.transform.SetParent(transform);
-        _dropItemManager.transform.SetParent(transform);
+        _actorSpawner.transform.SetParent(transform);
+        _enemySpawner.transform.SetParent(transform);
+        _dropItemSpawner.transform.SetParent(transform);
         _mapLevelManager.transform.SetParent(transform);
 
-        _actorManager.Init(deps.actorContainer);
-        _enemyManager.Init(deps.getSpawnPosition, deps.enemyTarget, _actorManager, deps.monsterManager);
-        _dropItemManager.Init(_actorManager, deps.dropItemManager);
+        _actorSpawner.Init(deps.actorContainer);
+        _enemySpawner.Init(deps.getSpawnPosition, deps.enemyTarget, _actorSpawner, deps.monsterCatalog);
+        _dropItemSpawner.Init(_actorSpawner, deps.dropItemCatalog);
         _mapLevelManager.Init(deps.battleState, deps.stage);
 
         transform.position = new Vector3(-1000f, -1000f, -1000f);
@@ -61,17 +61,17 @@ public class ActorWorld : MonoBehaviour
 
     public Transform GetNearestEnemy(Vector3 origin, Vector3 forward, float searchRadius, float searchAngle)
     {
-        return _enemyManager.GetNearestEnemy(origin, forward, searchRadius, searchAngle);
+        return _enemySpawner.GetNearestEnemy(origin, forward, searchRadius, searchAngle);
     }
 
     public int GetNextActorID(int roleId)
     {
-        return _actorManager.GetNextID(roleId);
+        return _actorSpawner.GetNextID(roleId);
     }
 
     public int GetNextOrderInLayer(RoleType roleType)
     {
-        return _actorManager.GetNextOrderInLayer(roleType);
+        return _actorSpawner.GetNextOrderInLayer(roleType);
     }
 
     public Transform GetMapOriginal()
@@ -88,7 +88,7 @@ public class ActorWorld : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            _enemyManager.Spawn(HandleEnemyReturn);
+            _enemySpawner.Spawn(HandleEnemyReturn);
         }
     }
 
@@ -96,8 +96,8 @@ public class ActorWorld : MonoBehaviour
     {
         _mapLevel = level;
 
-        _enemyManager.SetSpawnList(level);
-        _dropItemManager.SetSpawnList(level);
+        _enemySpawner.SetSpawnList(level);
+        _dropItemSpawner.SetSpawnList(level);
         Preload(level);
     }
 
@@ -105,13 +105,13 @@ public class ActorWorld : MonoBehaviour
     {
         foreach (var spawnInfo in mapLevel.spawnInfos)
         {
-            var monster = _deps.monsterManager.GetMonsterById(spawnInfo.roleId);
-            _actorManager.InitPool(monster);
+            var monster = _deps.monsterCatalog.GetMonsterById(spawnInfo.roleId);
+            _actorSpawner.InitPool(monster);
 
             foreach (var dropItemRoleId in spawnInfo.dropItemRoleIds)
             {
-                var dropItem = _deps.dropItemManager.GetDropItemById(dropItemRoleId);
-                _actorManager.InitPool(dropItem);
+                var dropItem = _deps.dropItemCatalog.GetDropItemById(dropItemRoleId);
+                _actorSpawner.InitPool(dropItem);
             }
         }
     }
@@ -123,20 +123,20 @@ public class ActorWorld : MonoBehaviour
             return;
         }
 
-        _dropItemManager.Spawn(_mapLevel.level, enemy, HandleDropItemReturn);
+        _dropItemSpawner.Spawn(_mapLevel.level, enemy, HandleDropItemReturn);
 
-        _enemyManager.Return(enemy);
+        _enemySpawner.Return(enemy);
     }
 
     private void HandleDropItemReturn(ActorBase actorBase)
     {
         if (actorBase is ActorDIGold gold)
         {
-            _dropItemManager.Return(gold);
+            _dropItemSpawner.Return(gold);
         }
         else if (actorBase is ActorDIElement element)
         {
-            _dropItemManager.Return(element);
+            _dropItemSpawner.Return(element);
         }
     }
 }

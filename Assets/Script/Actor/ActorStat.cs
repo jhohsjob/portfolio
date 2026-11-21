@@ -27,7 +27,7 @@ public class ActorStat
 
 
         // Defensive
-        defensive.maxHP = roleStat.defensive.maxHP;
+        defensive.maxHp = roleStat.defensive.maxHp;
 
         defensive.defense = roleStat.defensive.defense;
 
@@ -80,11 +80,11 @@ public class DefensiveActorStat : IStat
 {
     private static readonly StatType[] _types =
     {
-        StatType.MaxHP,
+        StatType.MaxHp,
         StatType.Defense
     };
 
-    public float maxHP { get; internal set; }
+    public float maxHp { get; internal set; }
     public float defense { get; internal set; }
 
     public IReadOnlyList<StatType> GetAllType()
@@ -96,7 +96,7 @@ public class DefensiveActorStat : IStat
     {
         return type switch
         {
-            StatType.MaxHP => maxHP,
+            StatType.MaxHp => maxHp,
             StatType.Defense => defense,
             _ => 0f
         };

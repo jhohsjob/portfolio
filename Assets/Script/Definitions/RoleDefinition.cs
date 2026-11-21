@@ -72,7 +72,7 @@ public class RoleDefinition : DefinitionBase
     }
 #endif
 
-    private string LocalKey(string prefix) => $"{prefix}_{id}";
+    private string LocalKey(string prefix) => $"{prefix}_{Id}";
 
     public string GetNameKey() => LocalKey("name");
     public string GetDescKey() => LocalKey("desc");

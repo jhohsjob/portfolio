@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 
-public class ProjectileManager
+public class ProjectileCatalog
 {
     private RoleFactory _factory;
 
@@ -10,7 +10,7 @@ public class ProjectileManager
     private List<Projectile> _list = new();
     public IReadOnlyList<Projectile> list => _list;
 
-    public ProjectileManager(RoleFactory factory)
+    public ProjectileCatalog(RoleFactory factory)
     {
         _factory = factory;
     }
@@ -52,7 +52,7 @@ public class ProjectileManager
         return _dic[id];
     }
 
-    public int CaclIndex(int index)
+    public int CalcIndex(int index)
     {
         if (index < 0)
         {

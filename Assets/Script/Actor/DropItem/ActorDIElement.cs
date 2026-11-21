@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-public class ActorDIElement : Actor<DIElement>, ICollectableDropItem
+public class ActorDIElement : Actor<DropItemElement>, ICollectableDropItem
 {
     [HideInInspector]
     public ElementType elementType;
@@ -10,7 +10,7 @@ public class ActorDIElement : Actor<DIElement>, ICollectableDropItem
     {
         base.Init(role);
 
-        if (role is not DIElement diElement)
+        if (role is not DropItemElement diElement)
         {
             Debug.LogError("Invalid role type for ActorDIElement");
             return;

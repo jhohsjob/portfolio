@@ -101,7 +101,7 @@ public class MercenaryStorage
         {
             pvos.Add(new MercenaryPVO
             {
-                id = mercenary.id,
+                id = mercenary.Id,
                 isOwned = false,
                 level = 1,
                 grade = 0,

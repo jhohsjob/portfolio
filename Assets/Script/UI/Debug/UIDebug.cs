@@ -54,7 +54,7 @@ public class UIDebug : MonoBehaviour
 
     public void Initialize(UIDebugPresenter.Deps deps)
     {
-        _presenter.initialize(deps);
+        _presenter.Initialize(deps);
     }
 
     private void HandleClickAddUserExp()

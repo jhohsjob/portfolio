@@ -12,10 +12,10 @@ public abstract class Role<TData> : RoleBase where TData : RoleDefinition
 
     public RoleType roleType => _data.roleType;
     public virtual LocalizationTable localTable => LocalizationTable.None;
-    public string description => LocalManager.GetLocalizedString(localTable, _data.GetDescKey());
+    public string description => LocalizationHelper.GetLocalizedString(localTable, _data.GetDescKey());
 
-    public override int id => _data.id;
-    public override string name => LocalManager.GetLocalizedString(localTable, _data.GetNameKey());
+    public override int Id => _data.Id;
+    public override string name => LocalizationHelper.GetLocalizedString(localTable, _data.GetNameKey());
     public override int level => 1;
     public override int grade => 0;
     public override Type behaviourType => _data.behaviourType;

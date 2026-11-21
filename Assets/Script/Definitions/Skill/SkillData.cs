@@ -8,8 +8,8 @@ public class SkillData
 
     public int id => _data.id;
     public LocalizationTable localTable => LocalizationTable.SkillTable;
-    public string name => LocalManager.GetLocalizedString(localTable, _data.GetNameKey());
-    public string description => LocalManager.GetLocalizedString(localTable, _data.GetDescKey());
+    public string name => LocalizationHelper.GetLocalizedString(localTable, _data.GetNameKey());
+    public string description => LocalizationHelper.GetLocalizedString(localTable, _data.GetDescKey());
     public Sprite icon => _data.icon;
 
     public int fireCount => _data.fireCount;

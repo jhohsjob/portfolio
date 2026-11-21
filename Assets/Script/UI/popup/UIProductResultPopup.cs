@@ -27,8 +27,8 @@ public class UIProductResultPopup : UIPopup
             return;
         }
 
-        string key = popupData.result == PurchaseResult.Success ? "success_result_tile" : "failed_result_title";
-        _txtResult.text = LocalManager.GetShopString(key);
+        string key = popupData.result == PurchaseResult.Success ? "success_result_title" : "failed_result_title";
+        _txtResult.text = LocalizationHelper.GetShopString(key);
         _txtMessage.text = popupData.message;
 
         base.OnPopupReady(data);

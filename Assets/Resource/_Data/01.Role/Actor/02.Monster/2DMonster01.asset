@@ -26,7 +26,7 @@ MonoBehaviour:
         value: 0
         growth: 0
     defensive:
-      maxHP:
+      maxHp:
         value: 300
         growth: 10
       defense:

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 
 
-public class SkillController
+public class SkillSelector
 {
     private List<Skill> _skills = new();
 

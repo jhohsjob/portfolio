@@ -55,7 +55,7 @@ public class IdSyncTableEditor : Editor
             if (definition == null)
                 continue;
 
-            key.intValue = definition.id;
+            key.intValue = definition.Id;
 
             EditorUtility.SetDirty(definition);
         }

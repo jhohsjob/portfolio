@@ -4,13 +4,13 @@ using System;
 public class UIDashPresenter : IDisposable
 {
     private readonly UIDash _view;
-    private readonly DashController _dashController;
+    private readonly DashAbility _dash;
     private readonly Action _onDashAction;
 
-    public UIDashPresenter(UIDash view, DashController dashController, Action onDashAction)
+    public UIDashPresenter(UIDash view, DashAbility dash, Action onDashAction)
     {
         _view = view;
-        _dashController = dashController;
+        _dash = dash;
         _onDashAction = onDashAction;
 
         Bind();
@@ -24,13 +24,13 @@ public class UIDashPresenter : IDisposable
     private void Bind()
     {
         _view.onClickDash += HandleClickDash;
-        _dashController.onCooldownChanged += UpdateDashUI;
+        _dash.onCooldownChanged += UpdateDashUI;
     }
 
     private void Unbind()
     {
         _view.onClickDash -= HandleClickDash;
-        _dashController.onCooldownChanged -= UpdateDashUI;
+        _dash.onCooldownChanged -= UpdateDashUI;
     }
 
     public void Initialize()

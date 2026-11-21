@@ -8,8 +8,8 @@ public class Skill : MonoBehaviour
 
     protected ActorBase _actor;
 
-    public int ID { get; private set; }
-    public string NAME { get; private set; }
+    public int Id { get; private set; }
+    public string Name { get; private set; }
 
     protected int _fireCount { get; private set; }
     protected int _multiShotCount { get; private set; }
@@ -53,8 +53,8 @@ public class Skill : MonoBehaviour
         transform.SetParent(_actor.transform, false);
         transform.localPosition = Vector3.zero;
 
-        ID = data.id;
-        NAME = data.name;
+        Id = data.id;
+        Name = data.name;
         _fireCount = data.fireCount;
         _multiShotCount = data.multiShotCount;
         _spreadAngle = data.spreadAngle;
@@ -64,7 +64,7 @@ public class Skill : MonoBehaviour
 
         foreach (var item in _projectileData)
         {
-            var role = _env.GetProjectile(item.id);
+            var role = _env.GetProjectile(item.Id);
             _env.spawner.InitPool(role);
         }
 
@@ -86,7 +86,7 @@ public class Skill : MonoBehaviour
     {
         for (int i = 0; i < _fireCount; i++)
         {
-            var role = _env.GetProjectile(_projectileData[0].id);
+            var role = _env.GetProjectile(_projectileData[0].Id);
             var position = _actor.muzzlePos;
             var projectile = _env.spawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
             projectile.Shot(_actor);

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class RoleBase
 {
-    public abstract int id { get; }
+    public abstract int Id { get; }
     public abstract string name { get; }
     public abstract int level { get; }
     public abstract int grade { get; }

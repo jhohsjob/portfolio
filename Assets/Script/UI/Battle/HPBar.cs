@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class HPBar : MonoBehaviour
+public class HpBar : MonoBehaviour
 {
     [SerializeField]
     private Image _hp = null;
@@ -21,7 +21,7 @@ public class HPBar : MonoBehaviour
         transform.localPosition = localPos + _offset;
     }
 
-    public void SetHp(ChangeHPData data)
+    public void SetHp(ChangeHpData data)
     {
         _hp.fillAmount = data.fillAmount;
         _debug.text = data.text;

@@ -11,14 +11,15 @@ public class BattleScene : MonoBehaviour
         public ISceneService sceneLoader;
         public IPopupService popupService;
 
-        public MonsterManager monsterManager;
-        public ProjectileManager projectileManager;
-        public DropItemManager dropItemManager;
+        public MonsterCatalog monsterCatalog;
+        public ProjectileCatalog projectileCatalog;
+        public DropItemCatalog dropItemCatalog;
         public BattleRequest request;
     }
 
     private Deps _deps;
-    private BattleContext _battleContext;
+    private BattleSession _session;
+    private BattleContext _context => _session.context;
 
     [SerializeField]
     private UIBattle _uiBattle;
@@ -41,7 +42,7 @@ public class BattleScene : MonoBehaviour
     private void OnDestroy()
     {
         _uiBattlePresenter?.Dispose();
-        _battleContext?.Dispose();
+        _session?.Dispose();
     }
 
     public void InitDependencies(Deps deps)
@@ -51,7 +52,7 @@ public class BattleScene : MonoBehaviour
 
     public void Initialize()
     {
-        InitializeBattleContext();
+        InitializeBattleSession();
 
         InitializeUIBattle();
 
@@ -59,19 +60,19 @@ public class BattleScene : MonoBehaviour
 
         InitializeMap();
         
-        _battleContext.Start();
+        _session.Start();
     }
 
-    private void InitializeBattleContext()
+    private void InitializeBattleSession()
     {
-        _battleContext = new BattleContext(new BattleContext.Deps
+        _session = new BattleSession(new BattleSession.Deps
         {
             request = _deps.request,
             user = _deps.user,
             stageService = _deps.stageService,
-            monsterManager = _deps.monsterManager,
-            projectileManager = _deps.projectileManager,
-            dropItemManager = _deps.dropItemManager,
+            monsterCatalog = _deps.monsterCatalog,
+            projectileCatalog = _deps.projectileCatalog,
+            dropItemCatalog = _deps.dropItemCatalog,
             actorContainer = _actorContainer,
             playerTransform = _player.transform,
             getSpawnPosition = GetEnemySpawnPosition,
@@ -86,9 +87,9 @@ public class BattleScene : MonoBehaviour
             assetService = _deps.assetService,
             sceneLoader = _deps.sceneLoader,
             popupService = _deps.popupService,
-            battleController = _battleContext.controller,
-            battleReward = _battleContext.reward,
-            dashController = _player.dash,
+            battleState = _context.state,
+            battleReward = _context.reward,
+            dash = _player.dash,
             onDashAction = _player.HandleDashAction,
             onJoystickAction = _player.HandleJoystickAction,
             mainCamera = _playerCamera.mainCamera
@@ -101,27 +102,27 @@ public class BattleScene : MonoBehaviour
         _player.InitDependencies(new Player.Deps
         {
             assetService = _deps.assetService,
-            env = _battleContext
+            env = _context
         });
 
-        var mercenary = _battleContext.mercenary;
+        var mercenary = _context.mercenary;
         _player.Init(mercenary);
         if (_player.moveBehaviour is DirectionMove direction)
         {
             direction.Setup(_player.inputSource, _map.GetBounds);
         }
-        int nextId = _battleContext.GetNextActorID(mercenary.id);
-        int sortingOrder = _battleContext.GetNextOrderInLayer(mercenary.roleType);
+        int nextId = _context.GetNextActorID(mercenary.Id);
+        int sortingOrder = _context.GetNextOrderInLayer(mercenary.roleType);
         _player.Enter(nextId, sortingOrder, HandlePlayerDied);
 
         _playerCamera.Init(_uiBattle.GetTopUIHeight(), GetMapBounds);
 
-        _player.onGoldCollected += _battleContext.HandleGoldCollected;
+        _player.onGoldCollected += _context.HandleGoldCollected;
     }
 
     private void InitializeMap()
     {
-        _map.Init(_battleContext.GetMapOriginal());
+        _map.Init(_context.GetMapOriginal());
     }
 
     public Bounds GetMapBounds()
@@ -141,6 +142,6 @@ public class BattleScene : MonoBehaviour
             return;
         }
 
-        _battleContext.Lose();
+        _session.Lose();
     }
 }

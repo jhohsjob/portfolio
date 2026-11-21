@@ -8,7 +8,7 @@ public class MultiShotSkill : Skill
     {
         float startAngle = -_spreadAngle * (_multiShotCount - 1) * 0.5f;
 
-        int projectileId = _projectileData[0].id;
+        int projectileId = _projectileData[0].Id;
 
         for (int i = 0; i < _fireCount; i++)
         {

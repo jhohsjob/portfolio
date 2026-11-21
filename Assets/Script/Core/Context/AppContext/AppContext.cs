@@ -21,7 +21,7 @@ public sealed class AppContext
 
         SoundService = new SoundService();
         SoundService.Initialize(global.SoundRoot);
-        
+
         PopupContainer = global.PopupCanvas;
 
         DeviceSettings = new DeviceSettings(Storage, SaveService, SoundService, LocaleService);
@@ -32,27 +32,4 @@ public sealed class AppContext
 
     // 앱 종료/일시정지 시 대기 중인 설정 저장을 즉시 처리
     public void FlushDeviceSettings() => DeviceSettings.Flush();
-}
-
-public static class App
-{
-    private static AppContext _context;
-    
-    public static void FlushDeviceSettings() => _context?.FlushDeviceSettings();
-
-    public static AppContext EnsureCreated(GlobalRoot candidate)
-    {
-        if (_context != null)
-        {
-            if (candidate != null)
-            {
-                Object.Destroy(candidate.gameObject);
-            }
-            return _context;
-        }
-
-        Object.DontDestroyOnLoad(candidate.gameObject);
-        _context = new AppContext(candidate);
-        return _context;
-    }
 }

@@ -80,18 +80,18 @@ public class UILobbyMiddleShopPresenter : UILobbyMiddlePresenter<UILobbyMiddleSh
         }
         _isPurchasing = true;
 
-        var result = await _deps.purchaseService.Purchase(product.id);
+        var result = await _deps.purchaseService.Purchase(product.Id);
 
-        string productName = LocalManager.GetShopString(product.GetNameKey());
+        string productName = LocalizationHelper.GetShopString(product.GetNameKey());
         string message = string.Empty;
         switch (result)
         {
             case PurchaseResult.Success:
-                message = LocalManager.GetShopString("success_result_message", new object[] { new { product_name = productName } });
+                message = LocalizationHelper.GetShopString("success_result_message", new object[] { new { product_name = productName } });
                 break;
 
             default:
-                message = LocalManager.GetShopString("failed_result_message", new object[] { new { product_name = productName, reason = result.ToString() } });
+                message = LocalizationHelper.GetShopString("failed_result_message", new object[] { new { product_name = productName, reason = result.ToString() } });
                 break;
         }
 

@@ -6,8 +6,8 @@ public class UIBattleTopPresenter
     public class Deps
     {
         public IPopupService popupService;
-        public ISceneService sceneLoader;
-        public IBattleController battleController;
+        public ISceneService sceneService;
+        public IBattleState battleState;
         public BattleRewardRuntime battleReward;
     }
 
@@ -53,9 +53,9 @@ public class UIBattleTopPresenter
 
     private void OnClickPause()
     {
-        _deps.battleController.SetStatus(BattleStatus.Paused);
+        _deps.battleState.SetStatus(BattleStatus.Paused);
 
-        var popupData = new UIPausePopupData(OnBattleResume, _deps.sceneLoader);
+        var popupData = new UIPausePopupData(OnBattleResume, _deps.sceneService);
         _deps.popupService.ShowPopup<UIPausePopup>(
             address: PopupName.UIPausePopup,
             data: popupData,
@@ -72,7 +72,7 @@ public class UIBattleTopPresenter
 
     private void OnBattleResume()
     {
-        _deps.battleController.SetStatus(BattleStatus.Running);
+        _deps.battleState.SetStatus(BattleStatus.Running);
     }
 
     private void OnGoldChanged(int gold)

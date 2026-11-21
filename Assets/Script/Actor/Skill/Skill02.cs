@@ -57,7 +57,7 @@ public class Skill02 : Skill
             yield break;
         }
 
-        var role = _env.GetProjectile(_projectileData[0].id);
+        var role = _env.GetProjectile(_projectileData[0].Id);
         var position = _actor.muzzlePos;
         var projectile = _env.spawner.Spawn<ActorProjectile, ProjectileDefinition>(role, position);
         if (projectile.moveBehaviour is OrbitMove orbit)

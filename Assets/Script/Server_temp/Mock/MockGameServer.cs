@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 public class MockGameServer : IGameServer, IDisposable
 {
-    private readonly MockUserService _userService;
-    private readonly MockMercenaryService _mercenaryService;
+    private readonly MockUserDomain _userService;
+    private readonly MockMercenaryDomain _mercenaryService;
     private readonly MockPurchaseService _purchaseService;
-    private readonly MockGachaService _gachaService;
+    private readonly MockGachaDomain _gachaService;
 
     private MockUserHandler _userHandler;
     private MockMercenaryHandler _mercenaryHandler;
@@ -17,10 +17,10 @@ public class MockGameServer : IGameServer, IDisposable
 
     public MockGameServer(IAssetService assetService)
     {
-        _userService = new MockUserService(assetService);
-        _mercenaryService = new MockMercenaryService();
+        _userService = new MockUserDomain(assetService);
+        _mercenaryService = new MockMercenaryDomain();
         _purchaseService = new MockPurchaseService();
-        _gachaService = new MockGachaService();
+        _gachaService = new MockGachaDomain();
 
         _userHandler = new MockUserHandler(_userService);
         _mercenaryHandler = new MockMercenaryHandler(_mercenaryService, _userService);

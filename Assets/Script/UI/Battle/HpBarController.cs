@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class HPBarManager : MonoBehaviour
+public class HpBarController : MonoBehaviour
 {
     private IAssetService _assetService;
 
@@ -12,16 +12,16 @@ public class HPBarManager : MonoBehaviour
     [SerializeField]
     private Transform _poolContainer;
     [SerializeField]
-    private Transform _activeContianer;
+    private Transform _activeContainer;
     [SerializeField]
     private RectTransform _rt;
     [SerializeField]
     private int _expandCount = 10;
 
-    private HPBar _original;
+    private HpBar _original;
 
-    private Queue<HPBar> _pool = new();
-    private Dictionary<ActorView, HPBar> _activeList = new();
+    private Queue<HpBar> _pool = new();
+    private Dictionary<ActorView, HpBar> _activeList = new();
 
     private Queue<ActorView> _waitList = new();
 
@@ -67,9 +67,9 @@ public class HPBarManager : MonoBehaviour
 
     public void Initialize()
     {
-        _assetService.LoadPrefab("HPBar", (prefab) =>
+        _assetService.LoadPrefab("HpBar", (prefab) =>
         {
-            _original = prefab.GetComponent<HPBar>();
+            _original = prefab.GetComponent<HpBar>();
 
             ExpandPool();
 
@@ -117,7 +117,7 @@ public class HPBarManager : MonoBehaviour
 
         var hpBar = _pool.Dequeue();
 
-        hpBar.transform.SetParent(_activeContianer);
+        hpBar.transform.SetParent(_activeContainer);
         hpBar.gameObject.SetActive(true);
 
         actor.SetHpBar(hpBar);

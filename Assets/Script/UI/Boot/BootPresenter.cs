@@ -3,16 +3,16 @@ public class BootPresenter
     private readonly ISceneService _sceneService;
 
     private readonly UIBoot _view;
-    private readonly BootController _controller;
+    private readonly BootProgress _progress;
 
-    public BootPresenter(UIBoot view, BootController controller, ISceneService sceneService)
+    public BootPresenter(UIBoot view, BootProgress progress, ISceneService sceneService)
     {
         _view = view;
-        _controller = controller;
+        _progress = progress;
 
         _sceneService = sceneService;
 
-        _controller.onProgressChanged += HandleProgressChanged;
+        _progress.onProgressChanged += HandleProgressChanged;
 
         _view.onNextSceneClicked += HandleNextSceneClicked;
 
@@ -21,7 +21,7 @@ public class BootPresenter
 
     public void Dispose()
     {
-        _controller.onProgressChanged -= HandleProgressChanged;
+        _progress.onProgressChanged -= HandleProgressChanged;
         _view.onNextSceneClicked -= HandleNextSceneClicked;
     }
 

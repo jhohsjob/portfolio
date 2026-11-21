@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
-public class MockMercenaryService
+public class MockMercenaryDomain
 {
     private readonly MercenaryStorage _mercenaryStorage;
 
@@ -10,7 +10,7 @@ public class MockMercenaryService
     private MercenaryLevelSystem _levelSystem;
     private MercenaryGradeSystem _gradeSystem;
 
-    public MockMercenaryService()
+    public MockMercenaryDomain()
     {
         _mercenaryStorage = new MercenaryStorage();
         _levelSystem = new MercenaryLevelSystem();

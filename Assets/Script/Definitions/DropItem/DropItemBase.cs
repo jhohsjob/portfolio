@@ -12,16 +12,16 @@ public abstract class DropItemBase<TData> : Role<TData> where TData : RoleDefini
     protected DropItemBase(TData data) : base(data) { }
 }
 
-public class DIElement : DropItemBase<DIElementDefinition>
+public class DropItemElement : DropItemBase<DIElementDefinition>
 {
     public ElementType elementType => _data.elementType;
 
-    public DIElement(DIElementDefinition data) : base(data) { }
+    public DropItemElement(DIElementDefinition data) : base(data) { }
 }
 
-public class DIGold : DropItemBase<DIGoldDefinition>
+public class DropItemGold : DropItemBase<DIGoldDefinition>
 {
     public int goldAmount => _data.gold;
 
-    public DIGold(DIGoldDefinition data) : base(data) { }
+    public DropItemGold(DIGoldDefinition data) : base(data) { }
 }

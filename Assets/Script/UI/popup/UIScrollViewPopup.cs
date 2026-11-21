@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class UISVPopup : UIPopup
+public class UIScrollViewPopup : UIPopup
 {
     protected List<UISVPopupContent> _contents = new List<UISVPopupContent>();
 

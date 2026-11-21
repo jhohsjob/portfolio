@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 public class MockUserHandler
 {
-    private readonly MockUserService _userService;
+    private readonly MockUserDomain _userService;
 
-    public MockUserHandler(MockUserService user)
+    public MockUserHandler(MockUserDomain user)
     {
         _userService = user;
     }

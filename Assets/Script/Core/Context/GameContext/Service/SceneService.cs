@@ -35,9 +35,9 @@ public class SceneService : ISceneService, IDisposable
         public StageService stageService;
         public IPopupService popupService;
 
-        public MonsterManager monsterManager;
-        public ProjectileManager projectileManager;
-        public DropItemManager dropItemManager;
+        public MonsterCatalog monsterCatalog;
+        public ProjectileCatalog projectileCatalog;
+        public DropItemCatalog dropItemCatalog;
     }
 
 
@@ -175,9 +175,9 @@ public class SceneService : ISceneService, IDisposable
             stageService = _deps.stageService,
             popupService = _deps.popupService,
 
-            monsterManager = _deps.monsterManager,
-            projectileManager = _deps.projectileManager,
-            dropItemManager = _deps.dropItemManager,
+            monsterCatalog = _deps.monsterCatalog,
+            projectileCatalog = _deps.projectileCatalog,
+            dropItemCatalog = _deps.dropItemCatalog,
             request = _battleRequest,
         });
         battleScene.Initialize();

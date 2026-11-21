@@ -7,12 +7,12 @@ public static class DropItemFactory
     {
         if (data is DIElementDefinition diElementData)
         {
-            return new DIElement(diElementData);
+            return new DropItemElement(diElementData);
         }
 
         if (data is DIGoldDefinition diGoldData)
         {
-            return new DIGold(diGoldData);
+            return new DropItemGold(diGoldData);
         }
 
         return null;
@@ -20,7 +20,7 @@ public static class DropItemFactory
 }
 
 
-public class DropItemManager
+public class DropItemCatalog
 {
     private RoleFactory _factory;
 
@@ -28,7 +28,7 @@ public class DropItemManager
     private List<RoleBase> _list = new();
     public IReadOnlyList<RoleBase> list => _list;
 
-    public DropItemManager(RoleFactory factory)
+    public DropItemCatalog(RoleFactory factory)
     {
         _factory = factory;
     }

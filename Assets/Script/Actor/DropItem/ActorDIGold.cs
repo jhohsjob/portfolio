@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-public class ActorDIGold : Actor<DIGold>, ICollectableDropItem
+public class ActorDIGold : Actor<DropItemGold>, ICollectableDropItem
 {
     private float speed = 100f;
     private int _goldAmount;
@@ -15,7 +15,7 @@ public class ActorDIGold : Actor<DIGold>, ICollectableDropItem
     {
         base.Init(role);
 
-        if (role is not DIGold gold)
+        if (role is not DropItemGold gold)
         {
             return;
         }

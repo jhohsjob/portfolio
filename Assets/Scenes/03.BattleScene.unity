@@ -165,7 +165,7 @@ GameObject:
   - component: {fileID: 48342859}
   - component: {fileID: 48342860}
   m_Layer: 5
-  m_Name: HPBarManager
+  m_Name: HpBarController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -206,7 +206,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HPBarManager
   _uiCamera: {fileID: 420921821}
   _poolContainer: {fileID: 1536745987}
-  _activeContianer: {fileID: 8229230}
+  _activeContainer: {fileID: 8229230}
   _rt: {fileID: 8229230}
   _expandCount: 10
 --- !u!1 &73016012
@@ -2274,7 +2274,7 @@ MonoBehaviour:
   _panelBattleMain: {fileID: 1827822309}
   _panelBattleEnd: {fileID: 1144700549}
   _txtDirection: {fileID: 952660165}
-  _hpBarManager: {fileID: 48342860}
+  _hpBarController: {fileID: 48342860}
   _uiJoystick: {fileID: 636395414}
   _uiDash: {fileID: 1868123617}
   _btnLobby: {fileID: 1616140842}

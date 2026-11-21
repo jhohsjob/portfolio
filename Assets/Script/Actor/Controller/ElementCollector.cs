@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-public class ElementController
+public class ElementCollector
 {
     private Dictionary<ElementType, int> _elements = new();
     private Dictionary<ElementType, int> _elementLevels = new();

@@ -4,14 +4,10 @@ using UnityEngine;
 public interface IBattleState
 {
     bool IsRunning();
-}
-
-public interface IBattleController
-{
     void SetStatus(BattleStatus status);
 }
 
-public class BattleController : IBattleState, IBattleController
+public class BattleState : IBattleState
 {
     private BattleStatus _status = BattleStatus.None;
 

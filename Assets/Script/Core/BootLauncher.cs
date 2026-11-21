@@ -20,7 +20,7 @@ public class BootException : Exception
     }
 }
 
-public class Launch : MonoBehaviour
+public class BootLauncher : MonoBehaviour
 {
     private sealed class SimpleProgress : IProgress<float>
     {
@@ -44,6 +44,7 @@ public class Launch : MonoBehaviour
     }
 
     private AppContext _app;
+    private GameSession _session;
     private GameContext _context;
     public ISceneService sceneService => _context.SceneService;
 
@@ -52,10 +53,11 @@ public class Launch : MonoBehaviour
 
     public void Begin(AppContext app)
     {
-        Debug.Log("Launch Begin");
+        Debug.Log("BootLauncher Begin");
 
         _app = app;
-        _context = Session.Begin(app);
+        _session = GameSession.Begin(app);
+        _context = _session.context;
 
         _steps = new[]
         {
@@ -67,7 +69,7 @@ public class Launch : MonoBehaviour
         };
     }
 
-    public async UniTask RunAsync(BootController bootController, CancellationToken ct)
+    public async UniTask RunAsync(BootProgress bootProgress, CancellationToken ct)
     {
         if (_isRunning == true)
         {
@@ -90,7 +92,7 @@ public class Launch : MonoBehaviour
                 float range = step.Weight / totalWeight;
                 float capturedStart = start;
 
-                var progress = new SimpleProgress(p => bootController.SetProgress(capturedStart + Mathf.Clamp01(p) * range));
+                var progress = new SimpleProgress(p => bootProgress.SetProgress(capturedStart + Mathf.Clamp01(p) * range));
 
                 try
                 {
@@ -102,7 +104,7 @@ public class Launch : MonoBehaviour
                 }
 
                 start += range;
-                bootController.SetProgress(start);
+                bootProgress.SetProgress(start);
             }
 
             token.ThrowIfCancellationRequested();

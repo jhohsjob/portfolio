@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 
 public class MockMercenaryHandler
 {
-    private readonly MockMercenaryService _mercenaryService;
-    private readonly MockUserService _userService;
+    private readonly MockMercenaryDomain _mercenaryService;
+    private readonly MockUserDomain _userService;
 
-    public MockMercenaryHandler(MockMercenaryService mercenary, MockUserService user)
+    public MockMercenaryHandler(MockMercenaryDomain mercenary, MockUserDomain user)
     {
         _mercenaryService = mercenary;
         _userService = user;

@@ -19,11 +19,11 @@ public class UIPanelBattleMain : UIPanel
 
     private void OnEnemyDieEnd(object sender, object data)
     {
-        if (sender is EnemyActorManager manager == false)
+        if (sender is EnemySpawner enemySpawner == false)
         {
             return;
         }
 
-        _txtKill.text = manager.dieCount.ToString();
+        _txtKill.text = enemySpawner.dieCount.ToString();
     }
 }

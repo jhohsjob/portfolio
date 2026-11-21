@@ -22,7 +22,7 @@ public class OffensiveStatDefinition
 [Serializable]
 public class DefensiveStatDefinition
 {
-    public GrowthStatDefinition maxHP;
+    public GrowthStatDefinition maxHp;
     public GrowthStatDefinition defense;
 }
 

@@ -5,7 +5,7 @@ using System.Threading;
 
 public class BattleFlow
 {
-    private readonly IBattleController _battleController;
+    private readonly IBattleState _battleState;
     private readonly StageRunner _stageRunner;
 
     private readonly Stage _stage;
@@ -15,9 +15,9 @@ public class BattleFlow
 
     private const float GAME_START_DELAY = 3f;
 
-    public BattleFlow(IBattleController battleController, StageRunner stageRunner, Stage stage)
+    public BattleFlow(IBattleState battleState, StageRunner stageRunner, Stage stage)
     {
-        _battleController = battleController;
+        _battleState = battleState;
         _stageRunner = stageRunner;
         _stage = stage;
     }
@@ -29,7 +29,7 @@ public class BattleFlow
 
     private async UniTaskVoid StartAsync(CancellationToken ct)
     {
-        _battleController.SetStatus(BattleStatus.Ready);
+        _battleState.SetStatus(BattleStatus.Ready);
 
         bool canceled = await UniTask.Delay(TimeSpan.FromSeconds(GAME_START_DELAY), cancellationToken: ct).SuppressCancellationThrow();
         if (canceled)
@@ -38,7 +38,7 @@ public class BattleFlow
         }
 
         _stageRunner.Run(_stage, HandleStageCleared);
-        _battleController.SetStatus(BattleStatus.Running);
+        _battleState.SetStatus(BattleStatus.Running);
     }
 
     public void Win()
@@ -60,7 +60,7 @@ public class BattleFlow
 
     private void End(BattleStatus status)
     {
-        _battleController.SetStatus(status);
+        _battleState.SetStatus(status);
 
         onBattleEnded?.Invoke(status);
     }

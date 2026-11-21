@@ -76,8 +76,8 @@ public class UIGachaResultPopupPresenter : IDisposable
         }
         else
         {
-            _popupService.ShowCommonPopup(LocalManager.GetCommonString("notice"),
-                                          LocalManager.GetErrorCodeString(resultData.result.ToString()));
+            _popupService.ShowCommonPopup(LocalizationHelper.GetCommonString("notice"),
+                                          LocalizationHelper.GetErrorCodeString(resultData.result.ToString()));
         }
 
         _view.OnGachaCallback();

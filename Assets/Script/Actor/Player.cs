@@ -15,12 +15,12 @@ public class Player : Actor<Mercenary>
 
     private Deps _deps;
 
-    private ElementController _element;
-    public ElementController element => _element;
+    private ElementCollector _element;
+    public ElementCollector element => _element;
 
-    private DashController _dash;
-    public DashController dash => _dash;
-    private SkillController _skill;
+    private DashAbility _dash;
+    public DashAbility dash => _dash;
+    private SkillSelector _skill;
 
     private IInputSource _inputSource;
     public IInputSource inputSource => _inputSource;
@@ -37,9 +37,9 @@ public class Player : Actor<Mercenary>
 
         team = Team.Player;
 
-        _element = new ElementController();
-        _dash = new DashController();
-        _skill = new SkillController();
+        _element = new ElementCollector();
+        _dash = new DashAbility();
+        _skill = new SkillSelector();
         _inputSource = new PlayerInputSource();
 
         var dashView = gameObject.AddComponent<ActorDashView>();
@@ -218,7 +218,7 @@ public class Player : Actor<Mercenary>
 
     private void HandleNatureLevelUp()
     {
-        _hp.OnElementLevelUp();
+        _hpState.OnElementLevelUp();
     }
 
     private void HandleFireLevelUp()

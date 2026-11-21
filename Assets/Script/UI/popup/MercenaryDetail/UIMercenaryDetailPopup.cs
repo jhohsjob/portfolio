@@ -126,7 +126,7 @@ public class UIMercenaryDetailPopup : UIPopup, IBeginDragHandler, IDragHandler, 
         _gradeIcons = _gradeRoot.GetComponentsInChildren<Image>(true);
         if (_gradeIcons.Length != GameConfig.MercenaryGradeLimit)
         {
-            Debug.LogWarning("grade miss match");
+            Debug.LogWarning("grade mismatch");
         }
     }
 
@@ -149,7 +149,7 @@ public class UIMercenaryDetailPopup : UIPopup, IBeginDragHandler, IDragHandler, 
 
         _longBtnLevelUp.onClick += HandleClickLevelUp;
         _longBtnLevelUp.onLongPressStart += HandleLongPressStart;
-        _longBtnLevelUp.onLongPressLevelUp += HandleLongPressLevelUp;
+        _longBtnLevelUp.onLongPressTick += HandleLongPressLevelUp;
         _longBtnLevelUp.onLongPressEnd += HandleLongPressEnd;
     }
 
@@ -163,7 +163,7 @@ public class UIMercenaryDetailPopup : UIPopup, IBeginDragHandler, IDragHandler, 
 
         _longBtnLevelUp.onClick -= HandleClickLevelUp;
         _longBtnLevelUp.onLongPressStart -= HandleLongPressStart;
-        _longBtnLevelUp.onLongPressLevelUp -= HandleLongPressLevelUp;
+        _longBtnLevelUp.onLongPressTick -= HandleLongPressLevelUp;
         _longBtnLevelUp.onLongPressEnd -= HandleLongPressEnd;
     }
 

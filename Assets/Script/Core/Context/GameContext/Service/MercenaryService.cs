@@ -88,7 +88,7 @@ public class MercenaryService
     {
         foreach (var mercenary in _dic.Values)
         {
-            if (pvos.TryGetValue(mercenary.id, out var pvo))
+            if (pvos.TryGetValue(mercenary.Id, out var pvo))
             {
                 ApplyPVO(pvo);
             }
@@ -163,7 +163,7 @@ public class MercenaryService
         return _list[index];
     }
 
-    public bool Has(int id)
+    public bool IsOwned(int id)
     {
         if (_dic.TryGetValue(id, out var mercenary))
         {

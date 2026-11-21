@@ -167,12 +167,12 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
             return;
         }
 
-        if (_currentView == null || _currentViewId != _currentMercenary.id)
+        if (_currentView == null || _currentViewId != _currentMercenary.Id)
         {
             ReleaseCurrentView();
 
-            _currentView = GetPool(_currentMercenary.id, _currentMercenary.original).Get();
-            _currentViewId = _currentMercenary.id;
+            _currentView = GetPool(_currentMercenary.Id, _currentMercenary.original).Get();
+            _currentViewId = _currentMercenary.Id;
         }
 
         _view.ShowMercenary(_currentMercenary, _currentView, BuildViewState());
@@ -223,7 +223,7 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
 
     private void ShowError(string resultName)
     {
-        _popupService.ShowCommonPopup(LocalManager.GetCommonString("notice"), LocalManager.GetErrorCodeString(resultName));
+        _popupService.ShowCommonPopup(LocalizationHelper.GetCommonString("notice"), LocalizationHelper.GetErrorCodeString(resultName));
     }
 
     private void OnClickLevelUp()
@@ -240,7 +240,7 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
 
         try
         {
-            var result = await _mercenaryService.LevelUp(_currentMercenary.id, targetLevel);
+            var result = await _mercenaryService.LevelUp(_currentMercenary.Id, targetLevel);
             if (_disposed == true)
             {
                 return;
@@ -272,7 +272,7 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
 
         try
         {
-            var result = await _mercenaryService.LevelUp(_currentMercenary.id, GetAvailableMaxLevel());
+            var result = await _mercenaryService.LevelUp(_currentMercenary.Id, GetAvailableMaxLevel());
             if (_disposed == true)
             {
                 return;
@@ -304,7 +304,7 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
 
         try
         {
-            var result = await _mercenaryService.LevelReset(_currentMercenary.id);
+            var result = await _mercenaryService.LevelReset(_currentMercenary.Id);
             if (_disposed == true)
             {
                 return;
@@ -338,7 +338,7 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
 
         try
         {
-            var result = await _mercenaryService.GradeUp(_currentMercenary.id);
+            var result = await _mercenaryService.GradeUp(_currentMercenary.Id);
             if (_disposed == true)
             {
                 return;

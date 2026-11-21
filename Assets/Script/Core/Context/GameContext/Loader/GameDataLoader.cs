@@ -17,9 +17,9 @@ public class GameDataLoader
         public StageService stageService;
         public GachaService gachaService;
 
-        public MonsterManager monsterManager;
-        public ProjectileManager projectileManager;
-        public DropItemManager dropItemManager;
+        public MonsterCatalog monsterCatalog;
+        public ProjectileCatalog projectileCatalog;
+        public DropItemCatalog dropItemCatalog;
     }
 
 
@@ -56,11 +56,11 @@ public class GameDataLoader
                 _deps.mercenaryService.SetupDefinition(((MercenaryDefinitionTable)asset).table);
             }),
 
-            LoadTableAsync("MonsterDefinitionTable", asset => _deps.monsterManager.Setup(((MonsterDefinitionTable)asset).table)),
+            LoadTableAsync("MonsterDefinitionTable", asset => _deps.monsterCatalog.Setup(((MonsterDefinitionTable)asset).table)),
 
-            LoadTableAsync("ProjectileDefinitionTable", asset => _deps.projectileManager.Setup(((ProjectileDefinitionTable)asset).table)),
+            LoadTableAsync("ProjectileDefinitionTable", asset => _deps.projectileCatalog.Setup(((ProjectileDefinitionTable)asset).table)),
 
-            LoadTableAsync("DropItemDefinitionTable", asset => _deps.dropItemManager.Setup(((DropItemDefinitionTable)asset).table)),
+            LoadTableAsync("DropItemDefinitionTable", asset => _deps.dropItemCatalog.Setup(((DropItemDefinitionTable)asset).table)),
 
             LoadTableAsync("StageDefinitionTable", asset => _deps.stageService.Init(((StageDefinitionTable)asset).table)),
 

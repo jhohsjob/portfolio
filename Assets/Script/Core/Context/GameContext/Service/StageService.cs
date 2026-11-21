@@ -88,7 +88,7 @@ public class StageService
         return index;
     }
 
-    public StageState IsStageStateByIndex(int index, int currentStageId)
+    public StageState GetStageState(int index, int currentStageId)
     {
         int currentIndex = GetStageIndexById(currentStageId);
         int reverseIndex = (count - 1) - currentIndex;

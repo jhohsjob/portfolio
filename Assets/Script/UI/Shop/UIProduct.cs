@@ -71,7 +71,7 @@ public class UIProduct : MonoBehaviour
             return;
         }
 
-        string productName = LocalManager.GetShopString(_definition.GetNameKey());
+        string productName = LocalizationHelper.GetShopString(_definition.GetNameKey());
         string price = string.Empty;
 
         if (_definition.purchaseType == PurchaseType.Free)
@@ -98,7 +98,7 @@ public class UIProduct : MonoBehaviour
             case ShopLimitType.Daily:
             case ShopLimitType.Lifetime:
                 _desc.text = $"{productName}\n{price}\n{_definition.limitType}" +
-                    $" {_purchaseService.GetProductPVOById(_definition.id).purchaseCount}/{_definition.purchaseLimit}";
+                    $" {_purchaseService.GetProductPVOById(_definition.Id).purchaseCount}/{_definition.purchaseLimit}";
                 break;
         }
     }

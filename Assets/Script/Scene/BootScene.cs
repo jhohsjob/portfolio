@@ -7,13 +7,13 @@ using UnityEngine;
 public class BootScene : MonoBehaviour
 {
     [SerializeField]
-    private Launch _launch;
+    private BootLauncher _launcher;
     [SerializeField]
     private GlobalRoot _global;
     [SerializeField]
     private UIBoot _uiBoot;
 
-    private BootController _bootController = new();
+    private BootProgress _bootProgress = new();
     private BootPresenter _bootPresenter;
 
     private CancellationTokenSource _cts;
@@ -22,22 +22,22 @@ public class BootScene : MonoBehaviour
     {
         Debug.Log("BootScene Awake");
 
-        var app = App.EnsureCreated(_global);
-        _launch.Begin(app);
+        var app = AppRoot.EnsureCreated(_global);
+        _launcher.Begin(app);
     }
 
     private async void Start()
     {
         Debug.Log("BootScene Start");
 
-        _bootPresenter = new BootPresenter(_uiBoot, _bootController, _launch.sceneService);
+        _bootPresenter = new BootPresenter(_uiBoot, _bootProgress, _launcher.sceneService);
         
         await BootAsync();
     }
 
     private void Update()
     {
-        _bootController?.Update(Time.deltaTime);
+        _bootProgress?.Update(Time.deltaTime);
     }
 
     private void OnDestroy()
@@ -53,14 +53,14 @@ public class BootScene : MonoBehaviour
 
         try
         {
-            await _launch.RunAsync(_bootController, _cts.Token);
-            _bootController.Complete();
+            await _launcher.RunAsync(_bootProgress, _cts.Token);
+            _bootProgress.Complete();
         }
         catch (OperationCanceledException) { }
         catch (Exception e)
         {
             Debug.LogException(e);
-            _bootController.Fail(e);
+            _bootProgress.Fail(e);
         }
     }
 }

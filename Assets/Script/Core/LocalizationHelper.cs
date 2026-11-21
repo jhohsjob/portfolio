@@ -14,7 +14,7 @@ public enum LocalizationTable
     ErrorCode
 }
 
-public class LocalManager
+public class LocalizationHelper
 {
 
     public static string GetLocalizedString(LocalizationTable table, string key, object[] args = null)

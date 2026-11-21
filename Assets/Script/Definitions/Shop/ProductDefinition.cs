@@ -12,7 +12,7 @@ public class ProductDefinition : DefinitionBase
     public int price;
     public List<RewardBase> rewards;
 
-    private string LocalKey(string prefix) => $"{prefix}_{id}";
+    private string LocalKey(string prefix) => $"{prefix}_{Id}";
 
     public string GetNameKey()
     {

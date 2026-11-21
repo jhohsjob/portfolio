@@ -65,7 +65,7 @@ public class UIShopItem : MonoBehaviour
     {
         if (_txtTitle != null && _definition != null)
         {
-            _txtTitle.text = LocalManager.GetShopString(_definition.GetTitleKey());
+            _txtTitle.text = LocalizationHelper.GetShopString(_definition.GetTitleKey());
         }
     }
 

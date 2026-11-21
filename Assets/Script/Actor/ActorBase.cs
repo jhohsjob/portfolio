@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class ActorBase : MonoBehaviour
 {
-    public int ID { get; protected set; }
+    public int Id { get; protected set; }
     public int roleId { get; protected set; }
     public string roleName { get; protected set; }
     public Team team { get; protected set; }
@@ -19,7 +19,7 @@ public abstract class ActorBase : MonoBehaviour
 
     protected ActorStateModel _state;
     public ActorStateModel state => _state;
-    protected HPController _hp;
+    protected HpState _hpState;
     protected ActorView _view;
 
     public event Action<ActorBase> onDied;
@@ -28,13 +28,13 @@ public abstract class ActorBase : MonoBehaviour
     protected virtual void Awake()
     {
         _state = new ActorStateModel();
-        _hp = new HPController();
+        _hpState = new HpState();
         _view = gameObject.AddComponent<ActorView>();
     }
 
     public virtual void Init(RoleBase role)
     {
-        roleId = role.id;
+        roleId = role.Id;
         roleName = role.name;
 
         stat = new ActorStat(role.stat);

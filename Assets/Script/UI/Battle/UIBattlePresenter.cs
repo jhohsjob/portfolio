@@ -9,9 +9,9 @@ public class UIBattlePresenter : IDisposable
         public IAssetService assetService;
         public ISceneService sceneLoader;
         public IPopupService popupService;
-        public IBattleController battleController;
+        public IBattleState battleState;
         public BattleRewardRuntime battleReward;
-        public DashController dashController;
+        public DashAbility dash;
         public Action onDashAction;
         public Action<Vector2> onJoystickAction;
         public Camera mainCamera;
@@ -23,25 +23,25 @@ public class UIBattlePresenter : IDisposable
 
     private UIBattleTopPresenter _topPresenter;
     private UIDashPresenter _dashPresenter;
-    private HPBarManager _hpBarManager;
+    private HpBarController _hpBarController;
 
     public UIBattlePresenter(UIBattle view, Deps deps)
     {
         _view = view;
         _deps = deps;
 
-        _topPresenter = new UIBattleTopPresenter(_view.TopView, new UIBattleTopPresenter.Deps
+        _topPresenter = new UIBattleTopPresenter(_view.topView, new UIBattleTopPresenter.Deps
         {
             popupService = deps.popupService,
-            sceneLoader = deps.sceneLoader,
-            battleController = deps.battleController,
+            sceneService = deps.sceneLoader,
+            battleState = deps.battleState,
             battleReward = deps.battleReward
         });
 
-        _dashPresenter = new UIDashPresenter(_view.DashView, deps.dashController, deps.onDashAction);
+        _dashPresenter = new UIDashPresenter(_view.dashView, deps.dash, deps.onDashAction);
 
-        _hpBarManager = view.hpBarManager;
-        _hpBarManager.InitDependencies(deps.mainCamera, deps.assetService);
+        _hpBarController = view.hpBarController;
+        _hpBarController.InitDependencies(deps.mainCamera, deps.assetService);
 
         Bind();
 
@@ -59,7 +59,7 @@ public class UIBattlePresenter : IDisposable
     private void Bind()
     {
         _view.onClickLobby += OnClickLobby;
-        _view.JoystickView.onJoystickMove += _deps.onJoystickAction;
+        _view.joystickView.onJoystickMove += _deps.onJoystickAction;
 
         EventHelper.AddEventListener(EventName.BattleStatus, OnBattleStatus);
     }
@@ -67,7 +67,7 @@ public class UIBattlePresenter : IDisposable
     private void Unbind()
     {
         _view.onClickLobby -= OnClickLobby;
-        _view.JoystickView.onJoystickMove -= _deps.onJoystickAction;
+        _view.joystickView.onJoystickMove -= _deps.onJoystickAction;
 
         EventHelper.RemoveEventListener(EventName.BattleStatus, OnBattleStatus);
     }
@@ -76,7 +76,7 @@ public class UIBattlePresenter : IDisposable
     {
         _topPresenter.Initialize();
         _dashPresenter.Initialize();
-        _hpBarManager.Initialize();
+        _hpBarController.Initialize();
     }
 
     private void OnClickLobby()
