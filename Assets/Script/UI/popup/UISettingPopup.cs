@@ -101,6 +101,10 @@ public class UISettingPopup : UIPopup
         {
             LocalizationSettings.SelectedLocale = locale;
         }
+        else
+        {
+            Debug.LogWarning($"AvailableLocales에서 '{code}' 로케일을 찾을 수 없습니다.");
+        }
     }
 
     #endregion

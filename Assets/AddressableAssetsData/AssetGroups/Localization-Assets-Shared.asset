@@ -21,7 +21,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2fd1d6a8b83e0bd468ede03ea1c4536e
-    m_Address: Assets/Localization/Text/MercenaryNameTable Shared Data.asset
+    m_Address: Assets/Localization/Text/MercenaryTable Shared Data.asset
     m_ReadOnly: 1
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -51,7 +51,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ca5e5c3b4149de24f8611b1578614f91
-    m_Address: Assets/Localization/Text/Stat Shared Data.asset
+    m_Address: Assets/Localization/Text/StatTable Shared Data.asset
     m_ReadOnly: 1
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -138,6 +138,6 @@ public static class StatTypeExtensions
 {
     public static string ToName(this StatType type)
     {
-        return LocalizationSettings.StringDatabase.GetLocalizedString("StatTable", type.ToString());
+        return LocalizationHelper.GetStatString(type.ToString());
     }
 }

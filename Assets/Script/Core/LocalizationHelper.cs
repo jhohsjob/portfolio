@@ -11,6 +11,7 @@ public enum LocalizationTable
     ShopTable,
     DropItemTable,
     SkillTable,
+    StatTable,
     ErrorCode
 }
 
@@ -28,6 +29,7 @@ public class LocalizationHelper
             LocalizationTable.ShopTable => "ShopTable",
             LocalizationTable.DropItemTable => "DropItemTable",
             LocalizationTable.SkillTable => "SkillTable",
+            LocalizationTable.StatTable => "StatTable",
             LocalizationTable.ErrorCode => "ErrorCodeTable",
             _ => throw new System.ArgumentOutOfRangeException(nameof(table), table, null)
         };
@@ -68,6 +70,11 @@ public class LocalizationHelper
     public static string GetSkillString(string key, object[] args = null)
     {
         return GetLocalizedString(LocalizationTable.SkillTable, key, args);
+    }
+
+    public static string GetStatString(string key, object[] args = null)
+    {
+        return GetLocalizedString(LocalizationTable.StatTable, key, args);
     }
 
     public static string GetErrorCodeString(string key)

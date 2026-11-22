@@ -37,6 +37,11 @@ public class UIMercIcon : MonoBehaviour
 
     private void UpdateUI()
     {
+        if (_mercenary == null)
+        {
+            return;
+        }
+
         _txtName.text = _mercenary.name;
 
         _txtLevel.text = _mercenary.isOwned ? $"L.{_mercenary.level}" : string.Empty;

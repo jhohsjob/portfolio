@@ -28,7 +28,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 129784152064
-    m_Key: MaxHP
+    m_Key: MaxHp
     m_Metadata:
       m_Items: []
   - m_Id: 144472604672
@@ -47,7 +47,6 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 863673650226921676
-      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables,
-        asm: Unity.Localization}
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
       data:
         m_CustomEpoch: 1788017185164
