@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -36,7 +36,7 @@ public class IDGenerator
         var nextSeq = seqNow;
         if (limitValue <= nextSeq)
         {
-            Debug.Log(string.Format("IDGenerator.Next. ÇÑ°èÄ¡¿¡ µµ´Þ. nextSeq : {0}, limit : {1}", nextSeq, limitValue));
+            Debug.Log(string.Format("IDGenerator.Next. í•œê³„ì¹˜ì— ë„ë‹¬. nextSeq : {0}, limit : {1}", nextSeq, limitValue));
         }
 
         return nextSeq;
