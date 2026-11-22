@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public interface ISingleton
 {
@@ -86,7 +86,7 @@ public abstract class MonoSingleton<T> : MonoBehaviour, ISingleton where T : Mon
     {
         Debug.Log("Create Singleton: " + typeof(T).Name);
 
-        // ¿¡µğÅÍ¿¡¼­ ¿©·¯°³¸¦ ¹èÄ¡ÇÑ °æ¿ì, ¿¡·¯ ·Î±×°¡ Ç¥½ÃµÇ·Ï ÇÑ´Ù.
+        // ì—ë””í„°ì—ì„œ ì—¬ëŸ¬ê°œë¥¼ ë°°ì¹˜í•œ ê²½ìš°, ì—ëŸ¬ ë¡œê·¸ê°€ í‘œì‹œë˜ë¡ í•œë‹¤.
         T[] objs = FindObjectsByType<T>(FindObjectsSortMode.None);
         Debug.AssertFormat(objs.Length == 1, "Singleton {0} instance count: {1}", typeof(T).Name, objs.Length);
 

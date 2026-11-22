@@ -1,5 +1,4 @@
-using UnityEngine;
-using UnityEngine.InputSystem;
+ï»¿using UnityEngine;
 
 
 public class PlayerInputSource : IInputSource
@@ -12,7 +11,7 @@ public class PlayerInputSource : IInputSource
 
     public void UpdateInput()
     {
-        // polling ¹æ½ÄÀÌ¸é ¿©±â¼­ ÀÔ·Â ÀĞ±â
+        // polling ë°©ì‹ì´ë©´ ì—¬ê¸°ì„œ ì…ë ¥ ì½ê¸°
     }
 
     public void SetMoveDirection(Vector2 input)

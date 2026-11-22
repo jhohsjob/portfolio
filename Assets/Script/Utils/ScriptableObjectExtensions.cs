@@ -1,20 +1,20 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public static class ScriptableObjectExtensions
 {
     /// <summary>
-    /// ScriptableObject¸¦ ±íÀº º¹»çÇÕ´Ï´Ù.
-    /// ¿øº» µ¥ÀÌÅÍÀÇ ¸ğµç ÇÊµå¸¦ º¹»çÇÑ »õ ÀÎ½ºÅÏ½º¸¦ ¹İÈ¯ÇÕ´Ï´Ù.
+    /// ScriptableObjectë¥¼ ê¹Šì€ ë³µì‚¬í•©ë‹ˆë‹¤.
+    /// ì›ë³¸ ë°ì´í„°ì˜ ëª¨ë“  í•„ë“œë¥¼ ë³µì‚¬í•œ ìƒˆ ì¸ìŠ¤í„´ìŠ¤ë¥¼ ë°˜í™˜í•©ë‹ˆë‹¤.
     /// </summary>
     public static T DeepCopy<T>(this T original) where T : ScriptableObject
     {
         if (original == null)
             return null;
 
-        // »õ ScriptableObject ÀÎ½ºÅÏ½º »ı¼º
+        // ìƒˆ ScriptableObject ì¸ìŠ¤í„´ìŠ¤ ìƒì„±
         var copy = ScriptableObject.CreateInstance(original.GetType());
 
-        // UnityÀÇ JsonUtility¸¦ ÀÌ¿ëÇØ ÀüÃ¼ ÇÊµå º¹»ç
+        // Unityì˜ JsonUtilityë¥¼ ì´ìš©í•´ ì „ì²´ í•„ë“œ ë³µì‚¬
         JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(original), copy);
 
         return copy as T;
