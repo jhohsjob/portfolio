@@ -1,4 +1,4 @@
-Shader "Custom/Dash"
+ï»¿Shader "Custom/Dash"
 {
     Properties
     {
@@ -67,7 +67,7 @@ Shader "Custom/Dash"
                 float blurStep = _BlurStrength * 0.05;
 
                 half4 sum = 0;
-                // »ùÇÃ¸µ ¿©·¯ ¹ø ÇØ¼­ ¹øÁü
+                // ìƒ˜í”Œë§ ì—¬ëŸ¬ ë²ˆ í•´ì„œ ë²ˆì§
                 for (int j = -2; j <= 2; j++)
                 {
                     sum += SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv + dir * j * blurStep);

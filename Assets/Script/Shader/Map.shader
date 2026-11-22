@@ -1,4 +1,4 @@
-Shader "Custom/Map"
+ï»¿Shader "Custom/Map"
 {
     Properties
     {
@@ -35,8 +35,8 @@ Shader "Custom/Map"
             Varyings vert(Attributes v)
             {
                 Varyings o;
-                o.positionHCS = TransformObjectToHClip(v.positionOS);  // Object ¡æ Clip
-                o.worldPos = TransformObjectToWorld(v.positionOS);      // Object ¡æ World
+                o.positionHCS = TransformObjectToHClip(v.positionOS);  // Object â†’ Clip
+                o.worldPos = TransformObjectToWorld(v.positionOS);     // Object â†’ World
                 return o;
             }
 

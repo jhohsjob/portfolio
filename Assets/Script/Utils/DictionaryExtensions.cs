@@ -1,18 +1,18 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Linq;
 
 public static class DictionaryExtensions
 {
     /// <summary>
-    /// Dictionary¸¦ º¹»çÇÕ´Ï´Ù.
-    /// °ªÀÌ ÂüÁ¶ Å¸ÀÔÀÏ °æ¿ì, cloneValueFuncÀ» ÅëÇØ ±íÀº º¹»ç °¡´É.
+    /// Dictionaryë¥¼ ë³µì‚¬í•©ë‹ˆë‹¤.
+    /// ê°’ì´ ì°¸ì¡° íƒ€ì…ì¼ ê²½ìš°, cloneValueFuncì„ í†µí•´ ê¹Šì€ ë³µì‚¬ ê°€ëŠ¥.
     /// </summary>
-    /// <typeparam name="TKey">Dictionary Key Å¸ÀÔ</typeparam>
-    /// <typeparam name="TValue">Dictionary Value Å¸ÀÔ</typeparam>
-    /// <param name="source">¿øº» Dictionary</param>
-    /// <param name="cloneValueFunc">°ªÀ» º¹Á¦ÇÏ´Â ÇÔ¼ö (nullÀÌ¸é ¾èÀº º¹»ç)</param>
-    /// <returns>»õ·Î¿î Dictionary</returns>
+    /// <typeparam name="TKey">Dictionary Key íƒ€ì…</typeparam>
+    /// <typeparam name="TValue">Dictionary Value íƒ€ì…</typeparam>
+    /// <param name="source">ì›ë³¸ Dictionary</param>
+    /// <param name="cloneValueFunc">ê°’ì„ ë³µì œí•˜ëŠ” í•¨ìˆ˜ (nullì´ë©´ ì–•ì€ ë³µì‚¬)</param>
+    /// <returns>ìƒˆë¡œìš´ Dictionary</returns>
     public static Dictionary<TKey, TValue> DeepCopy<TKey, TValue>(this Dictionary<TKey, TValue> source, Func<TValue, TValue> cloneValueFunc = null)
     {
         if (source == null)
@@ -20,12 +20,12 @@ public static class DictionaryExtensions
 
         if (cloneValueFunc == null)
         {
-            // ¾èÀº º¹»ç
+            // ì–•ì€ ë³µì‚¬
             return source.ToDictionary(entry => entry.Key, entry => entry.Value);
         }
         else
         {
-            // ±íÀº º¹»ç
+            // ê¹Šì€ ë³µì‚¬
             return source.ToDictionary(entry => entry.Key, entry => cloneValueFunc(entry.Value));
         }
     }
