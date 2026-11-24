@@ -52,6 +52,7 @@ public class MockMercenaryHandler
 
                 response.mercenary = _mercenaryService.GetMercenaryPVOById(request.mercenaryId);
                 response.user = _userService.GetUser();
+                response.result = NetworkResult.SUCCESS;
                 break;
 
             default:

@@ -40,16 +40,15 @@ public class GameContext : IDisposable
     public ICurrencyService CurrencyService { get; }
     public RoleFactory RoleFactory { get; }
     public MercenaryService MercenaryService { get; }
+    public MonsterCatalog MonsterCatalog { get; }
+    public ProjectileCatalog ProjectileCatalog { get; }
+    public DropItemCatalog DropItemCatalog { get; }
     public PurchaseService PurchaseService { get; }
     public GachaService GachaService { get; }
     public StageService StageService { get; }
     public ISceneService SceneService { get; }
     public IPopupService PopupService { get; }
     public GameDataLoader GameDataLoader { get; }
-
-    public MonsterCatalog MonsterCatalog { get; }
-    public ProjectileCatalog ProjectileCatalog { get; }
-    public DropItemCatalog DropItemCatalog { get; }
 
     private bool _disposed;
 
@@ -72,12 +71,6 @@ public class GameContext : IDisposable
 
         RoleFactory = new RoleFactory();
 
-
-        MonsterCatalog = new MonsterCatalog(RoleFactory);
-        ProjectileCatalog = new ProjectileCatalog(RoleFactory);
-        DropItemCatalog = new DropItemCatalog(RoleFactory);
-
-
         MercenaryService = new MercenaryService(new MercenaryServiceDependencies
         {
             factory = RoleFactory,
@@ -85,6 +78,12 @@ public class GameContext : IDisposable
             user = User,
             currencyService = CurrencyService
         });
+
+        MonsterCatalog = new MonsterCatalog(RoleFactory);
+        
+        ProjectileCatalog = new ProjectileCatalog(RoleFactory);
+
+        DropItemCatalog = new DropItemCatalog(RoleFactory);
 
         PurchaseService = new PurchaseService(new PurchaseServiceDependencies
         {
@@ -155,7 +154,10 @@ public class GameContext : IDisposable
 
         SceneService?.Dispose();
         PopupService?.Dispose();
+        GachaService?.Dispose();
         GameServer?.Dispose();
+        MercenaryService?.Dispose();
+        CurrencyService?.Dispose();
         Preload.Dispose();
     }
 }

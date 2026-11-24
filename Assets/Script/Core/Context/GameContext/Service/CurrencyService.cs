@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-public interface ICurrencyService
+public interface ICurrencyService : IDisposable
 {
     event Action<CurrencyType, int> onChanged;
 
@@ -24,6 +24,12 @@ public class CurrencyService : ICurrencyService
 
         _user.onGoldChanged += OnGoldChanged;
         _user.onGemChanged += OnGemChanged;
+    }
+
+    public void Dispose()
+    {
+        _user.onGoldChanged -= OnGoldChanged;
+        _user.onGemChanged -= OnGemChanged;
     }
 
     public int Get(CurrencyType type)

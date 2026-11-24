@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -11,7 +12,7 @@ public class MercenaryServiceDependencies
     public ICurrencyService currencyService;
 }
 
-public class MercenaryService
+public class MercenaryService : IDisposable
 {
     private RoleFactory _factory;
     private IGameServer _gameServer;
@@ -58,10 +59,15 @@ public class MercenaryService
     {
         _mercenaryDefinitions = new Dictionary<int, MercenaryDefinition>(mercenaryDatas);
 
-        foreach (var data in mercenaryDatas)
+        _dic.Clear();
+        _list.Clear();
+
+        foreach (var pair in mercenaryDatas)
         {
-            var mercenary = (Mercenary)_factory.Create(data.Value);
-            _dic.Add(data.Key, mercenary);
+            if (_dic.TryAdd(pair.Key, (Mercenary)_factory.Create(pair.Value)) == false)
+            {
+                throw new InvalidOperationException($"Duplicate Mercenary ID detected: {pair.Key}");
+            }
         }
         _list.AddRange(_dic.Values);
     }

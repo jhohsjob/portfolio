@@ -33,6 +33,9 @@ public class PurchaseService
 
     public void SetupShopItems(IReadOnlyList<ShopItemDefinition> shopItemDefinitions)
     {
+        _shopItemList.Clear();
+        _products.Clear();
+
         _shopItemList.AddRange(shopItemDefinitions);
 
         foreach (var shopItem in shopItemDefinitions)
@@ -46,6 +49,7 @@ public class PurchaseService
 
     public void InitializeServer(List<ProductPVO> pvos)
     {
+        _pvos.Clear();
         _pvos.AddRange(pvos);
     }
 

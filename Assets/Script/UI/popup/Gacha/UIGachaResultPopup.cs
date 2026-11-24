@@ -127,7 +127,6 @@ public class UIGachaResultPopup : UIPopup
 
     public void SetupScroll(GameObject prefab)
     {
-        var factory = new ScrollItemFactory(prefab);
         _scroll.Initialize(
             provider: new GachaResultScrollProvider(this, _mercenaryService),
             factory: new ScrollItemFactory(prefab)

@@ -18,7 +18,7 @@ public class GachaResultData
     public IReadOnlyList<RewardBase> rewards;
 }
 
-public class GachaService
+public class GachaService : IDisposable
 {
     private User _user;
     private IGameServer _gameServer;
@@ -74,6 +74,7 @@ public class GachaService
 
     public void InitializeServer(List<GachaPVO> pvos)
     {
+        _pvos.Clear();
         _pvos.AddRange(pvos);
     }
 
