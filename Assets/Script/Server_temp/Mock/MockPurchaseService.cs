@@ -45,7 +45,7 @@ public class MockPurchaseService
         return _productStorage.GetById(id);
     }
 
-    public async Task<bool> AddPurchaseCount(int id, int count)
+    public async Task<bool> AddPurchaseCount(int id)
     {
         var pvo = GetProductPVOById(id);
         if (pvo == null)

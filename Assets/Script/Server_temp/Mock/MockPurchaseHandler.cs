@@ -75,7 +75,7 @@ public class MockPurchaseHandler
             await GrantReward(reward);
         }
 
-        await _purchaseService.AddPurchaseCount(product.Id, 1);
+        await _purchaseService.AddPurchaseCount(product.Id);
 
         response.product = _purchaseService.GetProductPVOById(product.Id);
         response.user = _userService.GetUser();

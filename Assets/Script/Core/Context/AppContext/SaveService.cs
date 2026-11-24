@@ -15,7 +15,7 @@ public class SaveService
         _storage = storage;
     }
 
-    public async void RequestSave()
+    public void RequestSave()
     {
         _dirty = true;
 

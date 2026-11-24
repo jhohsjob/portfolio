@@ -72,7 +72,7 @@ public class MockUserDomain
     // default function
     public UserPVO GetUser()
     {
-        return _userStorage.pvo;
+        return new UserPVO(_userStorage.pvo);
     }
 
 #if DEBUG_MODE

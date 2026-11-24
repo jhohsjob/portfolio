@@ -162,6 +162,8 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
 
     private void Refresh()
     {
+        Debug.Log("Refresh");
+
         if (_disposed || _currentMercenary == null)
         {
             return;

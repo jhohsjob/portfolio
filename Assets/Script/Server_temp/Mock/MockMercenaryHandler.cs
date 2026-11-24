@@ -102,6 +102,7 @@ public class MockMercenaryHandler
 
         response.mercenary = pvo;
         response.user = _userService.GetUser();
+        response.result = NetworkResult.SUCCESS;
 
         return response;
     }
@@ -136,6 +137,7 @@ public class MockMercenaryHandler
 
         response.mercenary = pvo;
         response.user = _userService.GetUser();
+        response.result = NetworkResult.SUCCESS;
 
         return response;
     }
@@ -169,6 +171,8 @@ public class MockMercenaryHandler
         }
         await _mercenaryService.GradeUpAsync(request.mercenaryId, request.targetGrade);
         response.mercenary = pvo;
+        response.result = NetworkResult.SUCCESS;
+
         return response;
     }
 }

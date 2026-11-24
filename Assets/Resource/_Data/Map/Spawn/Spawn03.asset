@@ -53,7 +53,7 @@ MonoBehaviour:
     - roleId: 402002
       spawnRate: 10
   - _dropItemRateSum: 100
-    roleId: 201003
+    roleId: 201004
     spawnRate: 25
     dropItemEntries:
     - roleId: 401001

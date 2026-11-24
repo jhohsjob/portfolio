@@ -104,6 +104,7 @@ public class ProductStorage
             {
                 id = product.Id,
                 purchaseCount = 0,
+                totalPurchaseCount = 0,
                 lastPurchaseTime = 0,
                 lastResetTime = 0
             });

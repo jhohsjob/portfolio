@@ -46,20 +46,19 @@ public class IDGenerator
 public class ActorSpawner : MonoBehaviour, IActorSpawner
 {
     private Transform _actorContainer;
-    private ActorFactory _actorFactory = null;
+    private ActorFactory _actorFactory = new();
 
     /// <summary> key : role id </summary>
-    private Dictionary<int, Queue<ActorBase>> _pool = new Dictionary<int, Queue<ActorBase>>();
+    private Dictionary<int, Queue<ActorBase>> _pool = new();
     /// <summary> key : role id </summary>
-    private Dictionary<int, GameObject> _container = new Dictionary<int, GameObject>();
+    private Dictionary<int, GameObject> _container = new();
     /// <summary> key : role id </summary>
-    private Dictionary<int, IDGenerator> _idGenSet = new Dictionary<int, IDGenerator>();
+    private Dictionary<int, IDGenerator> _idGenSet = new();
 
     private int _orderInLayer;
 
     private void Awake()
     {
-        _actorFactory = new ActorFactory();
     }
 
     public void Init(Transform actorContainer)

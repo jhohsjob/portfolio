@@ -36,4 +36,11 @@ public class MockGachaDomain
     {
         return _gachaStorage.GetById(id);
     }
+
+    public async Task GachaSuccessAsync(int id, int count)
+    {
+        var gacha = _gachaStorage.GetById(id);
+        gacha.gachaCount += count;
+        await _gachaStorage.UpdateAsync(gacha);
+    }
 }

@@ -142,7 +142,9 @@ public class MockGachaHandler
             }
         }
 
-        response.gachaPVO = pvo;
+        await _gachaDomain.GachaSuccessAsync(gacha.Id, request.drawCount);
+
+        response.gachaPVO = _gachaDomain.GetGachaPVOById(gacha.Id);
         response.userPVO = _userDomain.GetUser();
 
         response.mercenaryPVOs = new();
