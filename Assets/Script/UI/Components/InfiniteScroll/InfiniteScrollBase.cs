@@ -73,15 +73,12 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
             return;
         }
 
-        _scrollRect.onValueChanged.AddListener(_ =>
-        {
-            UpdateItems();
-        });
+        SubscribeScroll();
     }
 
     private void OnDisable()
     {
-        _scrollRect.onValueChanged.RemoveAllListeners();
+        _scrollRect.onValueChanged.RemoveListener(HandleScrollValueChanged);
     }
 
     protected virtual void Update()
@@ -160,6 +157,17 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
         _isDragging = false;
     }
 
+    private void SubscribeScroll()
+    {
+        _scrollRect.onValueChanged.RemoveListener(HandleScrollValueChanged);
+        _scrollRect.onValueChanged.AddListener(HandleScrollValueChanged);
+    }
+
+    private void HandleScrollValueChanged(Vector2 value)
+    {
+        UpdateItems();
+    }
+
     public void Initialize(IScrollDataProvider provider, IScrollItemFactory factory, int initPos = 0)
     {
         _initializeEnd = false;
@@ -182,11 +190,7 @@ public abstract class InfiniteScrollBase : MonoBehaviour, IBeginDragHandler, IEn
         UpdateContentSize();
         UpdateItems();
 
-        _scrollRect.onValueChanged.RemoveAllListeners();
-        _scrollRect.onValueChanged.AddListener(_ =>
-        {
-            UpdateItems();
-        });
+        SubscribeScroll();
     }
 
     protected void BuildItem()

@@ -4,16 +4,17 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 
-public class MercenaryServiceDependencies
-{
-    public RoleFactory factory;
-    public IGameServer gameServer;
-    public User user;
-    public ICurrencyService currencyService;
-}
-
 public class MercenaryService : IDisposable
 {
+    public class Deps
+    {
+        public RoleFactory factory;
+        public IGameServer gameServer;
+        public User user;
+        public ICurrencyService currencyService;
+    }
+
+
     private RoleFactory _factory;
     private IGameServer _gameServer;
     private User _user;
@@ -32,12 +33,12 @@ public class MercenaryService : IDisposable
     private List<Mercenary> _list = new();
     public IReadOnlyList<Mercenary> list => _list;
 
-    public MercenaryService(MercenaryServiceDependencies dependencies)
+    public MercenaryService(Deps deps)
     {
-        _factory = dependencies.factory;
-        _gameServer = dependencies.gameServer;
-        _user = dependencies.user;
-        _currencyService = dependencies.currencyService;
+        _factory = deps.factory;
+        _gameServer = deps.gameServer;
+        _user = deps.user;
+        _currencyService = deps.currencyService;
 
         Bind();
     }

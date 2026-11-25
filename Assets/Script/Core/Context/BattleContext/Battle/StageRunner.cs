@@ -25,6 +25,7 @@ public class StageRunner
         }
 
         _currentStage.onStageCleared -= HandleStageCleared;
+        _currentStage.Cleanup();
 
         _currentStage = null;
         _onCleared = null;

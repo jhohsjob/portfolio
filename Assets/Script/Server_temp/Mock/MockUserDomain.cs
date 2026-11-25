@@ -28,13 +28,15 @@ public class MockUserDomain
 
         _levelSystem.Initialize(_userStorage.pvo.exp, _userStorage.pvo.level);
 
-        return _userStorage.pvo;
+        return GetUser();
     }
 
     public Task<bool> AddExpAsync(int amount)
     {
         if (amount <= 0)
+        {
             return Task.FromResult(false);
+        }
 
         _userStorage.pvo.exp += amount;
 
@@ -92,7 +94,7 @@ public class MockUserDomain
         await _userStorage.SaveAsync(_userStorage.pvo);
 
         response.currentLevel = _userStorage.pvo.level;
-        response.userPVO = _userStorage.pvo;
+        response.userPVO = GetUser();
         
         return response;
     }
@@ -109,7 +111,7 @@ public class MockUserDomain
         await _userStorage.SaveAsync(_userStorage.pvo);
         
         response.currentGold = _userStorage.pvo.gold;
-        response.userPVO = _userStorage.pvo;
+        response.userPVO = GetUser();
         
         return response;
     }

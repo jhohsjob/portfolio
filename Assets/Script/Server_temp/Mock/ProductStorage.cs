@@ -1,106 +1,38 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using UnityEditor;
 #endif
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using UnityEngine;
 
 
-public class ProductStorage
+public class ProductStorage : JsonListStorage<ProductPVO>
 {
-    private static string _savePath => Path.Combine(Application.persistentDataPath, "product_save.json");
+    private const string FileName = "product_save.json";
 
     private Dictionary<int, ProductDefinition> _productDefinitions;
 
-    private List<ProductPVO> _pvos = new();
-    public IReadOnlyList<ProductPVO> pvos => _pvos;
+    public IReadOnlyList<ProductPVO> pvos => items;
 
-    public ProductStorage()
-    {
-    }
+    public ProductStorage() : base(FileName) { }
 
     public void SetupProduct(Dictionary<int, ProductDefinition> products)
     {
         _productDefinitions = products;
     }
 
-    public ProductPVO GetById(int id)
+    protected override int GetId(ProductPVO item) => item.id;
+
+    protected override List<ProductPVO> CreateDefault()
     {
-        return _pvos.FirstOrDefault(x => x.id == id);
-    }
-
-    public async Task SaveAsync(List<ProductPVO> saveDatas)
-    {
-        string json = JsonConvert.SerializeObject(saveDatas, Formatting.Indented);
-        string savePath = _savePath; // UnityException: get_persistentDataPath can only be called from the main thread.
-        string tempPath = savePath + ".tmp";
-
-        try
+        if (_productDefinitions == null)
         {
-            await using (var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true))
-            await using (var writer = new StreamWriter(fs))
-            {
-                await writer.WriteAsync(json);
-            }
-
-            if (File.Exists(savePath))
-            {
-                File.Replace(tempPath, savePath, null);
-            }
-            else
-            {
-                File.Move(tempPath, savePath);
-            }
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"Save failed: {e}");
-            throw;
+            throw new InvalidOperationException("SetupProduct must be called before LoadAsync");
         }
 
-        _pvos = JsonConvert.DeserializeObject<List<ProductPVO>>(json);
-    }
-
-    public async Task LoadAsync()
-    {
-        string savePath = _savePath;
-
-        try
+        var list = new List<ProductPVO>();
+        foreach (var product in _productDefinitions.Values)
         {
-            if (File.Exists(savePath) == false)
-            {
-                await CreateDefaultSaveAsync();
-            }
-            else
-            {
-                await LoadFromDisk();
-            }
-        }
-        catch
-        {
-            throw;
-        }
-    }
-
-    private async Task CreateDefaultSaveAsync()
-    {
-        _pvos = await LoadDefaultDataAsync();
-
-        await SaveAsync(_pvos);
-    }
-
-
-    private Task<List<ProductPVO>> LoadDefaultDataAsync()
-    {
-        var products = _productDefinitions.Values.ToList();
-        var pvos = new List<ProductPVO>();
-        foreach (var product in products)
-        {
-            pvos.Add(new ProductPVO
+            list.Add(new ProductPVO
             {
                 id = product.Id,
                 purchaseCount = 0,
@@ -110,38 +42,20 @@ public class ProductStorage
             });
         }
 
-        return Task.FromResult(pvos);
+        return list;
     }
 
-    private async Task LoadFromDisk()
+    protected override void OnLoaded(List<ProductPVO> loaded)
     {
-        string json = File.ReadAllText(_savePath);
-        _pvos = JsonConvert.DeserializeObject<List<ProductPVO>>(json);
-
-        if (_pvos == null)
+        foreach (var data in loaded)
         {
-            throw new Exception("Save file is corrupted");
+            if (_productDefinitions != null &&
+                _productDefinitions.TryGetValue(data.id, out var def) &&
+                def.limitType == ShopLimitType.Daily)
+            {
+                ResetIfNeeded(data);
+            }
         }
-
-        foreach (var data in _pvos)
-        {
-            ResetIfNeeded(data);
-        }
-
-        await Task.CompletedTask;
-    }
-
-    public async Task UpdateAsync(ProductPVO changeData)
-    {
-        var index = _pvos.FindIndex(pvo => pvo.id == changeData.id);
-        if (index == -1)
-        {
-            return;
-        }
-
-        _pvos[index] = changeData;
-
-        await SaveAsync(_pvos);
     }
 
     private void ResetIfNeeded(ProductPVO data)
@@ -163,14 +77,6 @@ public class ProductStorage
 
 #if UNITY_EDITOR
     [MenuItem("CustomMenu/DataDelete_product")]
-    public static void Delete()
-    {
-        if (File.Exists(_savePath))
-        {
-            File.Delete(_savePath);
-        }
-
-        Debug.Log("delete complete");
-    }
+    public static void Delete() => StoragePaths.Delete(FileName);
 #endif
 }

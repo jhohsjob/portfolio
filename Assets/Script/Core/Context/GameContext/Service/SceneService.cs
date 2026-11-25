@@ -50,9 +50,9 @@ public class SceneService : ISceneService, IDisposable
     private bool _isLoading;
     private bool _disposed;
 
-    public SceneService(Deps context)
+    public SceneService(Deps deps)
     {
-        _deps = context;
+        _deps = deps;
     }
 
     public void LoadBootScene() => TransitionAsync(SceneNames.Boot, inject: null, bgm: null).Forget();

@@ -43,19 +43,14 @@ public class HpBarController : MonoBehaviour
 
     private void LateUpdate()
     {
-        foreach (var actor in _activeList.Keys)
+        foreach (var pair in _activeList)
         {
-            if (_activeList.TryGetValue(actor, out var hpBar) == false)
-            {
-                continue;
-            }
-
-            var screenPos = _mainCamera.WorldToScreenPoint(actor.transform.position);
+            var screenPos = _mainCamera.WorldToScreenPoint(pair.Key.transform.position);
             screenPos.z = 0f;
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(_rt, screenPos, _uiCamera, out var localPos);
 
-            _activeList[actor].FollowPosition(localPos);
+            pair.Value.FollowPosition(localPos);
         }
     }
 

@@ -12,6 +12,11 @@ public class MockMercenaryHandler
         _userService = user;
     }
 
+    private MercenaryPVO SnapshotMercenary(int id)
+    {
+        return new MercenaryPVO(_mercenaryService.GetMercenaryPVOById(id));
+    }
+
     public async Task<MercenaryAcquireResponse> MercenaryAcquireAsync(MercenaryAcquireRequest request)
     {
         MercenaryAcquireResponse response = new();
@@ -50,7 +55,7 @@ public class MockMercenaryHandler
 
                 await _userService.ChangeGold(-definition.acquire.value);
 
-                response.mercenary = _mercenaryService.GetMercenaryPVOById(request.mercenaryId);
+                response.mercenary = SnapshotMercenary(request.mercenaryId);
                 response.user = _userService.GetUser();
                 response.result = NetworkResult.SUCCESS;
                 break;
@@ -100,7 +105,7 @@ public class MockMercenaryHandler
 
         await _userService.ChangeGold(-cost);
 
-        response.mercenary = pvo;
+        response.mercenary = SnapshotMercenary(request.mercenaryId);
         response.user = _userService.GetUser();
         response.result = NetworkResult.SUCCESS;
 
@@ -135,7 +140,7 @@ public class MockMercenaryHandler
 
         await _mercenaryService.LevelResetAsync(request.mercenaryId);
 
-        response.mercenary = pvo;
+        response.mercenary = SnapshotMercenary(request.mercenaryId);
         response.user = _userService.GetUser();
         response.result = NetworkResult.SUCCESS;
 
@@ -170,7 +175,8 @@ public class MockMercenaryHandler
             return response;
         }
         await _mercenaryService.GradeUpAsync(request.mercenaryId, request.targetGrade);
-        response.mercenary = pvo;
+
+        response.mercenary = SnapshotMercenary(request.mercenaryId);
         response.result = NetworkResult.SUCCESS;
 
         return response;

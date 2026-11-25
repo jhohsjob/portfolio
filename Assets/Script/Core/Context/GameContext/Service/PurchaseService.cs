@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
-public class PurchaseServiceDependencies
-{
-    public IGameServer gameServer;
-    public User user;
-    public ICurrencyService currencyService;
-}
-
 public class PurchaseService
 {
+    public sealed class Deps
+    {
+        public IGameServer gameServer;
+        public User user;
+        public ICurrencyService currencyService;
+    }
+
+
     private List<ShopItemDefinition> _shopItemList = new();
     public IReadOnlyList<ShopItemDefinition> shopItemList => _shopItemList;
 
@@ -24,11 +25,11 @@ public class PurchaseService
 
     public Action<ProductPVO> onPVOChanged;
 
-    public PurchaseService(PurchaseServiceDependencies dependencies)
+    public PurchaseService(Deps deps)
     {
-        _gameServer = dependencies.gameServer;
-        _user = dependencies.user;
-        _currencyService = dependencies.currencyService;
+        _gameServer = deps.gameServer;
+        _user = deps.user;
+        _currencyService = deps.currencyService;
     }
 
     public void SetupShopItems(IReadOnlyList<ShopItemDefinition> shopItemDefinitions)
@@ -50,7 +51,10 @@ public class PurchaseService
     public void InitializeServer(List<ProductPVO> pvos)
     {
         _pvos.Clear();
-        _pvos.AddRange(pvos);
+        foreach (var pvo in pvos)
+        {
+            _pvos.Add(new ProductPVO(pvo));
+        }
     }
 
     private void ApplyPVO(ProductPVO newPVO)

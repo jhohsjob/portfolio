@@ -12,16 +12,34 @@ public class KillEnemiesConditionRuntime : StageClearConditionRuntime
     {
         _currentKillCount = 0;
 
-        EventHelper.AddEventListener(EventName.EnemyDieEnd, OnEnemyDie);
-        EventHelper.AddEventListener(EventName.DebugStageClear, OnDebugClear);
+        Unsubscribe();
+        Subscribe();
     }
 
     protected override void RaiseCleared()
     {
-        EventHelper.RemoveEventListener(EventName.EnemyDieEnd, OnEnemyDie);
-        EventHelper.RemoveEventListener(EventName.DebugStageClear, OnDebugClear);
+        Unsubscribe();
 
         base.RaiseCleared();
+    }
+
+    public override void Dispose()
+    {
+        Unsubscribe();
+
+        base.Dispose();
+    }
+
+    private void Subscribe()
+    {
+        EventHelper.AddEventListener(EventName.EnemyDieEnd, OnEnemyDie);
+        EventHelper.AddEventListener(EventName.DebugStageClear, OnDebugClear);
+    }
+
+    private void Unsubscribe()
+    {
+        EventHelper.RemoveEventListener(EventName.EnemyDieEnd, OnEnemyDie);
+        EventHelper.RemoveEventListener(EventName.DebugStageClear, OnDebugClear);
     }
 
     private void OnEnemyDie(object sender, object param)

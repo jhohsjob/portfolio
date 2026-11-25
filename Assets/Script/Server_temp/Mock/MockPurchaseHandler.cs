@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 
 public class MockPurchaseHandler
 {
-    private MockPurchaseService _purchaseService;
+    private MockPurchaseDomain _purchaseService;
     private MockUserDomain _userService;
 
-    public MockPurchaseHandler(MockPurchaseService purchase, MockUserDomain user)
+    public MockPurchaseHandler(MockPurchaseDomain purchase, MockUserDomain user)
     {
         _purchaseService = purchase;
         _userService = user;
@@ -77,8 +77,9 @@ public class MockPurchaseHandler
 
         await _purchaseService.AddPurchaseCount(product.Id);
 
-        response.product = _purchaseService.GetProductPVOById(product.Id);
+        response.product = new ProductPVO(_purchaseService.GetProductPVOById(product.Id));
         response.user = _userService.GetUser();
+        response.result = NetworkResult.SUCCESS;
 
         return response;
     }

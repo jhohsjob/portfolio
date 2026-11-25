@@ -71,7 +71,7 @@ public class GameContext : IDisposable
 
         RoleFactory = new RoleFactory();
 
-        MercenaryService = new MercenaryService(new MercenaryServiceDependencies
+        MercenaryService = new MercenaryService(new MercenaryService.Deps
         {
             factory = RoleFactory,
             gameServer = GameServer,
@@ -85,14 +85,14 @@ public class GameContext : IDisposable
 
         DropItemCatalog = new DropItemCatalog(RoleFactory);
 
-        PurchaseService = new PurchaseService(new PurchaseServiceDependencies
+        PurchaseService = new PurchaseService(new PurchaseService.Deps
         {
             gameServer = GameServer,
             user = User,
             currencyService = CurrencyService
         });
 
-        GachaService = new GachaService(new GachaServiceDependencies
+        GachaService = new GachaService(new GachaService.Deps
         {
             gameServer = GameServer,
             user = User,
@@ -102,7 +102,7 @@ public class GameContext : IDisposable
 
         StageService = new StageService();
 
-        PopupService = new PopupService(new PopupServiceDependencies
+        PopupService = new PopupService(new PopupService.Deps
         {
             assetService = AssetService,
             soundService = SoundService,
@@ -158,6 +158,7 @@ public class GameContext : IDisposable
         GameServer?.Dispose();
         MercenaryService?.Dispose();
         CurrencyService?.Dispose();
-        Preload.Dispose();
+        Preload?.Dispose();
+        AssetService?.Dispose();
     }
 }

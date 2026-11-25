@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
-public class MockPurchaseService
+public class MockPurchaseDomain
 {
     private readonly ProductStorage _productStorage;
 
     private Dictionary<int, ProductDefinition> _products = new();
 
-    public MockPurchaseService()
+    public MockPurchaseDomain()
     {
         _productStorage = new();
     }
@@ -31,7 +31,14 @@ public class MockPurchaseService
     public async Task<List<ProductPVO>> InitializeAsync()
     {
         await _productStorage.LoadAsync();
-        return new List<ProductPVO>(_productStorage.pvos);
+
+        var list = new List<ProductPVO>();
+        foreach (var pvo in _productStorage.pvos)
+        {
+            list.Add(new ProductPVO(pvo));
+        }
+
+        return list;
     }
 
     public ProductDefinition GetProductDefinitionById(int id)

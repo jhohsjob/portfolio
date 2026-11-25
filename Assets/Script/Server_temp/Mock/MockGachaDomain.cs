@@ -23,7 +23,14 @@ public class MockGachaDomain
     public async Task<List<GachaPVO>> InitializeAsync()
     {
         await _gachaStorage.LoadAsync();
-        return new List<GachaPVO>(_gachaStorage.pvos);
+
+        var list = new List<GachaPVO>();
+        foreach (var pvo in _gachaStorage.pvos)
+        {
+            list.Add(new GachaPVO(pvo));
+        }
+
+        return list;
     }
 
     public GachaDefinition GetGachaDefinitionById(int id)

@@ -1,14 +1,19 @@
 using System;
 
 
-public abstract class StageClearConditionRuntime
+public abstract class StageClearConditionRuntime : IDisposable
 {
     public event Action OnCleared;
+
+    public abstract void Init();
 
     protected virtual void RaiseCleared()
     {
         OnCleared?.Invoke();
     }
 
-    public abstract void Init();
+    public virtual void Dispose()
+    {
+        OnCleared = null;
+    }
 }

@@ -4,14 +4,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 
-public class GachaServiceDependencies
-{
-    public IGameServer gameServer;
-    public User user;
-    public ICurrencyService currencyService;
-    public MercenaryService mercenaryService;
-}
-
 public class GachaResultData
 {
     public GachaResult result;
@@ -20,6 +12,15 @@ public class GachaResultData
 
 public class GachaService : IDisposable
 {
+    public sealed class Deps
+    {
+        public IGameServer gameServer;
+        public User user;
+        public ICurrencyService currencyService;
+        public MercenaryService mercenaryService;
+    }
+
+
     private User _user;
     private IGameServer _gameServer;
     private ICurrencyService _currencyService;
@@ -34,12 +35,12 @@ public class GachaService : IDisposable
     public IReadOnlyList<Gacha> list => _list;
     private List<GachaPVO> _pvos = new();
 
-    public GachaService(GachaServiceDependencies dependencies)
+    public GachaService(Deps deps)
     {
-        _gameServer = dependencies.gameServer;
-        _user = dependencies.user;
-        _currencyService = dependencies.currencyService;
-        _mercenaryService = dependencies.mercenaryService;
+        _gameServer = deps.gameServer;
+        _user = deps.user;
+        _currencyService = deps.currencyService;
+        _mercenaryService = deps.mercenaryService;
 
         Bind();
     }
@@ -75,7 +76,10 @@ public class GachaService : IDisposable
     public void InitializeServer(List<GachaPVO> pvos)
     {
         _pvos.Clear();
-        _pvos.AddRange(pvos);
+        foreach (var pvo in pvos)
+        {
+            _pvos.Add(new GachaPVO(pvo));
+        }
     }
 
     public void ApplyPVO(GachaPVO pvo)

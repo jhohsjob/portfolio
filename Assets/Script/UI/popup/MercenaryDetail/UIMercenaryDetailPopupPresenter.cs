@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 
@@ -162,8 +163,6 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
 
     private void Refresh()
     {
-        Debug.Log("Refresh");
-
         if (_disposed || _currentMercenary == null)
         {
             return;
@@ -228,141 +227,75 @@ public class UIMercenaryDetailPopupPresenter : IDisposable
         _popupService.ShowCommonPopup(LocalizationHelper.GetCommonString("notice"), LocalizationHelper.GetErrorCodeString(resultName));
     }
 
+    /// <summary>
+    /// 서버 요청 공통 흐름: busy 가드 → 요청 → (해제 여부 확인) → 실패 시 에러 팝업 → Refresh.
+    /// refreshOnFailure가 true면 실패해도 화면을 갱신한다. (레벨업은 실패 시에도 최대 레벨 표기 등을 갱신)
+    /// </summary>
+    private async void RunBusy<TResult>(Func<Task<TResult>> request, TResult success, bool refreshOnFailure = false) where TResult : struct, Enum
+    {
+        if (TryBeginBusy() == false)
+        {
+            return;
+        }
+
+        try
+        {
+            var result = await request();
+            if (_disposed == true)
+            {
+                return;
+            }
+
+            bool isSuccess = EqualityComparer<TResult>.Default.Equals(result, success);
+            if (isSuccess == false)
+            {
+                ShowError(result.ToString());
+            }
+
+            if (isSuccess == true || refreshOnFailure == true)
+            {
+                Refresh();
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
     private void OnClickLevelUp()
     {
         OnClickLevelUp(_currentMercenary.level + 1);
     }
 
-    private async void OnClickLevelUp(int targetLevel)
+    private void OnClickLevelUp(int targetLevel)
     {
-        if (TryBeginBusy() == false)
-        {
-            return;
-        }
-
-        try
-        {
-            var result = await _mercenaryService.LevelUp(_currentMercenary.Id, targetLevel);
-            if (_disposed == true)
-            {
-                return;
-            }
-
-            if (result != MercenaryLevelUpResult.Success)
-            {
-                ShowError(result.ToString());
-            }
-
-            Refresh();
-        }
-        catch (Exception e)
-        {
-            Debug.LogException(e);
-        }
-        finally
-        {
-            _isBusy = false;
-        }
+        RunBusy(() => _mercenaryService.LevelUp(_currentMercenary.Id, targetLevel),
+                MercenaryLevelUpResult.Success,
+                refreshOnFailure: true);
     }
 
-    private async void OnClickLevelUpMax()
+    private void OnClickLevelUpMax()
     {
-        if (TryBeginBusy() == false)
-        {
-            return;
-        }
-
-        try
-        {
-            var result = await _mercenaryService.LevelUp(_currentMercenary.Id, GetAvailableMaxLevel());
-            if (_disposed == true)
-            {
-                return;
-            }
-
-            if (result != MercenaryLevelUpResult.Success)
-            {
-                ShowError(result.ToString());
-            }
-
-            Refresh();
-        }
-        catch (Exception e)
-        {
-            Debug.LogException(e);
-        }
-        finally
-        {
-            _isBusy = false;
-        }
+        RunBusy(() => _mercenaryService.LevelUp(_currentMercenary.Id, GetAvailableMaxLevel()),
+                MercenaryLevelUpResult.Success,
+                refreshOnFailure: true);
     }
 
-    private async void OnClickLevelReset()
+    private void OnClickLevelReset()
     {
-        if (TryBeginBusy() == false)
-        {
-            return;
-        }
-
-        try
-        {
-            var result = await _mercenaryService.LevelReset(_currentMercenary.Id);
-            if (_disposed == true)
-            {
-                return;
-            }
-
-            if (result == MercenaryLevelResetResult.Success)
-            {
-                Refresh();
-            }
-            else
-            {
-                ShowError(result.ToString());
-            }
-        }
-        catch (Exception e)
-        {
-            Debug.LogException(e);
-        }
-        finally
-        {
-            _isBusy = false;
-        }
+        RunBusy(() => _mercenaryService.LevelReset(_currentMercenary.Id),
+                MercenaryLevelResetResult.Success);
     }
 
-    private async void OnClickGradeUp()
+    private void OnClickGradeUp()
     {
-        if (TryBeginBusy() == false)
-        {
-            return;
-        }
-
-        try
-        {
-            var result = await _mercenaryService.GradeUp(_currentMercenary.Id);
-            if (_disposed == true)
-            {
-                return;
-            }
-
-            if (result == MercenaryGradeUpResult.Success)
-            {
-                Refresh();
-            }
-            else
-            {
-                ShowError(result.ToString());
-            }
-        }
-        catch (Exception e)
-        {
-            Debug.LogException(e);
-        }
-        finally
-        {
-            _isBusy = false;
-        }
+        RunBusy(() => _mercenaryService.GradeUp(_currentMercenary.Id),
+                MercenaryGradeUpResult.Success);
     }
 
     #endregion

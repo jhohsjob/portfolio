@@ -37,7 +37,7 @@ public class MockMercenaryDomain
     public async Task<List<MercenaryPVO>> InitializeAsync()
     {
         await _mercenaryStorage.LoadAsync();
-        return new List<MercenaryPVO>(_mercenaryStorage.pvos);
+        return CopyAll();
     }
 
     public async Task AcquireAsync(int id)
@@ -97,7 +97,7 @@ public class MockMercenaryDomain
 
     public Task<List<MercenaryPVO>> GetMercenariesAsync()
     {
-        return Task.FromResult(new List<MercenaryPVO>(_mercenaryStorage.pvos));
+        return Task.FromResult(CopyAll());
     }
 
     public Task<MercenaryPVO> GetMercenaryAsync(int id)
@@ -137,5 +137,16 @@ public class MockMercenaryDomain
     public int GetGradeUpCost(int grade, int targetGrade)
     {
         return _gradeSystem.GetGradeUpCost(grade, targetGrade);
+    }
+
+    private List<MercenaryPVO> CopyAll()
+    {
+        var list = new List<MercenaryPVO>();
+        foreach (var pvo in _mercenaryStorage.pvos)
+        {
+            list.Add(new MercenaryPVO(pvo));
+        }
+
+        return list;
     }
 }

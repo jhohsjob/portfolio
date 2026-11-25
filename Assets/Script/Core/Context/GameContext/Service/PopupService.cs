@@ -16,16 +16,17 @@ public interface IPopupService : IDisposable
     void CloseAllPopup();
 }
 
-public class PopupServiceDependencies
-{
-    public IAssetService assetService;
-    public ISoundService soundService;
-    public Transform container;
-}
-
 public class PopupService : IPopupService
 {
-    private PopupServiceDependencies _context;
+    public sealed class Deps
+    {
+        public IAssetService assetService;
+        public ISoundService soundService;
+        public Transform container;
+    }
+
+
+    private Deps _deps;
 
     private List<UIPopup> _openPopup = new();
     private readonly HashSet<UIPopup> _closing = new();
@@ -35,11 +36,11 @@ public class PopupService : IPopupService
     private Transform _alphaLayer;
     private bool _disposed;
 
-    public PopupService(PopupServiceDependencies context)
+    public PopupService(Deps deps)
     {
-        _context = context;
+        _deps = deps;
 
-        _container = context.container;
+        _container = deps.container;
         _alphaLayer = _container.Find("AlphaBlack");
     }
 
@@ -50,7 +51,7 @@ public class PopupService : IPopupService
             return;
         }
 
-        _context.assetService.LoadPrefab(address, (prefab) =>
+        _deps.assetService.LoadPrefab(address, (prefab) =>
         {
             if (_disposed == true)
             {
@@ -94,8 +95,8 @@ public class PopupService : IPopupService
 
         dependencies ??= new UIPopupDependencies();
 
-        dependencies.assetService = _context.assetService;
-        dependencies.soundService = _context.soundService;
+        dependencies.assetService = _deps.assetService;
+        dependencies.soundService = _deps.soundService;
         dependencies.popupService = this;
 
         popup.InitDependencies(dependencies);

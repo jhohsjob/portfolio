@@ -20,9 +20,20 @@ public class Stage
     public void Init()
     {
         _clearCondition = _definition.stageClearCondition.CreateRuntime();
-        _clearCondition.Init();
-
         _clearCondition.OnCleared += OnStageCleared;
+        _clearCondition.Init();
+    }
+
+    public void Cleanup()
+    {
+        if (_clearCondition == null)
+        {
+            return;
+        }
+
+        _clearCondition.OnCleared -= OnStageCleared;
+        _clearCondition.Dispose();
+        _clearCondition = null;
     }
 
     private void OnStageCleared()

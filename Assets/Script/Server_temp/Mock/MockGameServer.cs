@@ -7,7 +7,7 @@ public class MockGameServer : IGameServer, IDisposable
 {
     private readonly MockUserDomain _userService;
     private readonly MockMercenaryDomain _mercenaryService;
-    private readonly MockPurchaseService _purchaseService;
+    private readonly MockPurchaseDomain _purchaseService;
     private readonly MockGachaDomain _gachaService;
 
     private MockUserHandler _userHandler;
@@ -19,7 +19,7 @@ public class MockGameServer : IGameServer, IDisposable
     {
         _userService = new MockUserDomain(assetService);
         _mercenaryService = new MockMercenaryDomain();
-        _purchaseService = new MockPurchaseService();
+        _purchaseService = new MockPurchaseDomain();
         _gachaService = new MockGachaDomain();
 
         _userHandler = new MockUserHandler(_userService);
