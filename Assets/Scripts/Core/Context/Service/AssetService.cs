@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -283,10 +284,7 @@ public class AssetService : IAssetService, IDisposable
     {
         LoadAsset<GameObject>(
             address,
-            task =>
-            {
-                onLoaded?.Invoke(task.GetAsset<GameObject>());
-            },
+            task => InvokeDeferred(() => onLoaded?.Invoke(task.GetAsset<GameObject>())),
             onFailed);
     }
 
@@ -294,10 +292,7 @@ public class AssetService : IAssetService, IDisposable
     {
         LoadAsset<Material>(
             address,
-            task =>
-            {
-                onLoaded?.Invoke(task.GetAsset<Material>());
-            },
+            task => InvokeDeferred(() => onLoaded?.Invoke(task.GetAsset<Material>())),
             onFailed);
     }
 
@@ -305,10 +300,7 @@ public class AssetService : IAssetService, IDisposable
     {
         LoadAsset<ScriptableObject>(
             address,
-            task =>
-            {
-                onLoaded?.Invoke(task.GetAsset<ScriptableObject>());
-            },
+            task => InvokeDeferred(() => onLoaded?.Invoke(task.GetAsset<ScriptableObject>())),
             onFailed);
     }
 
@@ -334,6 +326,12 @@ public class AssetService : IAssetService, IDisposable
         taskList.Add(task);
 
         return task;
+    }
+
+    private static async void InvokeDeferred(Action action)
+    {
+        await UniTask.Yield(PlayerLoopTiming.Update);
+        action?.Invoke();
     }
 
     public bool CheckAddressExist<T>(string address)

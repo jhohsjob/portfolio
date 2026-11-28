@@ -20,7 +20,8 @@ public class HpBarController : MonoBehaviour
 
     private HpBar _original;
 
-    private Queue<HpBar> _pool = new();
+    private ComponentPool<HpBar> _pool;
+
     private Dictionary<ActorView, HpBar> _activeList = new();
 
     private Queue<ActorView> _waitList = new();
@@ -37,6 +38,8 @@ public class HpBarController : MonoBehaviour
 
     private void OnDestroy()
     {
+        _pool?.Dispose();
+
         EventHelper.RemoveEventListener(EventName.HpBarConnection, OnHpBarConnection);
         EventHelper.RemoveEventListener(EventName.HpBarDisconnection, OnHpBarDisconnection);
     }
@@ -66,22 +69,29 @@ public class HpBarController : MonoBehaviour
         {
             _original = prefab.GetComponent<HpBar>();
 
-            ExpandPool();
+            _pool = new ComponentPool<HpBar>(new ComponentPool<HpBar>.Options
+            {
+                name = "HpBar",
+                prewarm = _expandCount,
+                expandCount = _expandCount,
+                create = () => Instantiate(_original, _poolContainer),
+                onGet = bar =>
+                {
+                    bar.transform.SetParent(_activeContainer);
+                    bar.gameObject.SetActive(true);
+                },
+                onRelease = bar =>
+                {
+                    bar.transform.SetParent(_poolContainer, false);
+                    bar.transform.localPosition = Vector3.zero;
+                    bar.gameObject.SetActive(false);
+                }
+            });
 
             _isLoadEnd = true;
 
             FlushWaitList();
         });
-    }
-
-    private void ExpandPool()
-    {
-        for (int i = 0; i < _expandCount; i++)
-        {
-            var wait = Instantiate(_original, _poolContainer);
-            wait.transform.localPosition = Vector3.zero;
-            _pool.Enqueue(wait);
-        }
     }
 
     private void FlushWaitList()
@@ -105,18 +115,8 @@ public class HpBarController : MonoBehaviour
             return;
         }
 
-        if (_pool.Count == 0)
-        {
-            ExpandPool();
-        }
-
-        var hpBar = _pool.Dequeue();
-
-        hpBar.transform.SetParent(_activeContainer);
-        hpBar.gameObject.SetActive(true);
-
+        var hpBar = _pool.Get();
         actor.SetHpBar(hpBar);
-
         _activeList[actor] = hpBar;
     }
 
@@ -127,13 +127,8 @@ public class HpBarController : MonoBehaviour
             return;
         }
 
-        hpBar.transform.SetParent(_poolContainer, false);
-        hpBar.transform.localPosition = Vector3.zero;
-        hpBar.gameObject.SetActive(false);
-
+        _pool.Release(hpBar);
         _activeList.Remove(actor);
-
-        _pool.Enqueue(hpBar);
     }
 
     private void OnHpBarConnection(object sender, object data)

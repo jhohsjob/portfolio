@@ -5,6 +5,7 @@ public class UILobbyTopPresenter : IDisposable
 {
     public sealed class Deps
     {
+        public ILocaleService localeService;
         public IDeviceSettings deviceSettings;
         public User user;
         public ICurrencyService currencyService;
@@ -59,8 +60,9 @@ public class UILobbyTopPresenter : IDisposable
             address: PopupName.UISettingPopup,
             dependencies: new UISettingPopupDependencies
             {
+                localeService = _deps.localeService,
                 deviceSettings = _deps.deviceSettings,
-                sceneService = _deps.sceneService
+                sceneService = _deps.sceneService,
             });
     }
 

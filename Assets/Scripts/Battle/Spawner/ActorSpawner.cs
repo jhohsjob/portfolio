@@ -49,7 +49,8 @@ public class ActorSpawner : MonoBehaviour, IActorSpawner
     private ActorFactory _actorFactory = new();
 
     /// <summary> key : role id </summary>
-    private Dictionary<int, Queue<ActorBase>> _pool = new();
+    private readonly Dictionary<int, ComponentPool<ActorBase>> _pool = new();
+
     /// <summary> key : role id </summary>
     private Dictionary<int, GameObject> _container = new();
     /// <summary> key : role id </summary>
@@ -59,6 +60,15 @@ public class ActorSpawner : MonoBehaviour, IActorSpawner
 
     private void Awake()
     {
+    }
+
+    private void OnDestroy()
+    {
+        foreach (var pool in _pool.Values)
+        {
+            pool.Dispose();
+        }
+        _pool.Clear();
     }
 
     public void Init(Transform actorContainer)
@@ -73,38 +83,32 @@ public class ActorSpawner : MonoBehaviour, IActorSpawner
         var container = new GameObject(role.name + "Container");
         container.transform.SetParent(transform, false);
         _container.Add(role.Id, container);
-
-        _pool.Add(role.Id, new Queue<ActorBase>());
-
         _idGenSet.Add(role.Id, new IDGenerator(role.Id));
 
-        AddPool(role);
-    }
-
-    private void AddPool(RoleBase role)
-    {
-        for (int i = 0; i < 10; i++)
+        _pool.Add(role.Id, new ComponentPool<ActorBase>(new ComponentPool<ActorBase>.Options
         {
-            var actor = _actorFactory.CreateActor(role, _container[role.Id].transform);
-            _pool[role.Id].Enqueue(actor);
-        }
+            name = $"Actor:{role.name}",
+            prewarm = 10,
+            expandCount = 10,
+            create = () => _actorFactory.CreateActor(role, container.transform),
+            onRelease = actor =>
+            {
+                actor.transform.SetParent(container.transform, false);
+                actor.transform.localPosition = Vector3.zero;
+            }
+        }));
     }
 
     private ActorBase GetActor<TDef>(Role<TDef> role, Transform parent, Vector3 position) where TDef : RoleDefinition
     {
-        if (_pool.ContainsKey(role.Id) == false)
+        if (_pool.TryGetValue(role.Id, out var pool) == false)
         {
             return null;
         }
-        if (_pool[role.Id].Count == 0)
-        {
-            AddPool(role);
-        }
-
-        var result = _pool[role.Id].Dequeue();
+        
+        var result = pool.Get();
         result.transform.SetParent(parent, false);
         result.transform.localPosition = position;
-        
         return result;
     }
 
@@ -137,10 +141,10 @@ public class ActorSpawner : MonoBehaviour, IActorSpawner
 
     private void Return(ActorBase actor)
     {
-        actor.transform.SetParent(_container[actor.roleId].transform, false);
-        actor.transform.localPosition = Vector3.zero;
-
-        _pool[actor.roleId].Enqueue(actor);
+        if (_pool.TryGetValue(actor.roleId, out var pool))
+        {
+            pool.Release(actor);   // 이중 반환이면 로그로 즉시 발견
+        }
     }
 
     public int GetNextID(int roleId)

@@ -7,6 +7,7 @@ public class LobbyScene : MonoBehaviour
     public sealed class Deps
     {
         public IAssetService assetService;
+        public ILocaleService localeService;
         public ISoundService soundService;
         public IDeviceSettings deviceSettings;
         public User user;
@@ -51,6 +52,7 @@ public class LobbyScene : MonoBehaviour
         _uiLobbyPresenter = new UILobbyPresenter(_uiLobby, new UILobbyPresenter.Deps
         {
             assetService = _deps.assetService,
+            localeService = _deps.localeService,
             deviceSettings = _deps.deviceSettings,
             user = _deps.user,
             currencyService = _deps.currencyService,

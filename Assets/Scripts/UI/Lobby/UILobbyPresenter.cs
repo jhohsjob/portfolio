@@ -7,6 +7,7 @@ public class UILobbyPresenter : IDisposable
     public class Deps
     {
         public IAssetService assetService;
+        public ILocaleService localeService;
         public IDeviceSettings deviceSettings;
         public User user;
         public ICurrencyService currencyService;
@@ -32,6 +33,7 @@ public class UILobbyPresenter : IDisposable
 
         _topPresenter = new UILobbyTopPresenter(_view.topView, new UILobbyTopPresenter.Deps
         {
+            localeService = _deps.localeService,
             deviceSettings = _deps.deviceSettings,
             user = _deps.user,
             currencyService = _deps.currencyService,

@@ -1,3 +1,5 @@
+using Cysharp.Threading.Tasks;
+using System;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
@@ -5,6 +7,7 @@ using UnityEngine.UI;
 
 public class UISettingPopupDependencies : UIPopupDependencies
 {
+    public ILocaleService localeService;
     public IDeviceSettings deviceSettings;
     public ISceneService sceneService;
 }
@@ -27,6 +30,7 @@ public class UISettingPopup : UIPopup
 
     private LocaleToggle[] _toggles;
 
+    private ILocaleService _localeService;
     private IDeviceSettings _deviceSettings;
     private ISceneService _sceneService;
 
@@ -43,6 +47,7 @@ public class UISettingPopup : UIPopup
 
         if (dependencies is UISettingPopupDependencies settingDependencies)
         {
+            _localeService = settingDependencies.localeService;
             _deviceSettings = settingDependencies.deviceSettings;
             _sceneService = settingDependencies.sceneService;
         }
@@ -64,13 +69,17 @@ public class UISettingPopup : UIPopup
 
     private void InitCurrentLocale()
     {
-        var current = LocalizationSettings.SelectedLocale;
+        if (_localeService == null)
+        {
+            foreach (var t in _toggles) t.toggle.interactable = false;
+            return;
+        }
+
+        string current = _localeService.currentCode;
 
         foreach (var t in _toggles)
         {
-            var locale = LocalizationSettings.AvailableLocales.GetLocale(t.localeCode);
-
-            if (locale == current)
+            if (string.Equals(t.localeCode, current, StringComparison.OrdinalIgnoreCase))
             {
                 t.toggle.SetIsOnWithoutNotify(true);
                 break;
@@ -80,6 +89,11 @@ public class UISettingPopup : UIPopup
 
     private void BindLocale()
     {
+        if (_localeService == null)
+        {
+            return;
+        }
+
         foreach (var t in _toggles)
         {
             var code = t.localeCode;
@@ -93,17 +107,29 @@ public class UISettingPopup : UIPopup
         }
     }
 
-    private void ChangeLocale(string code)
+    private async void ChangeLocale(string code)
     {
-        var locale = LocalizationSettings.AvailableLocales.GetLocale(code);
+        SetLocaleTogglesInteractable(false);
 
-        if (locale != null)
+        bool success = await _localeService.ChangeAsync(code);
+        if (this == null)
         {
-            LocalizationSettings.SelectedLocale = locale;
+            return; // 변경 중 팝업이 닫힘
         }
-        else
+
+        if (success == false)
         {
-            Debug.LogWarning($"AvailableLocales에서 '{code}' 로케일을 찾을 수 없습니다.");
+            InitCurrentLocale();
+        }
+
+        SetLocaleTogglesInteractable(true);
+    }
+    
+    private void SetLocaleTogglesInteractable(bool value)
+    {
+        foreach (var t in _toggles)
+        {
+            t.toggle.interactable = value;
         }
     }
 

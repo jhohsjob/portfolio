@@ -30,7 +30,7 @@ public class GameContext : IDisposable
     public IAssetService AssetService { get; }
     public Storage Storage { get; }
     public SaveService SaveService { get; }
-    public LocaleService LocaleService { get; }
+    public ILocaleService LocaleService { get; }
     public ISoundService SoundService { get; }
     public IDeviceSettings DeviceSettings { get; }
 
@@ -112,6 +112,7 @@ public class GameContext : IDisposable
         SceneService = new SceneService(new SceneService.Deps
         {
             assetService = AssetService,
+            localeService = LocaleService,
             soundService = SoundService,
             deviceSettings = DeviceSettings,
             user = User,

@@ -25,6 +25,7 @@ public class SceneService : ISceneService, IDisposable
     public sealed class Deps
     {
         public IAssetService assetService;
+        public ILocaleService localeService;
         public ISoundService soundService;
         public IDeviceSettings deviceSettings;
         public User user;
@@ -143,6 +144,7 @@ public class SceneService : ISceneService, IDisposable
         lobbyScene.InitDependencies(new LobbyScene.Deps
         {
             assetService = _deps.assetService,
+            localeService = _deps.localeService,
             soundService = _deps.soundService,
             deviceSettings = _deps.deviceSettings,
             user = _deps.user,

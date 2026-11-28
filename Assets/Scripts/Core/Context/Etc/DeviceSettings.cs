@@ -25,21 +25,22 @@ public sealed class DeviceSettings : IDeviceSettings
     private readonly Storage _storage;
     private readonly SaveService _saveService;
     private readonly ISoundService _soundService;
-    private readonly LocaleService _localeService;
+    private readonly ILocaleService _localeService;
 
     private CancellationTokenSource _saveCts;
-    private bool _localeBound;
 
     public float bgmVolume => _storage.data != null ? _storage.data.bgmVolume : 1f;
     public float sfxVolume => _storage.data != null ? _storage.data.sfxVolume : 1f;
     public bool mute => _storage.data != null && _storage.data.mute;
 
-    public DeviceSettings(Storage storage, SaveService saveService, ISoundService soundService, LocaleService localeService)
+    public DeviceSettings(Storage storage, SaveService saveService, ISoundService soundService, ILocaleService localeService)
     {
         _storage = storage;
         _saveService = saveService;
         _soundService = soundService;
         _localeService = localeService;
+
+        _localeService.changed += HandleLocaleChanged;
     }
 
     // Storage.LoadAsync 이후 호출: 저장된 값을 서비스에 반영
@@ -57,12 +58,6 @@ public sealed class DeviceSettings : IDeviceSettings
         _soundService.SetMute(data.mute);
 
         _localeService.Apply(data.locale);
-
-        if (_localeBound == false)
-        {
-            _localeService.changed += HandleLocaleChanged;
-            _localeBound = true;
-        }
     }
 
     public void SetBgmVolume(float volume)

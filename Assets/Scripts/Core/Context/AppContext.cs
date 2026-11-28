@@ -6,7 +6,7 @@ public sealed class AppContext
     public IAssetService AssetService { get; }
     public Storage Storage { get; }
     public SaveService SaveService { get; }
-    public LocaleService LocaleService { get; }
+    public ILocaleService LocaleService { get; }
     public ISoundService SoundService { get; }
     public readonly IDeviceSettings DeviceSettings;
 
