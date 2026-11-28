@@ -3,14 +3,6 @@ using UnityEngine;
 
 public abstract class UILobbyMiddleBase : MonoBehaviour
 {
-    protected virtual void Awake()
-    {
-    }
-
-    private void OnDestroy()
-    {
-    }
-
     public void Show()
     {
         OnEnter();

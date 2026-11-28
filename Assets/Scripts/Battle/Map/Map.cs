@@ -6,14 +6,6 @@ public class Map : MonoBehaviour
 {
     private Tilemap _plane;
     
-    private void Awake()
-    {
-    }
-
-    private void OnDestroy()
-    {
-    }
-
     public void Init(Transform mapOriginal)
     {
         var map = Instantiate(mapOriginal, transform);

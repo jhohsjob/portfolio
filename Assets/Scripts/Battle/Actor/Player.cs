@@ -66,14 +66,9 @@ public class Player : Actor<Mercenary>
         _dash.InitDependencies(this);
     }
 
-    public override void Init(RoleBase role)
+    public override void Init(Mercenary role)
     {
         base.Init(role);
-
-        if (role is  not Mercenary mercenary)
-        {
-            return;
-        }
 
         _deps.assetService.LoadMaterial("DashMat", mat =>
         {
@@ -81,10 +76,10 @@ public class Player : Actor<Mercenary>
             dashView.SetMaterial(mat);
         });
 
-        CreateSkill(mercenary.skillDataList);
+        CreateSkill(role.skillDataList);
 
         _element.Init();
-        _dash.Init(mercenary.dashSpeed, mercenary.dashCount, mercenary.dashCooldown);
+        _dash.Init(role.dashSpeed, role.dashCount, role.dashCooldown);
     }
 
     protected override void Die()

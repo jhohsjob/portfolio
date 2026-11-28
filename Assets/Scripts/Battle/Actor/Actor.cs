@@ -20,6 +20,26 @@ public abstract class Actor<TRole> : ActorBase where TRole : RoleBase
         }
     }
 
+    public sealed override void Init(RoleBase role)
+    {
+        if (role is not TRole typedRole)
+        {
+            return;
+        }
+
+        Init(typedRole);
+    }
+
+    public virtual void Init(TRole role)
+    {
+        base.Init(role);
+
+        _view.Initialize(this, role);
+
+        _moveBehaviour = MoveBehaviourFactory.Create(role.moveType);
+        _moveBehaviour?.Init(this);
+    }
+
     public override void Enter(int id, int sortingOrder, Action<ActorBase> onDied)
     {
         Bind();
@@ -45,16 +65,6 @@ public abstract class Actor<TRole> : ActorBase where TRole : RoleBase
         _hpState?.Damage(damage);
 
         _view.PlayFlash();
-    }
-
-    public override void Init(RoleBase role)
-    {
-        base.Init(role);
-
-        _view.Initialize(this, role);
-
-        _moveBehaviour = MoveBehaviourFactory.Create(role.moveType);
-        _moveBehaviour?.Init(this);
     }
 
     protected override void Die()

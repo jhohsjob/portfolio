@@ -15,11 +15,6 @@ public class UICommonPopup : UIPopup
     [SerializeField]
     private TextMeshProUGUI _txtMessage;
 
-    protected override void Awake()
-    {
-        base.Awake();
-    }
-
     public override void OnPopupReady(object data = null)
     {
         if (data is not UICommonPopupData popupData)

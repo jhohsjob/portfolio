@@ -11,16 +11,11 @@ public class ActorDIGold : Actor<DropItemGold>, ICollectableDropItem
         transform.Rotate(Vector3.up * speed * Time.deltaTime, Space.World);
     }
 
-    public override void Init(RoleBase role)
+    public override void Init(DropItemGold role)
     {
         base.Init(role);
 
-        if (role is not DropItemGold gold)
-        {
-            return;
-        }
-
-        _goldAmount = gold.goldAmount;
+        _goldAmount = role.goldAmount;
     }
 
     public void OnCollectedByPlayer(Player player)

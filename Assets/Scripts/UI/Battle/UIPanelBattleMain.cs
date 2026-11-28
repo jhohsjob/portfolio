@@ -7,12 +7,12 @@ public class UIPanelBattleMain : UIPanel
     [SerializeField]
     private TextMeshProUGUI _txtKill;
     
-    protected override void Awake()
+    private void Awake()
     {
         EventHelper.AddEventListener(EventName.EnemyDieEnd, OnEnemyDieEnd);
     }
 
-    protected override void OnDestroy()
+    private void OnDestroy()
     {
         EventHelper.RemoveEventListener(EventName.EnemyDieEnd, OnEnemyDieEnd);
     }

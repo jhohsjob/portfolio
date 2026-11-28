@@ -3,14 +3,6 @@ using UnityEngine;
 
 public class UIPanel : MonoBehaviour
 {
-    protected virtual void Awake()
-    {
-    }
-
-    protected virtual void OnDestroy()
-    {
-    }
-
     protected virtual void Init(object data = null)
     {
 

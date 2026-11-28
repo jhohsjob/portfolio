@@ -61,10 +61,8 @@ public class UILobbyMiddleGacha : UILobbyMiddleBase
 
     private GameObject _mainUI;
 
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
-
         _gachaScroll.OnScrollStopped += OnScrollStopped;
 
         _btnGacha01.onClick.AddListener(OnClickGacha01);

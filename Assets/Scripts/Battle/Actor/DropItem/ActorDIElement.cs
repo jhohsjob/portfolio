@@ -6,17 +6,11 @@ public class ActorDIElement : Actor<DropItemElement>, ICollectableDropItem
     [HideInInspector]
     public ElementType elementType;
 
-    public override void Init(RoleBase role)
+    public override void Init(DropItemElement role)
     {
         base.Init(role);
 
-        if (role is not DropItemElement diElement)
-        {
-            Debug.LogError("Invalid role type for ActorDIElement");
-            return;
-        }
-
-        elementType = diElement.elementType;
+        elementType = role.elementType;
     }
 
     public void OnCollectedByPlayer(Player player)

@@ -20,14 +20,6 @@ public class PlayerCamera : MonoBehaviour
     private Func<Bounds> _getMapBounds;
     private Bounds _mapBounds => _getMapBounds?.Invoke() ?? new Bounds();
 
-    private void Awake()
-    {
-    }
-
-    private void OnDestroy()
-    {
-    }
-
     private void LateUpdate()
     {
         CameraFrustum.Update(_camera);

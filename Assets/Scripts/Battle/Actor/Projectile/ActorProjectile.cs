@@ -8,18 +8,13 @@ public class ActorProjectile : Actor<Projectile>
     private bool _beHitDie;
     private float _power;
 
-    public override void Init(RoleBase role)
+    public override void Init(Projectile role)
     {
         base.Init(role);
 
-        if (role is not Projectile projectile)
-        {
-            return;
-        }
-
-        distance = projectile.distance;
-        _beHitDie = projectile.beHitDie;
-        _power = projectile.power;
+        distance = role.distance;
+        _beHitDie = role.beHitDie;
+        _power = role.power;
     }
 
     public void Shot(ActorBase owner, Vector3? direction = null)
